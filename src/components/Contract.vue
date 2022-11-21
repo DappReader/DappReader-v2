@@ -1,0 +1,901 @@
+<template>
+  <div class="contract-content">
+    <ContractHd v-if="contarctData" :contarct="contarctData.content"  />
+    <ContractInfo v-if="contarctData" :contarct="contarctData.content" />
+    <div class="contract-main flex-start">
+      <div class="collapse">
+        <div class="collapse-item">
+          <div class="collapse-item-hd flex-center-sb">
+            <div class="title flex-center"><img src="@/assets/images/read.svg" alt=""><span>Read function</span></div>
+            <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
+          </div>
+          <div v-if="readFun" class="collapse-item-list">
+            <div v-for="(item, index) in readFun" :key="index" class="collapse-item-fun flex-center" @click="updateAbi(item, 'read')">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.5 12.75C13.5 13.9926 11.4853 15 9 15C6.51472 15 4.5 13.9926 4.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{item.name}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <div class="collapse-item-hd flex-center-sb">
+            <div class="title flex-center"><img src="@/assets/images/write.svg" alt=""><span>Write function</span></div>
+            <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
+          </div>
+          <div v-if="writeFun" class="collapse-item-list">
+            <div v-for="(item, index) in writeFun" :key="index" class="collapse-item-fun flex-center" @click="updateAbi(item, 'write')">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.5 12.75C13.5 13.9926 11.4853 15 9 15C6.51472 15 4.5 13.9926 4.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{item.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="contarctData" class="contract-main-content">
+        <div v-if="abiItem" class="execute">
+          <n-spin :show="showSpin">
+            <div class="contract-main-content-hd flex-center-sb">
+              <div class="fun-name flex-center">{{abiItem.name}}
+                <div class="edit flex-center">
+                  <img src="@/assets/images/note_edit.svg" alt="" @click="() => showPopover = !showPopover">
+                  <div class="popover" v-if="showPopover">
+                    <div class="popover-hd flex-center-sb">
+                      <div class="popover-title">function name <span>notes</span></div>
+                      <img src="@/assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
+                    </div>
+                    <div class="popover-input">
+                      <n-input class="form-input popover-input-item" />
+                      <div class="popover-btn flex-center-center">Save</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <img src="@/assets/images/close.svg" alt="" class="close" @click="init">
+            </div>
+            <div v-if="abiItem.inputs && abiItem.inputs.length" class="fun-parames">
+              <div class="fun-parames-title">Parameters</div>
+              <div class="parame-item" v-for="(inputItem, index) in abiItem.inputs" :key="index">
+                <div class="parame-item-hd flex-center-sb">
+                  <div class="parame-name flex-center">{{inputItem.name}} <span>Data type: {{inputItem.type}}</span></div>
+                  <div v-if="inputItem.type == 'uint256'" class="conversion flex-center">
+                    <span>Digital Conversion</span>
+                    <img src="@/assets/images/conversion.svg" alt="">
+                  </div>
+                </div>
+                <n-input
+                  v-if="inputItem.type == 'bytes32[]'"
+                  v-model:value="parameData[inputItem.name]"
+                  type="textarea"
+                  size="small"
+                  :autosize="{
+                    minRows: 3,
+                    maxRows: 5
+                  }" 
+                  class="form-input form-textarea"
+                />
+                <n-input v-else class="form-input" v-model:value="parameData[inputItem.name]" />
+                <div v-if="inputItem.type == 'uint256' && parameData[inputItem.name] && (parameData[inputItem.name] % 1 != 0)" class="wei-btns flex-center">
+                  <div class="wei-btn flex-center-center">ToWei(10^18)</div>
+                  <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                  <p>invalid number, please use digital conversion </p>
+                </div>
+              </div>
+            </div>
+            <div v-if="abiType == 'write'" class="fun-parames">
+              <div class="fun-parames-title flex-center-sb" @click="() => showSendInfo = !showSendInfo"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt=""></div>
+              <div class="parame-w" :style="{'max-height': (showSendInfo || abiItem.stateMutability == 'payable') ? '300px' : '0'}">
+                <div class="parame-item">
+                  <div class="parame-item-hd flex-center-sb">
+                    <div class="parame-name flex-center">Value <span>The contract is executed with the quantity of ETH</span></div>
+                    <div class="conversion flex-center">
+                      <span>Digital Conversion</span>
+                      <img src="@/assets/images/conversion.svg" alt="">
+                    </div>
+                  </div>
+                  <n-input class="form-input" v-model:value="sendInfo.value" />
+                  <div v-if="sendInfo.value && (sendInfo.value % 1 != 0)" class="wei-btns flex-center">
+                    <div class="wei-btn flex-center-center">ToWei(10^18)</div>
+                    <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                    <p>invalid number, please use digital conversion </p>
+                  </div>
+                </div>
+                <div class="parame-item">
+                  <div class="parame-item-hd flex-center-sb">
+                    <div class="parame-name flex-center">GasPrice</div>
+                    <div class="conversion flex-center">
+                      <span>Digital Conversion</span>
+                      <img src="@/assets/images/conversion.svg" alt="">
+                    </div>
+                  </div>
+                  <n-input class="form-input" v-model:value="sendInfo.gasPrice" />
+                  <div v-if="sendInfo.gasPrice && (sendInfo.gasPrice % 1 != 0)" class="wei-btns flex-center">
+                    <div class="wei-btn flex-center-center">ToWei(10^18)</div>
+                    <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                    <p>invalid number, please use digital conversion </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="fun-parames">
+              <div class="fun-parames-title flex-center-sb"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt=""></div>
+              <div class="parame-w" style="max-height: 0"></div>
+            </div> -->
+            <div class="fun-run-btn flex-center-center" @click="runFunction(abiItem)">Run</div>
+          </n-spin>
+        </div>
+        <div v-if="!abiItem" class="result">
+          <div v-if="contarctData.result && contarctData.result.length">
+            <div v-for="(item, index) in contarctData.result" :key="index" class="result-item">
+              <div class="result-item-hd flex-start">
+                <div class="result-item-hd-l">
+                  <div class="result-name">✅ Run function : {{item.name}}</div>
+                  <div class="result-time flex-center"><img src="@/assets/images/time.svg" alt="">
+                    {{createAt(item.createAt)}}  |  <span v-if="item.confirmed">Confirmed within {{item.confirmed}} sec</span> 
+                  </div>
+                </div>
+                <div class="result-item-hd-r flex-center">
+                  <div v-if="item.content.hash" class="result-hash flex-center" @click="copy(item.content.hash)">{{formatStr(item.content.hash)}}<img src="@/assets/images/copy.svg" alt=""></div>
+                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contarctData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt="">View Etherscan</div>
+                  <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt="">Resend</div>
+                </div>
+              </div>
+              <div class="result-info flex-center">
+                <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">Tx Type</div>
+                  <div class="result-info-item-value flex-center-center">{{item.content.type == 2 ? "2(EIP-1599)" : "1"}}</div>
+                </div>
+                <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">Nonce</div>
+                  <div class="result-info-item-value flex-center-center">{{ item.content.nonce }}</div>
+                </div>
+                <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">BlockNumber</div>
+                  <div class="result-info-item-value flex-center-center">{{ item.content.blockNumber || "--" }}</div>
+                </div>
+                <!-- <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">BlockConfirm</div>
+                  <div class="result-info-item-value flex-center-center">2(EIP-1599)</div>
+                </div> -->
+              </div>
+              <div v-if="item.params && item.params.length" class="result-section">
+                <div class="result-section-title">Data input</div>
+                <div class="result-section-content">
+                  <div class="result-section-content-hd flex-center">{{item.name}}</div>
+                  <div class="result-section-content-main">
+                    <div class="result-params" :style="{'max-height': item.showParams ? '300px' : '0'}">
+                      <div v-for="(param, index) in item.params" :key="index" class="result-param flex-center">
+                        <div class="result-param-name">{{param.key}}</div>
+                        <div class="result-param-value">{{param.value}}</div>
+                        <img src="@/assets/images/copy.svg" alt="" @click="copy(param.value)">
+                      </div>
+                    </div>
+                    <div class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show <img src="@/assets/images/arrow.svg" :style="{transform: item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                  </div>
+                </div>
+              </div>
+              <div class="result-section">
+                <JsonViewer :value="(item && item.content) || ''" copyable boxed sort theme="dark" />
+              </div>
+              <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
+                <div class="result-section-title">event list</div>
+                <div class="result-section-content" v-for="(event, inx) in item.content.events" :key="inx">
+                  <div class="result-section-content-hd flex-center">{{ event.eventSignature }}</div>
+                  <div class="result-section-content-main">
+                    <div class="result-params" :style="{'max-height': event.showEvents ? '300px' : '0'}">
+                      <div v-for="(param, i) in eventParam(event.eventSignature)" :key="i" class="result-param flex-center">
+                        <div class="result-param-name">{{param}}</div>
+                        <div class="result-param-value">{{event.args[i]}}</div>
+                        <img src="@/assets/images/copy.svg" alt="">
+                      </div>
+                    </div>
+                    <div class="result-param-show flex-center-center" @click="event.showEvents = !event.showEvents">show <img src="@/assets/images/arrow.svg" alt=""></div>
+                  </div>
+                </div>
+              </div>
+              <div class="result-line"></div>
+            </div>
+          </div>
+          <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div>
+        </div>
+      </div>
+    </div>
+    <NetworkErrorModal v-if="contarctData && contarctData.content" :chain="contarctData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
+  </div>
+</template>
+<script>
+import ContractHd from '@/components/ContractHd.vue'
+import ContractInfo from '@/components/ContractInfo.vue'
+import NetworkErrorModal from '@/components/NetworkErrorModal.vue'
+import { useStore } from 'vuex'
+import { ethers } from 'ethers'
+import { ref, computed, watch, toRaw } from 'vue'
+import { getLs, setLs } from '@/service/service'
+import { formatDate, formatAddress } from '../libs/utils'
+import {JsonViewer} from "vue3-json-viewer"
+import "vue3-json-viewer/dist/index.css"
+import { useUtils } from '../hooks/useUtils'
+import { useIsActivating } from '../hooks/useIsActivating'
+import { useNetwork } from '../hooks/useNetwork'
+import { contract } from "../libs/connectWallet"
+export default {
+  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal },
+  setup() {
+    // const message = useMessage()
+    let running = false
+    const { toEtherscanAddress, copy } = useUtils()
+    const { getProvider } = useIsActivating()
+    const { switchChain } = useNetwork()
+    const store = useStore()
+    const showPopover = ref(false)
+    const readFun = ref(null)
+    const writeFun = ref(null)
+    const contarctData = ref(null)
+    const abiItem = ref(null)
+    const showSpin = ref(false)
+    const parameData = ref({})
+    const abiType = ref('')
+    const networkErrorModal = ref(null)
+    const sendInfo = ref({})
+    const showSendInfo = ref(false)
+    const provider = computed(() => {
+      return store.state.provider
+    })
+    const network = computed(() => {
+      return store.state.network
+    })
+    const activeId = computed(() => {
+      return store.state.activeId
+    })
+    const openSols = computed(() => {
+      return store.state.openSols
+    })
+    const createAt = computed(() => {
+      return (value) => {
+        if (!value) return '--'
+        return formatDate('YYYY-mm-dd HH:MM:SS', value)
+      }
+    })
+    const formatStr = computed(() => {
+      return (value) => {
+        if (!value) return ''
+        return formatAddress(value)
+      }
+    })
+    const eventParam = computed(() => {
+      return (val) => {
+        val.match(/\((.+)\)/g)[0]
+        let arrStr = RegExp.$1
+        return arrStr.split(',')
+      }
+    })
+    const hiddenPopover = () => {
+      showPopover.value = false
+    }
+
+    const updateAbi = (item, type) => {
+      abiItem.value = item
+      abiType.value = type
+      parameData.value = {}
+      sendInfo.value = {}
+    }
+
+    const switchChainFun = () => {
+      let contarct = contarctData.value.content
+      switchChain(contarct.chain.chainId)
+      networkErrorModal.value.showModal = false
+    }
+
+    const init = () => {
+      console.log(1)
+      abiItem.value = null
+      abiType.value = ''
+      parameData.value = {}
+      showSpin.value = false
+    }
+
+    const runFunction = async (abiItem) => {
+      running = false
+      let contarct = contarctData.value.content
+      if (!provider.value) {
+        getProvider()
+        return
+      }
+      if (network.value.chainId != contarct.chain.chainId) {
+        networkErrorModal.value.showModal = true
+        running = true
+      } else {
+        showSpin.value = true
+        let user = toRaw(provider.value).getSigner()
+        let C = await contract(contarct.address, contarct.abi, user)
+        let param = []
+        let inputs = abiItem.inputs
+        for (let i = 0; i < inputs.length; i++) {
+          let name = inputs[i].name
+          let type = inputs[i].type
+          let item = parameData.value[name]
+          if (type.indexOf("[]") > -1) {
+            item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
+            item = item.split(",")
+            item = item.filter((e) => e && e.trim())
+            item = item.map((e) => ethers.utils.hexlify(e))
+          }
+          param.push(item)
+        }
+        let resultData = null
+        let tx = null
+        let resultState = ''
+        try {
+          tx = await C[abiItem.name](...param, sendInfo.value)
+          resultState = 'success'
+        } catch (error) {
+          resultState = 'error'
+          tx = error
+        }
+        resultData = {
+          content: tx,
+          state: resultState,
+          formData: parameData.value,
+          sendInfo: sendInfo.value,
+          funData: abiItem,
+          name: abiItem.name,
+          createAt: new Date(),
+        }
+        setResult(resultData)
+        init()
+        if (tx && tx.hash) {
+          const receipt = await tx.wait()
+          console.log(receipt)
+          resultData.content = Object.assign(resultData.content, receipt)
+          resultData.confirmed = Math.ceil((new Date().getTime() - resultData.createAt.getTime()) / 1000)
+          setResult(resultData)
+        }
+      }
+    }
+
+    const setResult = async (result) => {
+      let openSols = await getLs('openSols') || []
+      openSols.forEach(e => {
+        if (e.content.id == activeId.value) {
+          if (!e.result) e.result = [] 
+          if (e.result.some(e => e.content.hash == result.content.hash) && result.content.hash) {
+            e.result.forEach((el, index) => {
+              if (el.content.hash == result.content.hash) {
+                e.result[index] = result
+              }
+            })
+          } else {
+            e.result.unshift(result)
+          }
+        }
+      })
+      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
+        store.commit("setOpenSols", res)
+      })
+    }
+
+    const getContarctData = async () => {
+      let openSols = await getLs('openSols') || []
+      let contarct = openSols.filter(e => e.name == activeId.value)[0]
+      if (contarct) {
+        if (contarct.result && contarct.result.length) {
+          contarct.result.forEach(e => {
+            let params = []
+            let formData = e.formData
+            for (let key in formData) {
+              let item = {
+                key,
+                value: formData[key]
+              }
+              params.push(item)
+            }
+            e.params = params
+          })
+        }
+        console.log(contarct)
+        contarctData.value = toRaw(contarct)
+        let abi = contarct.content.abi || []
+        let list = abi.filter((e) => e.type == "function")
+        let readAbi = list.filter((e) => e.stateMutability == "view")
+        let writeAbi = list.filter((e) => e.stateMutability != "view")
+        readFun.value = readAbi
+        writeFun.value = writeAbi
+      }
+    }
+
+    const resend = (item) => {
+      console.log(item)
+      updateAbi(item.funData)
+      parameData.value = item.formData
+      sendInfo.value = item.sendInfo
+    }
+
+    watch(activeId, async () => {
+      getContarctData()
+    }, {immediate: true})
+
+    watch(network, async () => {
+      if (running && abiItem.value) {
+        runFunction(abiItem.value)
+      }
+    }, {immediate: true})
+
+    watch(openSols, async () => {
+      getContarctData()
+    }, {deep: true})
+    return {
+      showSendInfo,
+      sendInfo,
+      networkErrorModal,
+      showSpin,
+      parameData,
+      abiItem,
+      abiType,
+      createAt,
+      formatStr,
+      contarctData,
+      showPopover,
+      readFun,
+      writeFun,
+      eventParam,
+      hiddenPopover,
+      toEtherscanAddress,
+      copy,
+      updateAbi,
+      runFunction,
+      switchChainFun,
+      init,
+      resend
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.contract-content {
+  padding: 32px;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100vh - 82px);
+  overflow: hidden;
+  .contract-main {
+    margin-top: 40px;
+    height: calc(100% - 189px);
+    .collapse {
+      width: 220px;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .collapse-item {
+        padding: 20px;
+        box-sizing: border-box;
+        border: 1px solid rgba(133, 141, 153, 0.2);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        .collapse-item-hd {
+          cursor: pointer;
+          .title {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 18px;
+            text-transform: capitalize;
+            color: #FFFFFF;
+            img {
+              width: 24px;
+              height: 24px;
+              margin-right: 10px;
+            }
+          }
+          .arrow {
+            width: 18px;
+            height: 18px;
+          }
+        }
+        .collapse-item-list {
+          margin-top: 10px;
+          .collapse-item-fun {
+            height: 32px;
+            padding: 0 4px;
+            box-sizing: border-box;
+            cursor: pointer;
+            &:hover {
+              background: rgba(55, 92, 255, 0.1);
+              border-radius: 6px;
+              svg {
+                path {
+                  stroke: #375CFF;
+                }
+              }
+              span {
+                color: #375CFF;
+              }
+            }
+            svg {
+              width: 18px;
+              height: 18px;
+            }
+            span {
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 18px;
+              color: #FFFFFF;
+              margin-left: 12px;
+            }
+          }
+        }
+      }
+    }
+    .contract-main-content {
+      margin-left: 16px;
+      padding: 20px;
+      box-sizing: border-box;
+      border: 1px solid rgba(133, 141, 153, 0.2);
+      border-radius: 10px;
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .contract-main-content-hd {
+        .close {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+        }
+      }
+      .fun-name {
+        font-family: Montserrat-Medium;
+        font-size: 16px;
+        line-height: 18px;
+        color: #FFFFFF;
+        position: relative;
+        img {
+          width: 18px;
+          height: 18px;
+          margin-left: 8px;
+          cursor: pointer;
+        }
+        .edit {
+          .popover {
+            z-index: 9;
+            position: absolute;
+            top: 28px;
+            left: 0;
+            width: 400px;
+            height: 109px;
+            background: rgba(27, 26, 34, 0.9);
+            border: 1px solid rgba(133, 141, 153, 0.1);
+            box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            // &::after {
+            //   content: '';
+            //   width: 0;
+            //   height: 0;
+            //   position: absolute;
+            //   left: 78px;
+            //   top: -20px;
+            //   border: 10px solid transparent;
+            //   border-bottom: 10px solid rgba(27, 26, 34, 0.9);
+            //   z-index: 2;
+            // }
+            .popover-title {
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 17px;
+              text-transform: capitalize;
+              color: #FFFFFF;
+              span {
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 15px;
+                text-transform: capitalize;
+                color: #858D99;
+                margin-left: 24px;
+              }
+            }
+            .popover-input {
+              position: relative;
+              margin-top: 12px;
+              height: 40px;
+              .popover-input-item {
+                margin-top: 0;
+                box-sizing: border-box;
+                padding-right: 74px;
+              }
+              .popover-btn {
+                width: 64px;
+                height: 30px;
+                background: #15141B;
+                border: 1px solid rgba(47, 52, 61, 0.4);
+                border-radius: 3px;
+                position: absolute;
+                right: 5px;
+                top: 4px;
+                font-weight: 400;
+                font-size: 14px;
+                text-transform: capitalize;
+                color: #858D99;
+                cursor: pointer;
+                &:hover {
+                  background: #375CFF;
+                  color: #FFFFFF;
+                }
+              }
+            }
+          }
+        }
+      }
+      .fun-parames {
+        padding: 24px;
+        box-sizing: border-box;
+        border: 1px dashed rgba(133, 141, 153, 0.2);
+        border-radius: 10px;
+        margin-top: 16px;
+        .fun-parames-title {
+          font-weight: 500;
+          font-size: 15px;
+          line-height: 18px;
+          text-transform: capitalize;
+          color: #FFFFFF;
+          font-family: Montserrat-Medium;
+          img {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+          }
+        }
+        .parame-w {
+          overflow: hidden;
+          max-height: 0px;
+          transition: all .3s;
+        }
+        .parame-item {
+          margin-top: 16px;
+          .parame-item-hd {
+            margin-bottom: 12px;
+            .parame-name {
+              font-size: 14px;
+              line-height: 17px;
+              color: #FFFFFF;
+              span {
+                margin-left: 24px;
+                font-size: 12px;
+                line-height: 15px;
+                color: #858D99;
+              }
+            }
+            .conversion {
+              font-size: 12px;
+              line-height: 15px;
+              color: #858D99;
+              cursor: pointer;
+              img {
+                width: 16px;
+                height: 16px;
+                margin-left: 8px;
+              }
+            }
+          }
+          .wei-btns {
+            margin-top: 12px;
+            .wei-btn {
+              width: 100px;
+              height: 31px;
+              background: #22212B;
+              border-radius: 5px;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 15px;
+              color: #858D99;
+              margin-right: 12px;
+              cursor: pointer;
+              &:hover {
+                background: #375CFF;
+                color: #FFFFFF;
+              }
+            }
+            p {
+              color: #E88080;
+              font-size: 12px;
+              line-height: 15px;
+            }
+          }
+        }
+      }
+      .fun-run-btn {
+        width: 130px;
+        height: 36px;
+        background: #375CFF;
+        border-radius: 5px;
+        font-size: 14px;
+        line-height: 20px;
+        color: #FFFFFF;
+        margin-top: 16px;
+        cursor: pointer;
+      }
+      .not-result {
+        margin-top: 20%;
+        width: 100%;
+        font-size: 12px;
+        line-height: 18px;
+        text-transform: capitalize;
+        color: #858D99;
+        img {
+          width: 32px;
+          margin-right: 8px;
+          height: auto;
+        }
+      }
+      .result-item {
+        .result-item-hd {
+          justify-content: space-between;
+        }
+        .result-name {
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 18px;
+          color: #FFFFFF;
+          font-family: 'Montserrat-Medium';
+        }
+        .result-time {
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 15px;
+          color: #858D99;
+          margin-top: 12px;
+          img {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+          }
+        }
+        .result-hash {
+          font-size: 12px;
+          line-height: 15px;
+          color: #858D99;
+          cursor: pointer;
+          img {
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
+          }
+        }
+        .result-btn {
+          img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+          }
+          height: 30px;
+          padding: 0 12px;
+          background: #22212B;
+          border-radius: 6px;
+          box-sizing: border-box;
+          font-size: 12px;
+          line-height: 15px;
+          text-transform: capitalize;
+          color: #FFFFFF;
+          margin-left: 12px;
+          cursor: pointer;
+        }
+        .result-info {
+          margin-top: 18px;
+          .result-info-item {
+            & ~ .result-info-item {
+              margin-left: 16px;
+            }
+            width: 180px;
+            background: #0D0D0E;
+            border: 1px solid rgba(133, 141, 153, 0.1);
+            border-radius: 5px;
+            height: 27px;
+            padding: 0 2px;
+            box-sizing: border-box;
+            .result-info-item-key {
+              width: 92px;
+              height: 23px;
+              background: #1F1E27;
+              border-radius: 3px;
+              font-size: 10px;
+              text-transform: capitalize;
+              color: #FFFFFF;
+            }
+            .result-info-item-value {
+              flex: 1;
+              font-size: 10px;
+              text-transform: capitalize;
+              color: #858D99;
+            }
+          }
+        }
+        .result-section {
+          margin-top: 18px;
+          font-size: 14px;
+          line-height: 18px;
+          text-transform: capitalize;
+          color: #FFFFFF;
+          .result-section-content {
+            margin-top: 12px;
+            background: #1F1E27;
+            border-radius: 10px;
+            padding: 0 2px 2px;
+            box-sizing: border-box;
+            .result-section-content-hd {
+              padding: 0 18px;
+              height: 40px;
+            }
+            .result-section-content-main {
+              background: #0A0A0C;
+              border-radius: 9px;
+              .result-params {
+                overflow: hidden;
+                transition: all .3s;
+              }
+              .result-param {
+                width: 100%;
+                padding: 0 18px;
+                box-sizing: border-box;
+                height: 40px;
+                border-bottom: 1px solid #1F1E27;
+                font-size: 12px;
+                line-height: 15px;
+                text-transform: capitalize;
+                color: #FFFFFF;
+                .result-param-name {
+                  width: 160px;
+                  margin-right: 10px;
+                }
+                .result-param-value {
+                  width: 410px;
+                  margin-right: 10px;
+                }
+                img {
+                  width: 18px;
+                  height: 18px;
+                  cursor: pointer;
+                }
+              }
+              .result-param-show {
+                background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #0A0A0C 50%);
+                border-radius: 0px 0px 10px 10px;
+                width: 100%;
+                height: 40px;
+                cursor: pointer;
+                img {
+                  width: 16px;
+                  height: 16px;
+                  margin-left: 8px;
+                }
+              }
+            }
+          }
+        }
+        .result-line {
+          width: 100%;
+          height: 1px;
+          background: rgba(133, 141, 153, 0.2);
+          margin: 24px 0;
+        }
+       }
+    }
+  }
+}
+</style>
