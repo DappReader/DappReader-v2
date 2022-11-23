@@ -14,16 +14,28 @@
       <div class="info-item-key">contract address</div>
       <div class="info-item-value flex-center"><span>{{address(contarct.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
     </div>
+    <div class="info-line"></div>
+    <div class="info-item">
+      <div class="info-item-key">contract balance</div>
+      <div class="info-item-value flex-center"><span>{{balance}}</span></div>
+    </div>
   </div>
 </template>
 <script>
-import { computed } from 'vue'
-import { useMessage } from "naive-ui"
+import { computed, watch, ref, toRaw } from 'vue'
+import { useStore } from 'vuex'
+import { ethers } from 'ethers'
+import { useUtils } from '../hooks/useUtils'
+const { copy } = useUtils()
 import { formatDate, formatAddress } from '../libs/utils'
 export default {
   props: ['contarct'],
-  setup() {
-    const message = useMessage()
+  setup(props) {
+    const store = useStore()
+    const balance = ref(0)
+    const provider = computed(() => {
+      return store.state.provider
+    })
     const createAt = computed(() => {
       return (date) => {
         return formatDate('YYYY-mm-dd', date)
@@ -34,21 +46,17 @@ export default {
         return formatAddress(value)
       }
     })
-    const copy = (value, type) => {
-      if (type == 'abi') {
-        value = value.map(e => {
-          delete e.otherName
-          return e
-        })
-        value = JSON.stringify(value)
+    watch(props.contarct, async (val) => {
+      if (val && provider.value) {
+        let balanceEth = await toRaw(provider.value).getBalance(val.address)
+        let balanceInEth = await ethers.utils.formatEther(balanceEth)
+        balance.value = balanceInEth
+      } else {
+        balance.value = 0
       }
-      value = JSON.stringify(value)
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(value)
-        message.success('Copy successful')
-      }
-    }
+    }, {immediate: true})
     return {
+      balance,
       createAt,
       address,
       copy
@@ -89,7 +97,7 @@ export default {
     height: 20px;
     width: 1px;
     background: rgba(133, 141, 153, 0.15);
-    margin: 0 12px;
+    margin: 0 24px;
   }
 }
 </style>

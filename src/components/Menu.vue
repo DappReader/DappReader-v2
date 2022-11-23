@@ -3,10 +3,10 @@
     <div class="logo">
       <img src="@/assets/images/logo.svg" alt="">
     </div>
-    <div class="switch flex-center-center">
+    <!-- <div class="switch flex-center-center">
       <div class="switch-item switch-item-activated flex-center-center">My Contract</div>
       <div class="switch-item flex-center-center">Contract Hub</div>
-    </div>
+    </div> -->
     <div class="add flex-center-sb">
       <div class="add-contract flex-center" @click="showCreateContract">
         <img src="@/assets/images/add_file.svg" alt="">
@@ -313,6 +313,7 @@ export default {
     }
   }
   .add {
+    font-size: 0;
     margin-top: 16px;
     .add-contract {
       padding: 0 16px 0 12px;
@@ -461,6 +462,7 @@ export default {
       box-sizing: border-box;
       z-index: 9;
       .right-menu-item {
+        cursor: pointer;
         width: 192px;
         height: 30px;
         margin: auto;

@@ -9,10 +9,10 @@
     :on-after-leave="afterLeave"
   >
     <div class="form">
-      <n-form-item label="Contract Name *" >
+      <n-form-item show-require-mark label="Contract Name" >
         <n-input v-model:value="formData.name" class="form-input" />
       </n-form-item>
-      <n-form-item label="Contract Chain *" >
+      <n-form-item show-require-mark label="Contract Chain" >
         <n-select
           style="width: 100%"
           class="form-select"
@@ -25,10 +25,10 @@
           value-field="chainId"
         />
       </n-form-item>
-      <n-form-item label="Contract Address *" >
-        <n-input v-model:value="formData.address" class="form-input" />
+      <n-form-item show-require-mark label="Contract Address" >
+        <n-input v-model:value="formData.address" class="form-input" @input="bindInput" />
       </n-form-item>
-      <n-form-item label="Import ABI *" >
+      <n-form-item show-require-mark label="Import ABI" >
         <n-input type="textarea"
             v-if="showAbi || formData.abi"
             size="small"
@@ -60,15 +60,17 @@
             </svg>
             <p>Paste ABI Text</p>
           </div>
-          <div class="import-item flex-center-center" @click="importAbiFromEtherscan">
-            <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path class="stroke" d="M20.9997 25H6.99968C6.35534 25 5.83301 24.4777 5.83301 23.8333L5.83301 5.16667C5.83301 4.52234 6.35534 4 6.99967 4L15.8233 4C16.1483 4 16.4585 4.13556 16.6793 4.37402L21.8557 9.96454C22.0554 10.1802 22.1663 10.4633 22.1663 10.7572L22.1663 23.8333C22.1663 24.4777 21.644 25 20.9997 25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path class="fill" d="M16.8633 15.1364C16.5704 14.8435 16.0956 14.8435 15.8027 15.1364C15.5098 15.4293 15.5098 15.9042 15.8027 16.1971L16.8633 15.1364ZM18.6663 18.0001L19.1967 18.5304C19.4896 18.2375 19.4896 17.7626 19.1967 17.4698L18.6663 18.0001ZM15.8027 19.8031C15.5098 20.096 15.5098 20.5709 15.8027 20.8637C16.0956 21.1566 16.5704 21.1566 16.8633 20.8637L15.8027 19.8031ZM15.8027 16.1971L18.136 18.5304L19.1967 17.4698L16.8633 15.1364L15.8027 16.1971ZM18.136 17.4698L15.8027 19.8031L16.8633 20.8637L19.1967 18.5304L18.136 17.4698Z" fill="#858D99"/>
-              <path class="fill" d="M11.136 20.8637C11.4289 21.1566 11.9038 21.1566 12.1967 20.8637C12.4896 20.5709 12.4896 20.096 12.1967 19.8031L11.136 20.8637ZM9.33301 18.0001L8.80268 17.4698C8.66203 17.6104 8.58301 17.8012 8.58301 18.0001C8.58301 18.199 8.66203 18.3898 8.80268 18.5304L9.33301 18.0001ZM12.1967 16.1971C12.4896 15.9042 12.4896 15.4293 12.1967 15.1364C11.9038 14.8435 11.4289 14.8435 11.136 15.1364L12.1967 16.1971ZM12.1967 19.8031L9.86334 17.4698L8.80268 18.5304L11.136 20.8637L12.1967 19.8031ZM9.86334 18.5304L12.1967 16.1971L11.136 15.1364L8.80268 17.4698L9.86334 18.5304Z" fill="#858D99"/>
-              <path class="stroke" d="M22.167 11L16.3337 11C15.6893 11 15.167 10.4777 15.167 9.83333L15.167 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p>From Etherscan</p>
-          </div>
+          <n-spin :show="showSpin">
+            <div class="import-item flex-center-center" @click="importAbiFromEtherscan">
+              <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="stroke" d="M20.9997 25H6.99968C6.35534 25 5.83301 24.4777 5.83301 23.8333L5.83301 5.16667C5.83301 4.52234 6.35534 4 6.99967 4L15.8233 4C16.1483 4 16.4585 4.13556 16.6793 4.37402L21.8557 9.96454C22.0554 10.1802 22.1663 10.4633 22.1663 10.7572L22.1663 23.8333C22.1663 24.4777 21.644 25 20.9997 25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="fill" d="M16.8633 15.1364C16.5704 14.8435 16.0956 14.8435 15.8027 15.1364C15.5098 15.4293 15.5098 15.9042 15.8027 16.1971L16.8633 15.1364ZM18.6663 18.0001L19.1967 18.5304C19.4896 18.2375 19.4896 17.7626 19.1967 17.4698L18.6663 18.0001ZM15.8027 19.8031C15.5098 20.096 15.5098 20.5709 15.8027 20.8637C16.0956 21.1566 16.5704 21.1566 16.8633 20.8637L15.8027 19.8031ZM15.8027 16.1971L18.136 18.5304L19.1967 17.4698L16.8633 15.1364L15.8027 16.1971ZM18.136 17.4698L15.8027 19.8031L16.8633 20.8637L19.1967 18.5304L18.136 17.4698Z" fill="#858D99"/>
+                <path class="fill" d="M11.136 20.8637C11.4289 21.1566 11.9038 21.1566 12.1967 20.8637C12.4896 20.5709 12.4896 20.096 12.1967 19.8031L11.136 20.8637ZM9.33301 18.0001L8.80268 17.4698C8.66203 17.6104 8.58301 17.8012 8.58301 18.0001C8.58301 18.199 8.66203 18.3898 8.80268 18.5304L9.33301 18.0001ZM12.1967 16.1971C12.4896 15.9042 12.4896 15.4293 12.1967 15.1364C11.9038 14.8435 11.4289 14.8435 11.136 15.1364L12.1967 16.1971ZM12.1967 19.8031L9.86334 17.4698L8.80268 18.5304L11.136 20.8637L12.1967 19.8031ZM9.86334 18.5304L12.1967 16.1971L11.136 15.1364L8.80268 17.4698L9.86334 18.5304Z" fill="#858D99"/>
+                <path class="stroke" d="M22.167 11L16.3337 11C15.6893 11 15.167 10.4777 15.167 9.83333L15.167 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p>From Etherscan</p>
+            </div>
+          </n-spin>
         </div>
       </n-form-item>
       <n-form-item label="Remark">
@@ -103,6 +105,7 @@ export default {
     const formData = ref({})
     const showModal = ref(false)
     const showAbi = ref(false)
+    const showSpin = ref(false)
     const folderIndex = ref(-1)
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const show = () => {
@@ -117,11 +120,11 @@ export default {
       let {abi, address, chainId, name, remark, id = '', createAt = ''} = formData.value
       let chain = chains.filter(e => e.chainId == chainId)[0]
       abi = JSON.parse(abi)
+      let menuList = await getLs('menuList') || []
+      let contractList = await getLs('contractList') || []
+      let openSols = await getLs('openSols') || []
       if (formData.value.id) {
         let info = {name, address, abi, chain, id, remark, createAt}
-        let menuList = await getLs('menuList') || []
-        let contractList = await getLs('contractList') || []
-        let openSols = await getLs('openSols') || []
         for (let i = 0; i < menuList.length; i++) {
           let son = menuList[i].son
           son.forEach((e, index) => {
@@ -166,7 +169,6 @@ export default {
           createAt: new Date().getTime()
         }
         if (folderIndex.value >= 0) {
-          let menuList = await getLs('menuList') || []
           let folderItem = menuList[folderIndex.value]
           let son = folderItem.son || []
           son.push(data)
@@ -176,13 +178,25 @@ export default {
             showModal.value = false
           })
         } else {
-          let contractList = await getLs('contractList') || []
           contractList.push(data)
           setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
             store.commit("setContractList", res)
             showModal.value = false
           })
         }
+        let item = {
+          name: data.id,
+          title: data.name,
+          content: data,
+          result: []
+        }
+        openSols.push(item)
+        setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
+          store.commit("setOpenSols", res)
+          setLs('activeId', data.id).then(rep => {
+            store.commit('setActiveId', rep)
+          })
+        })
       }
     }
     const uploadFile = (e) => {
@@ -197,6 +211,14 @@ export default {
     }
     const handleUpdateValue = () => {
       console.log(formData.value)
+      if (formData.value.address) {
+        importAbiFromEtherscan()
+      }
+    }
+    const bindInput = () => {
+      if (formData.value.chainId && formData.value.address && (formData.value.address.length == 42)) {
+        importAbiFromEtherscan()
+      }
     }
     const importAbiFromEtherscan = async() => {
       let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
@@ -205,13 +227,17 @@ export default {
       } else if (!formData.value.chainId) {
         message.error('Please input contract chain')
       } else {
+        showSpin.value = true
         try {
           let chain = chains.filter(e => e.chainId == formData.value.chainId)[0]
           console.log(chain)
-          let name = ''
-          if (chain.chainId == 42) name = 'kovan' 
-          else if (chain.chainId == 3) name = 'ropsten'
-          let abiData = await fetcher(`https://api${name ? '-' + name : ''}.etherscan.io/api?module=contract&action=getabi&address=${formData.value.address}&apikey=${apiKey}`)
+          let name = 'api'
+          if (chain.chainId == 42) name = 'api-kovan' 
+          else if (chain.chainId == 3) name = 'api-ropsten'
+          else if (chain.chainId == 5) name = 'api-goerli'
+          else if (chain.chainId == 11155111) name = 'api-sepolia'
+          let abiData = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getabi&address=${formData.value.address}&apikey=${apiKey}`)
+          showSpin.value = false
           let result = abiData.result
           if (abiData.status == 0) {
             if (result == 'Contract source code not verified') {
@@ -223,6 +249,7 @@ export default {
             formData.value.abi = result
           }
         } catch (error) {
+          showSpin.value = false
           console.log(error)
           message.error(error)
         }
@@ -239,13 +266,15 @@ export default {
       formData,
       showAbi,
       folderIndex,
+      showSpin,
       uploadFile,
       handleUpdateValue,
       create,
       show,
       afterLeave,
       importAbiFromEtherscan,
-      setFolderIndex
+      setFolderIndex,
+      bindInput
     }
   }
 }

@@ -1,6 +1,9 @@
 import { useMessage } from 'naive-ui'
+import { getLs, setLs } from "@/service/service"
+import { useStore } from 'vuex'
 
 export const useUtils = () => {
+  const store = useStore()
   const message = useMessage()
   const copy = (value, type) => {
     if (type == 'abi') {
@@ -37,8 +40,49 @@ export const useUtils = () => {
     }
     window.open(url)
   }
+
+  const setData = async (info) => {
+    let { id, name} = info
+    let menuList = await getLs('menuList') || []
+    let contractList = await getLs('contractList') || []
+    let openSols = await getLs('openSols') || []
+    for (let i = 0; i < menuList.length; i++) {
+      let son = menuList[i].son
+      son.forEach((e, index) => {
+        if (e.id == id) {
+          son[index] = info
+        }
+      })
+      menuList[i].son = son
+    }
+    contractList.forEach((e, index) => {
+      if (e.id == id) {
+        contractList[index] = info
+      }
+    })
+    openSols.forEach((e, index) => {
+      if (e.name == id) {
+        openSols[index].content = info
+        openSols[index].title = name
+      }
+    })
+    setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
+      console.log(res)
+      store.commit("setOpenSols", res)
+    })
+    setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
+      console.log(res)
+      store.commit("setContractList", res)
+    })
+    setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
+      console.log(res)
+      store.commit("setMenuList", res)
+    })
+  }
+
   return {
     toEtherscanAddress,
-    copy
+    copy,
+    setData
   }
 }

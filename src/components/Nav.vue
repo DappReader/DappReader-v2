@@ -23,7 +23,7 @@
           />
         </div>
       </div>
-      <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">connectWallet</div>
+      <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
     </div>
   </div>
 </template>
