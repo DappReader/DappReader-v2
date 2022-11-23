@@ -95,8 +95,23 @@ $mainColor: #1C42FF;
   flex-direction: column;
 }
 
+.btn {
+  &:hover {
+    background: #375CFF !important;
+  }
+}
+
+.n-modal-mask {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(5px) !important;
+}
+
 .n-tabs .n-tab-pane {
   color: rgba(133, 141, 153, 0) !important;
+}
+
+.n-tabs-pad {
+  display: none !important;
 }
 
 .form-input {
@@ -112,6 +127,7 @@ $mainColor: #1C42FF;
   --n-box-shadow-focus: none !important;
   --n-color-focus: none !important;
   --n-height: 38px !important;
+  transition: all .01s !important;
 }
 
 .form-textarea {
@@ -137,7 +153,6 @@ $mainColor: #1C42FF;
 }
 
 .form {
-  margin-top: 4px;
   border-top: 1px solid rgba(133, 141, 153, 0.2);
   padding-top: 32px;
   box-sizing: border-box;
@@ -164,6 +179,16 @@ $mainColor: #1C42FF;
   }
 }
 
+.custom-card {
+  --n-padding-top: 32px !important;
+  --n-padding-bottom: 32px !important;
+  --n-padding-left: 32px !important;
+  --n-padding-right: 32px !important;
+  .n-card-header {
+    padding-bottom: 24px !important;
+  }
+}
+
 .right-menu-popconfirm {
   .n-button {
     --n-text-color-hover: #fff !important;
@@ -180,12 +205,24 @@ $mainColor: #1C42FF;
   }
 }
 
+.n-tabs-wrapper {
+  background: #0d0d0e !important;
+  border-radius: 10px;
+}
+
 .n-tabs-tab-pad {
-  width: 1px !important;
-  height: 100% !important;
-  background: #1F1E27 !important;
+  display: none !important;
+}
+
+.n-tabs .n-tabs-tab {
+  transition: none !important;
+}
+
+.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab {
+  background: #1F1E27;
+  border-radius: 0px 0px 0px 0px !important;
   position: relative;
-   &::after {
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -195,16 +232,18 @@ $mainColor: #1C42FF;
     left: 0;
     margin: auto;
     background: rgba(133, 141, 153, 0.2);
-   }
+  }
 }
 
 .n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab.n-tabs-tab--active {
   border-radius: 10px 10px 0px 0px !important;
   background: #0D0D0E;
-}
-
-.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab {
-  background: #1F1E27;
+  position: relative;
+  right: -1px;
+  z-index: 9;
+  &::after {
+    display: none !important;
+  }
 }
 
 .n-tabs .n-tabs-nav-scroll-wrapper {
@@ -232,3 +271,10 @@ $mainColor: #1C42FF;
   padding: 20px !important;
 }
 
+.jv-container .jv-more:after {
+  background: linear-gradient(to bottom, rgba(13, 13, 14, .3),rgba(13, 13, 14, 1));
+}
+
+.jv-container .jv-more:hover:after {
+  background: linear-gradient(to bottom, rgba(21, 20, 27, .3),rgba(21, 20, 27, 1));
+}

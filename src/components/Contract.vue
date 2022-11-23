@@ -10,14 +10,17 @@
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
           <div v-if="readFun" class="collapse-item-list">
-            <div v-for="(item, index) in readFun" :key="index" class="collapse-item-fun flex-center" @click="updateAbi(item, 'read')">
+            <div v-for="(item, index) in readFun" :key="index" :class="['collapse-item-fun', 'flex-start', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'read')">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M13.5 12.75C13.5 13.9926 11.4853 15 9 15C6.51472 15 4.5 13.9926 4.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>{{item.name}}</span>
+              <div>
+                <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
+                <p>{{item.name}}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -27,14 +30,15 @@
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
           <div v-if="writeFun" class="collapse-item-list">
-            <div v-for="(item, index) in writeFun" :key="index" class="collapse-item-fun flex-center" @click="updateAbi(item, 'write')">
+            <div v-for="(item, index) in writeFun" :key="index" :class="['collapse-item-fun', 'flex-center', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'write')">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M13.5 12.75C13.5 13.9926 11.4853 15 9 15C6.51472 15 4.5 13.9926 4.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>{{item.name}}</span>
+              <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
+              <p>{{item.name}}</p>
             </div>
           </div>
         </div>
@@ -43,7 +47,7 @@
         <div v-if="abiItem" class="execute">
           <n-spin :show="showSpin">
             <div class="contract-main-content-hd flex-center-sb">
-              <div class="fun-name flex-center">{{abiItem.name}}
+              <div class="fun-name flex-center">{{abiItem.otherName || abiItem.name}} <span v-if="abiItem.otherName">{{abiItem.name}}</span>
                 <div class="edit flex-center">
                   <img src="@/assets/images/note_edit.svg" alt="" @click="() => showPopover = !showPopover">
                   <div class="popover" v-if="showPopover">
@@ -52,8 +56,8 @@
                       <img src="@/assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
                     </div>
                     <div class="popover-input">
-                      <n-input class="form-input popover-input-item" />
-                      <div class="popover-btn flex-center-center">Save</div>
+                      <n-input class="form-input popover-input-item" v-model:value="funOtherName" />
+                      <div class="popover-btn flex-center-center" @click="saveOtherName">Save</div>
                     </div>
                   </div>
                 </div>
@@ -131,14 +135,14 @@
             <div class="fun-run-btn flex-center-center" @click="runFunction(abiItem)">Run</div>
           </n-spin>
         </div>
-        <div v-if="!abiItem" class="result">
+        <div class="result">
           <div v-if="contarctData.result && contarctData.result.length">
             <div v-for="(item, index) in contarctData.result" :key="index" class="result-item">
               <div class="result-item-hd flex-start">
                 <div class="result-item-hd-l">
-                  <div class="result-name">✅ Run function : {{item.name}}</div>
+                  <div class="result-name">{{item.state == 'success' ? '✅' : '❌'}} Run function : {{item.name}}</div>
                   <div class="result-time flex-center"><img src="@/assets/images/time.svg" alt="">
-                    {{createAt(item.createAt)}}  |  <span v-if="item.confirmed">Confirmed within {{item.confirmed}} sec</span> 
+                    {{createAt(item.createAt)}}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed within {{item.confirmed}} sec</span> 
                   </div>
                 </div>
                 <div class="result-item-hd-r flex-center">
@@ -147,7 +151,7 @@
                   <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt="">Resend</div>
                 </div>
               </div>
-              <div class="result-info flex-center">
+              <div  v-if="item.content.hash" class="result-info flex-center">
                 <div class="result-info-item flex-center">
                   <div class="result-info-item-key flex-center-center">Tx Type</div>
                   <div class="result-info-item-value flex-center-center">{{item.content.type == 2 ? "2(EIP-1599)" : "1"}}</div>
@@ -170,14 +174,14 @@
                 <div class="result-section-content">
                   <div class="result-section-content-hd flex-center">{{item.name}}</div>
                   <div class="result-section-content-main">
-                    <div class="result-params" :style="{'max-height': item.showParams ? '300px' : '0'}">
+                    <div class="result-params" :style="{'max-height': !item.showParams ? '300px' : '0'}">
                       <div v-for="(param, index) in item.params" :key="index" class="result-param flex-center">
                         <div class="result-param-name">{{param.key}}</div>
                         <div class="result-param-value">{{param.value}}</div>
                         <img src="@/assets/images/copy.svg" alt="" @click="copy(param.value)">
                       </div>
                     </div>
-                    <div class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show <img src="@/assets/images/arrow.svg" :style="{transform: item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                    <div class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
                   </div>
                 </div>
               </div>
@@ -192,15 +196,16 @@
                     <div class="result-params" :style="{'max-height': event.showEvents ? '300px' : '0'}">
                       <div v-for="(param, i) in eventParam(event.eventSignature)" :key="i" class="result-param flex-center">
                         <div class="result-param-name">{{param}}</div>
-                        <div class="result-param-value">{{event.args[i]}}</div>
-                        <img src="@/assets/images/copy.svg" alt="">
+                        <div v-if="event.isFormatUnits && param == 'uint256'" class="result-param-value">{{formatUnits(event.args[i])}}</div>
+                        <div v-else class="result-param-value">{{event.args[i]}}</div>
+                        <img v-if="param != 'uint256'" src="@/assets/images/copy.svg" alt="" @click="copy(event.args[i])">
+                        <img v-else src="@/assets/images/conversion.svg" alt="" @click="() => event.isFormatUnits = !event.isFormatUnits">
                       </div>
                     </div>
-                    <div class="result-param-show flex-center-center" @click="event.showEvents = !event.showEvents">show <img src="@/assets/images/arrow.svg" alt=""></div>
+                    <div class="result-param-show flex-center-center" @click="event.showEvents = !event.showEvents">show <img src="@/assets/images/arrow.svg" alt="" :style="{transform: event.showEvents ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
                   </div>
                 </div>
               </div>
-              <div class="result-line"></div>
             </div>
           </div>
           <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div>
@@ -230,7 +235,7 @@ export default {
   setup() {
     // const message = useMessage()
     let running = false
-    const { toEtherscanAddress, copy } = useUtils()
+    const { toEtherscanAddress, copy, setData } = useUtils()
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
     const store = useStore()
@@ -245,6 +250,7 @@ export default {
     const networkErrorModal = ref(null)
     const sendInfo = ref({})
     const showSendInfo = ref(false)
+    const funOtherName = ref('')
     const provider = computed(() => {
       return store.state.provider
     })
@@ -269,11 +275,17 @@ export default {
         return formatAddress(value)
       }
     })
+    const formatUnits = computed(() => {
+      return (val) => {
+        return ethers.utils.formatUnits(val, 0);
+      }
+    })
     const eventParam = computed(() => {
       return (val) => {
         val.match(/\((.+)\)/g)[0]
         let arrStr = RegExp.$1
-        return arrStr.split(',')
+        let arr = arrStr.split(',')
+        return arr
       }
     })
     const hiddenPopover = () => {
@@ -342,7 +354,8 @@ export default {
         resultData = {
           content: tx,
           state: resultState,
-          formData: parameData.value,
+          parameData: parameData.value,
+          formData: Object.assign(parameData.value, sendInfo.value),
           sendInfo: sendInfo.value,
           funData: abiItem,
           name: abiItem.name,
@@ -413,8 +426,27 @@ export default {
     const resend = (item) => {
       console.log(item)
       updateAbi(item.funData)
-      parameData.value = item.formData
+      if (item.parameData) {
+        parameData.value = item.parameData  
+      } else {
+        parameData.value = item.formData  
+      }
       sendInfo.value = item.sendInfo
+    }
+
+    const saveOtherName = () => {
+      let contarct = contarctData.value.content
+      let abi = contarct.abi
+      let fun = abiItem.value
+      for (let i = 0; i < abi.length; i++) {
+        if (abi[i].name == fun.name) {
+          abi[i].otherName = funOtherName.value
+        }
+      }
+      contarct.abi = abi
+      setData(contarct)
+      hiddenPopover()
+      // this.$emit("updateSol", sol);
     }
 
     watch(activeId, async () => {
@@ -431,6 +463,7 @@ export default {
       getContarctData()
     }, {deep: true})
     return {
+      funOtherName,
       showSendInfo,
       sendInfo,
       networkErrorModal,
@@ -452,7 +485,9 @@ export default {
       runFunction,
       switchChainFun,
       init,
-      resend
+      resend,
+      formatUnits,
+      saveOtherName
     }
   }
 }
@@ -505,8 +540,8 @@ export default {
         .collapse-item-list {
           margin-top: 10px;
           .collapse-item-fun {
-            height: 32px;
-            padding: 0 4px;
+            min-height: 32px;
+            padding: 7px 4px;
             box-sizing: border-box;
             cursor: pointer;
             &:hover {
@@ -517,20 +552,38 @@ export default {
                   stroke: #375CFF;
                 }
               }
-              span {
+              p {
                 color: #375CFF;
               }
+            }
+            &.collapse-item-fun-activated {
+              background: rgba(55, 92, 255, 0.1);
+                border-radius: 6px;
+                svg {
+                  path {
+                    stroke: #375CFF;
+                  }
+                }
+                p {
+                  color: #375CFF;
+                }
             }
             svg {
               width: 18px;
               height: 18px;
             }
-            span {
+            p {
               font-weight: 400;
               font-size: 12px;
               line-height: 18px;
               color: #FFFFFF;
               margin-left: 12px;
+              &.other-name {
+                font-size: 14px;
+                line-height: 18px;
+                font-family: Montserrat-Medium;
+                margin-bottom: 2px;
+              }
             }
           }
         }
@@ -538,9 +591,7 @@ export default {
     }
     .contract-main-content {
       margin-left: 16px;
-      padding: 20px;
       box-sizing: border-box;
-      border: 1px solid rgba(133, 141, 153, 0.2);
       border-radius: 10px;
       flex: 1;
       height: 100%;
@@ -564,6 +615,13 @@ export default {
         line-height: 18px;
         color: #FFFFFF;
         position: relative;
+        span {
+          margin: 0 12px;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 15px;
+          color: #858D99;
+        }
         img {
           width: 18px;
           height: 18px;
@@ -744,7 +802,21 @@ export default {
           height: auto;
         }
       }
+      .execute {
+        border: 1px solid rgba(133, 141, 153, 0.2);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 24px;
+      }
       .result-item {
+        padding: 20px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        border: 1px solid rgba(133, 141, 153, 0.2);
+        margin-bottom: 24px;
+        &.result-item:last-child {
+          margin-bottom: 0px;
+        }
         .result-item-hd {
           justify-content: space-between;
         }
@@ -840,7 +912,7 @@ export default {
             box-sizing: border-box;
             .result-section-content-hd {
               padding: 0 18px;
-              height: 40px;
+              height: 30px;
             }
             .result-section-content-main {
               background: #0A0A0C;
@@ -859,6 +931,9 @@ export default {
                 line-height: 15px;
                 text-transform: capitalize;
                 color: #FFFFFF;
+                &:last-child {
+                  border-bottom: none;
+                }
                 .result-param-name {
                   width: 160px;
                   margin-right: 10px;
@@ -877,8 +952,9 @@ export default {
                 background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #0A0A0C 50%);
                 border-radius: 0px 0px 10px 10px;
                 width: 100%;
-                height: 40px;
+                height: 20px;
                 cursor: pointer;
+                font-size: 0px;
                 img {
                   width: 16px;
                   height: 16px;
@@ -887,12 +963,6 @@ export default {
               }
             }
           }
-        }
-        .result-line {
-          width: 100%;
-          height: 1px;
-          background: rgba(133, 141, 153, 0.2);
-          margin: 24px 0;
         }
        }
     }

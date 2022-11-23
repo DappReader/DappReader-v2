@@ -3,27 +3,27 @@
     <div class="hd-section flex-center-sb">
       <div class="title">{{contarct.name}}</div>
       <div class="hd-btns flex-center">
-        <div class="hd-btn-item flex-center-center" @click="copy(contarct.abi, 'abi')">
+        <div class="hd-btn-item flex-center-center btn" @click="copy(contarct.abi, 'abi')">
           <img src="@/assets/images/copy.svg" alt="">
           <span>Copy ABI</span>
         </div>
-        <div class="hd-btn-item flex-center-center" @click="toEtherscanAddress(contarct.address, contarct.chain)">
+        <div class="hd-btn-item flex-center-center btn" @click="toEtherscanAddress(contarct.address, contarct.chain)">
           <img src="@/assets/images/show.svg" alt="">
           <span>View Etherscan</span>
         </div>
-        <div class="hd-btn-item flex-center-center">
+        <div class="hd-btn-item flex-center-center btn">
           <img src="@/assets/images/share.svg" alt="">
           <span>Share</span>
         </div>
-        <div class="hd-btn-item flex-center-center" @click="del">
+        <div class="hd-btn-item flex-center-center btn" @click="del">
           <img src="@/assets/images/trash.svg" alt="">
           <span>Delete</span>
         </div>
-        <div class="hd-btn-item flex-center-center" @click="edit">
+        <div class="hd-btn-item flex-center-center btn" @click="edit">
           <img src="@/assets/images/edit.svg" alt="">
           <span>Edit</span>
         </div>
-        <div class="hd-btn-item flex-center-center">
+        <div class="hd-btn-item flex-center-center btn">
           <img src="@/assets/images/arrow_reload.svg" alt="">
           <span>Switch Network</span>
         </div>

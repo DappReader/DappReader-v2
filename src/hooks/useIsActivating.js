@@ -2,7 +2,7 @@
 import { useStore } from 'vuex'
 import { connectWallet } from '../libs/connectWallet'
 import {chains} from '../libs/chains'
-
+import { toRaw } from 'vue'
 import { ethers } from 'ethers'
 export const useIsActivating = () => {
   const store = useStore()
@@ -10,7 +10,7 @@ export const useIsActivating = () => {
   const getProvider = async(init) => {
     try {
       provider = await connectWallet(init)
-      store.commit('setProvider', provider)
+      store.commit('setProvider', toRaw(provider))
       getWallet()
       getNetwork()
     } catch (error) {
@@ -23,7 +23,7 @@ export const useIsActivating = () => {
     let network = await provider.getNetwork()
     let networkData = chains.filter(e => network.chainId == e.chainId)[0]
     network.name = networkData.name
-    store.commit('setNetwork', network)
+    store.commit('setNetwork', toRaw(network))
   }
 
   const getWallet = async() => {
@@ -36,7 +36,7 @@ export const useIsActivating = () => {
         provider.getBalance(address).then(res => {
           let balance = res
           let balanceInEth = ethers.utils.formatEther(balance)
-          store.commit('setBalance', balanceInEth)
+          store.commit('setBalance', toRaw(balanceInEth))
         })
       } catch (error) {
         console.error(error)
