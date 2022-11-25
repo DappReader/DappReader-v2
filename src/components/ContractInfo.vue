@@ -26,13 +26,13 @@ import { computed, watch, ref, toRaw } from 'vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { useUtils } from '../hooks/useUtils'
-const { copy } = useUtils()
 import { formatDate, formatAddress } from '../libs/utils'
 export default {
   props: ['contarct'],
   setup(props) {
     const store = useStore()
     const balance = ref(0)
+    const { copy } = useUtils()
     const provider = computed(() => {
       return store.state.provider
     })

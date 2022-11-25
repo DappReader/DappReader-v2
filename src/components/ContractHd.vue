@@ -11,7 +11,7 @@
           <img src="@/assets/images/show.svg" alt="">
           <span>View Etherscan</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn">
+        <div class="hd-btn-item flex-center-center btn" @click="share">
           <img src="@/assets/images/share.svg" alt="">
           <span>Share</span>
         </div>
@@ -31,33 +31,40 @@
     </div>
     <div class="desc">{{contarct.remark}}</div>
     <CreateContract ref="createContract" />
+    <ShareModal ref="shareModal" :contract="contarctData" />
   </div>
 </template>
 <script>
 import { ref } from 'vue'
 import { useUtils } from '../hooks/useUtils'
 import CreateContract from '@/components/CreateContract.vue'
+import ShareModal from '@/components/ShareModal.vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from "@/service/service";
 import { useDialog } from "naive-ui"
 export default {
   props: ['contarct'],
   components: {
-    CreateContract
+    CreateContract,
+    ShareModal
   },
   setup(props) {
     const store = useStore()
     const dialog = useDialog()
     const createContract = ref(null)
+    const shareModal = ref(null)
+    const contarctData = ref(props.contarct)
     const { toEtherscanAddress, copy } = useUtils()
     const edit = () => {
-      console.log(props.contarct)
       let { abi, address, chain, createAt, id, name } = props.contarct
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
       let formData = {abi, address, chainId, createAt, id, name}
       createContract.value.show()
       createContract.value.formData = formData
+    }
+    const share = () => {
+      shareModal.value.showModal = true
     }
     const del = () => {
       dialog.warning({
@@ -112,10 +119,13 @@ export default {
       })
     }
     return {
+      contarctData,
       createContract,
       del,
+      shareModal,
       edit,
       copy,
+      share,
       toEtherscanAddress
     }
   }
@@ -129,8 +139,15 @@ export default {
       font-size: 30px;
       line-height: 40px;
       color: #FFFFFF;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .hd-btns {
+      width: 754px;
+      flex: 0 0 754px;
+      margin-left: 20px;
       .hd-btn-item {
         font-weight: 400;
         font-size: 13px;

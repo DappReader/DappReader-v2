@@ -48,7 +48,7 @@
           </div>
           <div class="folder-file" v-show="item.open">
             <div class="file-item-w" v-for="(file, i) in item.son" :key="file.id" @contextmenu.prevent.stop="fileContextmenu(file.id)">
-              <div class="file-item file-item-activated flex-center" @click.stop="openFile(file)">
+              <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
                 <svg width="16" height="18" class="file-arrow" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 0V5.2C9 6.88016 9 7.72024 9.32698 8.36197C9.6146 8.92646 10.0735 9.3854 10.638 9.67302C11.2798 10 12.1198 10 13.8 10H16" stroke-width="1.5"/>
                 </svg>
@@ -78,7 +78,7 @@
       </div>
       <div class="file-list">
         <div v-for="(file, index) in contractList" :key="file.id" class="file-item-w" @contextmenu.prevent="fileContextmenu(file.id)">
-          <div class="file-item flex-center" @click.stop="openFile(file)">
+          <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
             <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -126,6 +126,9 @@ export default {
     const fileContextmenuId = ref('')
     const folderContextmenuIndex = ref(-1)
     const openFolderIndex = ref(-1)
+    const activeId = computed(() => {
+      return store.state.activeId
+    })
     const menuList = computed(() => {
       return store.state.menuList
     })
@@ -250,6 +253,7 @@ export default {
       }
     })
     return {
+      activeId,
       openFolderIndex,
       menuList,
       addFolder,
