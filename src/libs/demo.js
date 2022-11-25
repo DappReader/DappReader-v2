@@ -2,13 +2,7 @@ export const demo = {
   address: "0x89de39F47236522D6552131b81aD14bABDBCBf67",
   remark: "这是一个测试合约,由DappReader团队提供",
   name: "测试通用合约",
-  id: "0x08A491103Cf5e52A64bbd76cfC8A25C02be36dE9",
-  createAt: new Date(),
-  chain: {
-    chainId: "4",
-    chainName: "Rinkeby",
-    coinName: "ETH"
-  },
+  chainId: 5,
   abi: [
     {
       "inputs": [],
