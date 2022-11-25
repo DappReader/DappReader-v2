@@ -37,8 +37,10 @@
                 <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
-              <p>{{item.name}}</p>
+              <div>
+                <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
+                <p>{{item.name}}</p>
+              </div>
             </div>
           </div>
         </div>

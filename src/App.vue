@@ -12,7 +12,9 @@ import { useStore } from 'vuex'
 import { onMounted, computed } from 'vue'
 import { useIsActivating } from './hooks/useIsActivating'
 import { darkTheme } from 'naive-ui'
-import { getLs } from '@/service/service'
+import { getLs, setLs } from '@/service/service'
+import { demo } from './libs/demo'
+import { chains } from './libs/chains'
 export default {
   setup() {
     const store = useStore()
@@ -39,10 +41,38 @@ export default {
       })
     }
     const getData = async () => {
+      let inited = localStorage.inited || false
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
       let openSols = await getLs('openSols') || []
       let activeId = await getLs('activeId') || ''
+      if (!inited) {
+        let { abi, address, chainId, name, remark} = demo
+        let chain = chains.filter(e => e.chainId == chainId)[0]
+        let demoData = {
+          abi,
+          address,
+          chain,
+          name,
+          remark,
+          id: `${address}${new Date().getTime()}`,
+          createAt: new Date().getTime()
+        }
+        console.log(contractList)
+        contractList.push(demoData)
+        activeId = demoData.id
+        let item = {
+          name: demoData.id,
+          title: demoData.name,
+          content: demoData,
+          result: []
+        }
+        openSols.push(item)
+        await setLs('contractList', JSON.parse(JSON.stringify(contractList)))
+        await setLs('openSols', JSON.parse(JSON.stringify(openSols)))
+        await setLs('activeId', activeId)
+        localStorage.setItem('inited', 'inited')
+      }
       store.commit("setActiveId", activeId)
       store.commit("setOpenSols", openSols)
       store.commit("setMenuList", menuList)
