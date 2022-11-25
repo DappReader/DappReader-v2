@@ -9,7 +9,7 @@
     :on-after-leave="afterLeave"
   >
     <div class="form">
-      <n-form-item label="Folder Name *" :rule="rule">
+      <n-form-item show-require-mark label="Folder Name" :rule="rule">
         <n-input v-model:value="floderName" class="form-input" />
       </n-form-item>
       <div class="form-btns flex-center-center">

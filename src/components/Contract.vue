@@ -69,7 +69,7 @@
               <div class="parame-item" v-for="(inputItem, index) in abiItem.inputs" :key="index">
                 <div class="parame-item-hd flex-center-sb">
                   <div class="parame-name flex-center">{{inputItem.name}} <span>Data type: {{inputItem.type}}</span></div>
-                  <div v-if="inputItem.type == 'uint256'" class="conversion flex-center">
+                  <div v-if="inputItem.type == 'uint256'" class="conversion flex-center" @click="showConvert('parameData', inputItem.name)">
                     <span>Digital Conversion</span>
                     <img src="@/assets/images/conversion.svg" alt="">
                   </div>
@@ -87,8 +87,8 @@
                 />
                 <n-input v-else class="form-input" v-model:value="parameData[inputItem.name]" />
                 <div v-if="inputItem.type == 'uint256' && parameData[inputItem.name] && (parameData[inputItem.name] % 1 != 0)" class="wei-btns flex-center">
-                  <div class="wei-btn flex-center-center">ToWei(10^18)</div>
-                  <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                  <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 18)">ToWei(10^18)</div>
+                  <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 9)">ToGwei(10^9)</div>
                   <p>invalid number, please use digital conversion </p>
                 </div>
               </div>
@@ -99,30 +99,30 @@
                 <div class="parame-item">
                   <div class="parame-item-hd flex-center-sb">
                     <div class="parame-name flex-center">Value <span>The contract is executed with the quantity of ETH</span></div>
-                    <div class="conversion flex-center">
+                    <div class="conversion flex-center" @click="showConvert('sendInfo', 'value')">
                       <span>Digital Conversion</span>
                       <img src="@/assets/images/conversion.svg" alt="">
                     </div>
                   </div>
                   <n-input class="form-input" v-model:value="sendInfo.value" />
                   <div v-if="sendInfo.value && (sendInfo.value % 1 != 0)" class="wei-btns flex-center">
-                    <div class="wei-btn flex-center-center">ToWei(10^18)</div>
-                    <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                    <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'value', 18)">ToWei(10^18)</div>
+                    <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'value', 9)">ToGwei(10^9)</div>
                     <p>invalid number, please use digital conversion </p>
                   </div>
                 </div>
                 <div class="parame-item">
                   <div class="parame-item-hd flex-center-sb">
                     <div class="parame-name flex-center">GasPrice</div>
-                    <div class="conversion flex-center">
+                    <div class="conversion flex-center" @click="showConvert('sendInfo', 'gasPrice')">
                       <span>Digital Conversion</span>
                       <img src="@/assets/images/conversion.svg" alt="">
                     </div>
                   </div>
                   <n-input class="form-input" v-model:value="sendInfo.gasPrice" />
                   <div v-if="sendInfo.gasPrice && (sendInfo.gasPrice % 1 != 0)" class="wei-btns flex-center">
-                    <div class="wei-btn flex-center-center">ToWei(10^18)</div>
-                    <div class="wei-btn flex-center-center">ToGwei(10^9)</div>
+                    <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'gasPrice', 18)">ToWei(10^18)</div>
+                    <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'gasPrice', 9)">ToGwei(10^9)</div>
                     <p>invalid number, please use digital conversion </p>
                   </div>
                 </div>
@@ -213,12 +213,14 @@
       </div>
     </div>
     <NetworkErrorModal v-if="contarctData && contarctData.content" :chain="contarctData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
+    <ConversionModal ref="conversionModal" @convert="convert" />
   </div>
 </template>
 <script>
 import ContractHd from '@/components/ContractHd.vue'
 import ContractInfo from '@/components/ContractInfo.vue'
 import NetworkErrorModal from '@/components/NetworkErrorModal.vue'
+import ConversionModal from '@/components/ConversionModal.vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw } from 'vue'
@@ -230,11 +232,14 @@ import { useUtils } from '../hooks/useUtils'
 import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
 import { contract } from "../libs/connectWallet"
+import { useMessage } from "naive-ui"
 export default {
-  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal },
+  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal, ConversionModal },
   setup() {
-    // const message = useMessage()
+    let toWeiData = ''
+    let toWeiType = ''
     let running = false
+    const message = useMessage()
     const { toEtherscanAddress, copy, setData } = useUtils()
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
@@ -248,6 +253,7 @@ export default {
     const parameData = ref({})
     const abiType = ref('')
     const networkErrorModal = ref(null)
+    const conversionModal = ref(null)
     const sendInfo = ref({})
     const showSendInfo = ref(false)
     const funOtherName = ref('')
@@ -449,6 +455,37 @@ export default {
       // this.$emit("updateSol", sol);
     }
 
+    const showConvert = (data, type) => {
+      toWeiData = data
+      toWeiType = type
+      conversionModal.value.show()
+    }
+
+    const toWei = (data, type, decimals) => {
+      try {
+        if (data == 'sendInfo') {
+          sendInfo.value[type] = ethers.utils.parseUnits(sendInfo.value[type].toString(), decimals).toString()
+        } else if (data == 'parameData') {
+          parameData.value[type] = ethers.utils.parseUnits(parameData.value[type].toString(), decimals).toString()
+        }
+      } catch (error) {
+        message.error(error)
+      }
+    }
+
+    const convert = (e) => {
+      let decimals = e
+      console.log(e)
+      if (toWeiData == 'sendInfo') {
+        sendInfo.value[toWeiType] = ethers.utils.parseUnits(sendInfo.value[toWeiType].toString(), decimals).toString()
+      } else if (toWeiData == 'parameData') {
+        parameData.value[toWeiType] = ethers.utils.parseUnits(parameData.value[toWeiType].toString(), decimals).toString()
+      }
+      conversionModal.value.showModal = false
+      toWeiData = ''
+      toWeiType = ''
+    }
+
     watch(activeId, async () => {
       getContarctData()
     }, {immediate: true})
@@ -463,6 +500,7 @@ export default {
       getContarctData()
     }, {deep: true})
     return {
+      conversionModal,
       funOtherName,
       showSendInfo,
       sendInfo,
@@ -487,7 +525,10 @@ export default {
       init,
       resend,
       formatUnits,
-      saveOtherName
+      saveOtherName,
+      toWei,
+      convert,
+      showConvert
     }
   }
 }

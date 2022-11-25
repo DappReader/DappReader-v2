@@ -50,7 +50,7 @@ export default {
       let index = openSols.findIndex(e => e.name == id)
       openSols.splice(index, 1)
       if (openSols.length) {
-        update(openSols[index - 1].name)
+        update(openSols[0].name)
       }
       setLs('openSols', openSols).then(res => {
         store.commit("setOpenSols", res)
@@ -85,6 +85,7 @@ export default {
   flex: 1;
   height: 100vh;
   background: #0D0D0E;
+  width: calc(100vw - 248px);
   .not-sol {
     height: calc(100vh - 70px);
     width: 100%;
