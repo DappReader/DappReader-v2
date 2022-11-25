@@ -11,11 +11,13 @@ export const useUtils = () => {
         delete e.otherName
         return e
       })
+      console.log(value)
       value = JSON.stringify(value)
+    } else {
+      value = JSON.stringify(value)
+      let reg = /^["|'](.*)["|']$/g
+      value = value.replace(reg,"$1")
     }
-    value = JSON.stringify(value)
-    let reg = /^["|'](.*)["|']$/g
-    value = value.replace(reg,"$1")
     if (navigator.clipboard) {
       navigator.clipboard.writeText(value)
       message.success('Copy successful')
