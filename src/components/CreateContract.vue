@@ -9,7 +9,7 @@
     :on-after-leave="afterLeave"
   >
     <div class="form">
-      <n-form-item show-require-mark label="Contract Name" >
+      <n-form-item show-require-mark label="Contract Name">
         <n-input v-model:value="formData.name" class="form-input" />
       </n-form-item>
       <n-form-item show-require-mark label="Contract Chain" >

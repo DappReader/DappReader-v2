@@ -1,11 +1,32 @@
 <template>
   <div class="content">
     <Nav />
-    <n-tabs
+    <div v-if="openSols && openSols.length">
+      <div class="tabs-w">
+        <div class="tbas flex-center">
+          <div v-for="(item, index) in openSols" :key="item.name" :class="['tab-item', activeId == item.name ? 'tab-item-activated' : '', index == activeIndex - 1 ? 'tab-item-activated-prev' : '']" @click="update(item.name)">
+            <div class="tab-item-content flex-center-sb">
+              <span>{{item.title}}</span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="handleClose(item.name)">
+                <path d="M10 10L2 2" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 2L2 10" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <div class="pane" v-for="item in openSols" :key="item.name">
+        <Contract v-if="activeId == item.name" :contract="item" />
+      </div>
+    </div>
+    
+    <!-- <n-tabs
       v-if="openSols && openSols.length"
       v-model:value="activeId"
       type="card"
-      tab-style="min-width: 100px;border: none;height: 40px"
+      tab-style="width: 140px;border: none;height: 40px;"
       @close="handleClose"
       style="height: calc(100vh - 30px);margin-top: -40px;width: 100%"
       @update:value="update"
@@ -19,7 +40,7 @@
       >
         <Contract :contract="item" />
       </n-tab-pane>
-    </n-tabs>
+    </n-tabs> -->
     <div v-else class="not-sol flex-center-center"><img src="@/assets/images/left.png" alt=""> Please select the contract on the left and execute</div>
   </div>
 </template>
@@ -27,7 +48,7 @@
 <script>
 import Nav from '@/components/Nav.vue'
 import Contract from '@/components/Contract.vue'
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useStore } from 'vuex'
 import { setLs, getLs } from '@/service/service'
 // import { useMessage } from "naive-ui"
@@ -36,6 +57,7 @@ export default {
   components: { Nav, Contract },
   setup() {
     const store = useStore()
+    const activeIndex = ref(-1)
     // const message = useMessage()
     const openSols = computed(() => {
       console.log(store.state.openSols)
@@ -57,20 +79,21 @@ export default {
       })
     }
     const update = (id) => {
-      console.log(1)
       let index = openSols.value.findIndex(e => e.name == id)
-      let el = document.querySelector('.v-x-scroll')
-      let el1 = el.querySelectorAll('.n-tabs-tab-wrapper')[index]
-      let offsetWidth = el1.offsetWidth
+      let el = document.querySelector('.tabs-w')
+      let el1 = el.querySelectorAll('.tab-item')[index]
       let scrollLeft = el1.offsetLeft
       const containWidth = el.offsetWidth
-      let resultSpot = scrollLeft + offsetWidth / 2 - containWidth / 2 
+      console.log(scrollLeft, containWidth)
+      let resultSpot = scrollLeft - 248 + 70 - containWidth / 2 
+      activeIndex.value = index
       el.scrollTo((resultSpot + 50), 100)
       setLs('activeId', id).then(res => {
         store.commit('setActiveId', res)
       })
     }
     return {
+      activeIndex,
       openSols,
       activeId,
       handleClose,
@@ -86,6 +109,103 @@ export default {
   height: 100vh;
   background: #0D0D0E;
   width: calc(100vw - 248px);
+  .tabs-w {
+    max-width: 40%;
+    overflow-x: auto;
+    margin-top: -40px;
+    scrollbar-width: none;
+    border-radius: 0px 10px 0px 0px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .tbas {
+    height: 40px;
+    .tab-item {
+      flex: 0 0 140px;
+      cursor: pointer;
+      position: relative;
+      svg {
+        display: none;
+      }
+      .tab-item-content {
+        position: relative;
+        background: #1F1E27;
+        z-index: 1;
+        width: 140px;
+        height: 40px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        font-family: 'Montserrat-Medium';
+        font-size: 13px;
+        line-height: 16px;
+        color: #858D99;
+      }
+      &::before {
+        content: '';
+        width: 1px;
+        height: 12px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        z-index: 2;
+        background: rgba(133, 141, 153, 0.2);
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 0;
+        background: linear-gradient( to bottom, #1F1E27 40%, #0D0D0E 60%);
+      }
+      &:hover {
+        .tab-item-content {
+          background: #2A2A32;
+          border-radius: 10px 10px 0px 0px;
+          color: #FFFFFF;
+          svg {
+            display: inline-block;
+          }
+        }
+      }
+      &:last-child {
+        &::before {
+          display: none;
+        }
+      }
+      &.tab-item-activated {
+        &::before {
+          display: none;
+        }
+        .tab-item-content {
+          color: #FFFFFF;
+          background: #0D0D0E;
+          border-radius: 10px 10px 0px 0px;
+          svg {
+            display: inline-block;
+          }
+        }
+        & + .tab-item {
+          .tab-item-content {
+            border-radius: 0px 0px 0px 10px;
+          }
+        }
+      }
+      &.tab-item-activated-prev {
+        &::before {
+          display: none;
+        }
+        .tab-item-content {
+          border-radius: 0px 0px 10px 0px;
+        }
+      }
+    }
+  }
   .not-sol {
     height: calc(100vh - 70px);
     width: 100%;

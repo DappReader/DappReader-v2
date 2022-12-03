@@ -160,6 +160,9 @@ export default {
         border-radius: 10px;
         cursor: pointer;
         margin-left: 12px;
+        &:hover {
+          background: #302E38 !important;
+        }
         img {
           width: 20px;
           height: 20px;

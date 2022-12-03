@@ -28,6 +28,7 @@
             <div v-if="folderContextmenuIndex == index" class="right-menu">
               <div class="right-menu-item flex-center" @click="folderStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
               <div class="right-menu-item flex-center" @click.stop="showCreateContract(index)"><img src="@/assets/images/add.svg" alt="">Add Contract</div>
+              <div class="right-menu-item flex-center" @click.stop="showRename(index, item.name)"><img src="@/assets/images/edit.svg" alt="">Rename</div>
               <n-popconfirm :show-icon="false"
                 class="right-menu-popconfirm"
                 negative-text="Cancel"
@@ -60,6 +61,7 @@
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
+                <div class="right-menu-item flex-center" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
                 <n-popconfirm :show-icon="false"
                   class="right-menu-popconfirm"
                   negative-text="Cancel"
@@ -87,6 +89,7 @@
           </div>
           <div class="right-menu" v-if="file.id == fileContextmenuId">
             <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
+            <div class="right-menu-item flex-center" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
             <n-popconfirm :show-icon="false"
               class="right-menu-popconfirm"
               negative-text="Cancel"
@@ -148,6 +151,14 @@ export default {
       createContract.value.show()
       hiddenRightMenu()
     }
+    const showRename = ((index, name) => {
+      if (index >= 0) {
+        addFolder.value.folderIndex = index
+        addFolder.value.floderName = name
+      }
+      addFolder.value.show()
+      hiddenRightMenu()
+    })
     const folderContextmenu = (index) => {
       folderContextmenuIndex.value = index
     }
@@ -189,6 +200,17 @@ export default {
         contractList.unshift(item[0])
         setContractList(contractList)
       }
+    }
+    const edit = (contarct, index, folderIndex) => {
+      let { abi, address, chain, createAt, id, name } = contarct
+      let chainId = chain.chainId
+      abi = JSON.stringify(abi)
+      let formData = {abi, address, chainId, createAt, id, name}
+      createContract.value.formData = formData
+      if (folderIndex >= 0) {
+        createContract.value.setFolderIndex(folderIndex)
+      }
+      createContract.value.show()
     }
     const delFile = async (index, folderIndex) => {
       let openSols = await getLs('openSols') || []
@@ -266,8 +288,10 @@ export default {
       hiddenRightMenu,
       fileContextmenu,
       showCreateContract,
+      showRename,
       folderStickyTop,
       fileStickyTop,
+      edit,
       delFolder,
       delFile,
       openFile
@@ -380,6 +404,7 @@ export default {
           margin: 0 12px;
           flex: 1;
           font-family: 'Montserrat-Medium';
+          white-space: nowrap;
           span {
             color: #858D99;
             margin: 0;

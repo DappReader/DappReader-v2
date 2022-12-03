@@ -5,7 +5,7 @@
     class="custom-card"
     preset="card"
     :style="{width: '600px',background: '#15141B', 'border-radius': '10px'}"
-    title="New Folder"
+    :title="title"
     :on-after-leave="afterLeave"
   >
     <div class="form">
@@ -29,37 +29,51 @@ export default {
     const store = useStore()
     const floderName = ref('')
     const showModal = ref(false)
+    const title = ref('New Folder')
+    const folderIndex = ref(-1)
     const rule = {
-        trigger: ["input", "blur"],
-        validator() {
-          if (!floderName.value) {
-            return new Error('Please input the folder name')
-          }
+      trigger: ["input", "blur"],
+      validator() {
+        if (!floderName.value) {
+          return new Error('Please input the folder name')
+        } else if (floderName.value.length > 12) {
+          return new Error('max 12')
         }
       }
+    }
     const show = () => {
       showModal.value = true
     }
     const create = async () => {
-      if (!floderName.value) return
+      if (!floderName.value || floderName.value.length > 12) return
       let menuList = await getLs('menuList') || []
-      let data = {
-        son: [],
-        name: floderName.value
+      if (folderIndex.value >= 0) {
+        menuList[folderIndex.value].name = floderName.value
+        setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
+          store.commit("setMenuList", res)
+          showModal.value = false
+        })
+      } else {
+        let data = {
+          son: [],
+          name: floderName.value
+        }
+        menuList.push(data)
+        setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
+          store.commit("setMenuList", res)
+          showModal.value = false
+        })
       }
-      menuList.push(data)
-      setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
-        store.commit("setMenuList", res)
-        showModal.value = false
-      })
     }
     const afterLeave = () => {
       floderName.value = ''
     }
     return {
+      title,
       showModal,
       floderName,
       rule,
+      folderIndex,
       create,
       show,
       afterLeave

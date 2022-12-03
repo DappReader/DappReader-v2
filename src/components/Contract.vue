@@ -4,12 +4,12 @@
     <ContractInfo v-if="contarctData" :contarct="contarctData.content" />
     <div class="contract-main flex-start">
       <div class="collapse">
-        <div class="collapse-item">
-          <div class="collapse-item-hd flex-center-sb">
+        <div class="collapse-item" @click="() => showType = 'readFun'" :style="{'height': showType == 'readFun' ? 'calc(100% - 96px)' : '66px'}">
+          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'readFun' ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/read.svg" alt=""><span>Read function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
-          <div v-if="readFun" class="collapse-item-list">
+          <div v-if="readFun" class="collapse-item-list" @click.stop>
             <div v-for="(item, index) in readFun" :key="index" :class="['collapse-item-fun', 'flex-start', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'read')">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
@@ -24,12 +24,12 @@
             </div>
           </div>
         </div>
-        <div class="collapse-item">
-          <div class="collapse-item-hd flex-center-sb">
+        <div class="collapse-item" @click="() => showType = 'writeFun'" :style="{'height': showType == 'writeFun' ? 'calc(100% - 96px)' : '66px'}">
+          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'writeFun' ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/write.svg" alt=""><span>Write function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
-          <div v-if="writeFun" class="collapse-item-list">
+          <div v-if="writeFun" class="collapse-item-list" @click.stop>
             <div v-for="(item, index) in writeFun" :key="index" :class="['collapse-item-fun', 'flex-center', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'write')">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.5 12.75L4.5 5.25M13.5 5.25L13.5 12.75" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
@@ -183,12 +183,12 @@
                         <img src="@/assets/images/copy.svg" alt="" @click="copy(param.value)">
                       </div>
                     </div>
-                    <div class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                    <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
                   </div>
                 </div>
               </div>
               <div class="result-section">
-                <JsonViewer :value="(item && item.content) || ''" copyable boxed sort theme="dark" />
+                <JsonViewer :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" />
               </div>
               <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
                 <div class="result-section-title">event list</div>
@@ -502,6 +502,7 @@ export default {
       getContarctData()
     }, {deep: true})
     return {
+      showType: ref('readFun'),
       conversionModal,
       funOtherName,
       showSendInfo,
@@ -548,8 +549,7 @@ export default {
     .collapse {
       width: 220px;
       height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       scrollbar-width: none;
       -ms-overflow-style: none;
       &::-webkit-scrollbar {
@@ -561,8 +561,10 @@ export default {
         border: 1px solid rgba(133, 141, 153, 0.2);
         border-radius: 10px;
         margin-bottom: 20px;
+        transition: all .3s;
         .collapse-item-hd {
           cursor: pointer;
+          padding-bottom: 10px;
           .title {
             font-weight: 400;
             font-size: 14px;
@@ -581,7 +583,9 @@ export default {
           }
         }
         .collapse-item-list {
-          margin-top: 10px;
+          box-sizing: border-box;
+          overflow: auto;
+          height: calc(100% - 34px);
           .collapse-item-fun {
             min-height: 32px;
             padding: 7px 4px;
@@ -638,6 +642,9 @@ export default {
       border-radius: 10px;
       flex: 1;
       height: 100%;
+      border: 1px solid rgba(47, 52, 61, 0.4);
+      padding: 20px;
+      box-sizing: border-box;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: none;
@@ -726,7 +733,7 @@ export default {
                 height: 30px;
                 background: #15141B;
                 border: 1px solid rgba(47, 52, 61, 0.4);
-                border-radius: 3px;
+                border-radius: 4px;
                 position: absolute;
                 right: 5px;
                 top: 4px;
