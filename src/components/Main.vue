@@ -48,7 +48,7 @@
 <script>
 import Nav from '@/components/Nav.vue'
 import Contract from '@/components/Contract.vue'
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 import { useStore } from 'vuex'
 import { setLs, getLs } from '@/service/service'
 // import { useMessage } from "naive-ui"
@@ -92,6 +92,14 @@ export default {
         store.commit('setActiveId', res)
       })
     }
+    watch(activeId, async () => {
+      let openSols = await getLs('openSols') || []
+      for (let i = 0; i < openSols.length; i++) {
+        if (openSols[i].name == activeId.value) {
+          activeIndex.value = i
+        }
+      }
+    }, {immediate: true})
     return {
       activeIndex,
       openSols,
@@ -173,7 +181,13 @@ export default {
           }
         }
       }
+      &:first-child {
+        border-top-left-radius: 10px;
+        overflow: hidden;
+      }
       &:last-child {
+        border-top-right-radius: 10px;
+        overflow: hidden;
         &::before {
           display: none;
         }

@@ -538,10 +538,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .contract-content {
-  padding: 32px;
+  padding: 32px 32px 0;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 82px);
+  height: calc(100vh - 70px);
   overflow: hidden;
   .contract-main {
     margin-top: 40px;
@@ -552,6 +552,8 @@ export default {
       overflow: hidden;
       scrollbar-width: none;
       -ms-overflow-style: none;
+      padding-bottom: 12px;
+      box-sizing: border-box;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -642,8 +644,9 @@ export default {
       border-radius: 10px;
       flex: 1;
       height: 100%;
-      border: 1px solid rgba(47, 52, 61, 0.4);
-      padding: 20px;
+      // border: 1px solid rgba(47, 52, 61, 0.4);
+      // padding: 20px;
+      padding-bottom: 20px;
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: hidden;
