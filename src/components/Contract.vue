@@ -4,7 +4,7 @@
     <ContractInfo v-if="contarctData" :contarct="contarctData.content" />
     <div class="contract-main flex-start">
       <div class="collapse">
-        <div class="collapse-item" @click="() => showType = 'readFun'" :style="{'height': showType == 'readFun' ? 'calc(100% - 96px)' : '66px'}">
+        <div class="collapse-item" @click="() => showType = 'readFun'" :style="{'height': showType == 'readFun' ? 'calc(100% - 66px)' : '56px'}">
           <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'readFun' ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/read.svg" alt=""><span>Read function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
@@ -24,7 +24,7 @@
             </div>
           </div>
         </div>
-        <div class="collapse-item" @click="() => showType = 'writeFun'" :style="{'height': showType == 'writeFun' ? 'calc(100% - 96px)' : '66px'}">
+        <div class="collapse-item" @click="() => showType = 'writeFun'" :style="{'height': showType == 'writeFun' ? 'calc(100% - 66px)' : '56px'}">
           <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'writeFun' ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/write.svg" alt=""><span>Write function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div v-if="contarctData" class="contract-main-content">
+      <div v-if="contarctData" class="contract-main-content" ref="mainContent">
         <div v-if="abiItem" class="execute">
           <n-spin :show="showSpin">
             <div class="contract-main-content-hd flex-center-sb">
@@ -96,7 +96,7 @@
               </div>
             </div>
             <div v-if="abiType == 'write'" class="fun-parames">
-              <div class="fun-parames-title flex-center-sb" @click="() => showSendInfo = !showSendInfo"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt=""></div>
+              <div class="fun-parames-title flex-center" @click="() => showSendInfo = !showSendInfo"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt="" :style="{transform:  (showSendInfo || abiItem.stateMutability == 'payable') ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
               <div class="parame-w" :style="{'max-height': (showSendInfo || abiItem.stateMutability == 'payable') ? '300px' : '0'}">
                 <div class="parame-item">
                   <div class="parame-item-hd flex-center-sb">
@@ -172,9 +172,8 @@
                 </div> -->
               </div>
               <div v-if="item.params && item.params.length" class="result-section">
-                <div class="result-section-title">Data input</div>
                 <div class="result-section-content">
-                  <div class="result-section-content-hd flex-center">{{item.name}}</div>
+                  <div class="result-section-content-hd flex-center">Data input: {{item.name}}</div>
                   <div class="result-section-content-main">
                     <div class="result-params" :style="{'max-height': !item.showParams ? '300px' : '0'}">
                       <div v-for="(param, index) in item.params" :key="index" class="result-param flex-center">
@@ -188,7 +187,94 @@
                 </div>
               </div>
               <div class="result-section">
-                <JsonViewer :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" />
+                <div v-if="item && item.content && item.content.blockHash" class="result-section">
+                  <div class="result-section-content">
+                    <div class="result-section-content-hd flex-center">Response 
+                      <img v-if="!item.isShowJson" src="@/assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
+                      <img v-else src="@/assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
+                    </div>
+                    <div v-if="!item.isShowJson" class="result-section-content-main">
+                      <div class="result-params">
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">Nonce</div>
+                          <div class="result-param-value">{{item.content.nonce}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.nonce)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">TransactionIndex</div>
+                          <div class="result-param-value">{{item.content.transactionIndex}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.transactionIndex)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">TransactionHash</div>
+                          <div class="result-param-value">{{item.content.transactionHash}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.transactionHash)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">BlockNumber</div>
+                          <div class="result-param-value">{{item.content.blockNumber}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.blockNumber)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">Data</div>
+                          <div class="result-param-value">{{item.content.data}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.data)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">CumulativeGasUsed</div>
+                          <div v-if="item.isFormatCumulativeGas" class="result-param-value">{{formatUnits(item.content.cumulativeGasUsed, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.cumulativeGasUsed}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatCumulativeGas', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">EffectiveGasPrice</div>
+                          <div v-if="item.isFormatEffectiveGas" class="result-param-value">{{formatUnits(item.content.effectiveGasPrice, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.effectiveGasPrice}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatEffectiveGas', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">GasLimit</div>
+                          <div v-if="item.isFormatGasLimit" class="result-param-value">{{formatUnits(item.content.gasLimit, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.gasLimit}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasLimit', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">GasPrice</div>
+                          <div v-if="item.isFormatGasPrice" class="result-param-value">{{formatUnits(item.content.gasPrice, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.gasPrice}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasPrice', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">GasUsed</div>
+                          <div v-if="item.isFormatGasUsed" class="result-param-value">{{formatUnits(item.content.gasUsed, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.gasUsed}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">MaxFeePerGas</div>
+                          <div v-if="item.isFormatMaxFee" class="result-param-value">{{formatUnits(item.content.maxFeePerGas, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.maxFeePerGas}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxFee', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">MaxPriorityFeePerGas</div>
+                          <div v-if="item.isFormatMaxPriority" class="result-param-value">{{formatUnits(item.content.maxPriorityFeePerGas, 9)}} Gwei</div>
+                          <div v-else class="result-param-value">{{item.content.maxPriorityFeePerGas}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxPriority', index)">
+                        </div>
+                        <div class="result-param flex-center">
+                          <div class="result-param-name">Value</div>
+                          <div v-if="item.isFormatValue" class="result-param-value">{{formatUnits(item.content.value, 0)}} ETH</div>
+                          <div v-else class="result-param-value">{{item.content.value}}</div>
+                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatValue', index)">
+                        </div>
+                      </div>
+                      <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                    </div>
+                    <JsonViewer v-else :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" expanded />
+                  </div>
+                </div>
+                <JsonViewer v-else :value="(item && item.content) || ''" preview-mode boxed sort theme="dark" />
               </div>
               <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
                 <div class="result-section-title">event list</div>
@@ -209,6 +295,15 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div v-if="!abiItem && !(contarctData.result && contarctData.result.length)" style="height: 100%">
+          <div v-if="contarctData.content.address == '0x89de39F47236522D6552131b81aD14bABDBCBf67'" class="demo-hint">
+            <div class="demo-hint-title">Welcome to Mammoth, this is a sample card</div>
+            <div class="demo-hint-desc flex-center"><img src="@/assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.<img src="@/assets/images/left.png" alt="" class="down"></div>
+            <img src="@/assets/images/hint.png" alt="" class="hint-img">
+            <div class="demo-hint-desc flex-center"><p>After entering the parameters according to the functional requirements, click the "run" button, and you can see the running results in the results bar below.</p><img src="@/assets/images/left.png" alt="" class="down"></div>
+            <div class="demo-hint-desc flex-center" style="margin-top: 14px">You can even customize GasPrice and accompany ETH.</div>
           </div>
           <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div>
         </div>
@@ -242,12 +337,13 @@ export default {
     let toWeiType = ''
     let running = false
     const message = useMessage()
-    const { toEtherscanAddress, copy, setData } = useUtils()
+    const { toEtherscanAddress, copy, setData, setOpenSols } = useUtils()
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
     const store = useStore()
     const showPopover = ref(false)
     const readFun = ref(null)
+    const mainContent = ref(null)
     const writeFun = ref(null)
     const contarctData = ref(null)
     const abiItem = ref(null)
@@ -284,8 +380,8 @@ export default {
       }
     })
     const formatUnits = computed(() => {
-      return (val) => {
-        return ethers.utils.formatUnits(val, 0);
+      return (val, d = 0) => {
+        return ethers.utils.formatUnits(val, d);
       }
     })
     const eventParam = computed(() => {
@@ -301,6 +397,7 @@ export default {
     }
 
     const updateAbi = (item, type) => {
+      mainContent.value.scrollTop = 0
       abiItem.value = item
       abiType.value = type
       parameData.value = {}
@@ -488,6 +585,17 @@ export default {
       toWeiType = ''
     }
 
+    const clickConversion = (type, index) => {
+      let contarct = contarctData.value
+      let result = contarct.result
+      let item = result[index]
+      item[type] = !item[type]
+      result[index] = item
+      contarct.result = result
+      contarctData.value = JSON.parse(JSON.stringify(contarct))
+      setOpenSols(contarct)
+    }
+
     watch(activeId, async () => {
       getContarctData()
     }, {immediate: true})
@@ -503,6 +611,7 @@ export default {
     }, {deep: true})
     return {
       showType: ref('readFun'),
+      mainContent,
       conversionModal,
       funOtherName,
       showSendInfo,
@@ -531,7 +640,8 @@ export default {
       saveOtherName,
       toWei,
       convert,
-      showConvert
+      showConvert,
+      clickConversion
     }
   }
 }
@@ -544,7 +654,7 @@ export default {
   height: calc(100vh - 70px);
   overflow: hidden;
   .contract-main {
-    margin-top: 40px;
+    margin-top: 30px;
     height: calc(100% - 189px);
     .collapse {
       width: 220px;
@@ -558,7 +668,7 @@ export default {
         display: none;
       }
       .collapse-item {
-        padding: 20px;
+        padding: 15px;
         box-sizing: border-box;
         border: 1px solid rgba(133, 141, 153, 0.2);
         border-radius: 10px;
@@ -646,7 +756,6 @@ export default {
       height: 100%;
       // border: 1px solid rgba(47, 52, 61, 0.4);
       // padding: 20px;
-      padding-bottom: 20px;
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: hidden;
@@ -755,7 +864,7 @@ export default {
         }
       }
       .fun-parames {
-        padding: 24px;
+        padding: 15px;
         box-sizing: border-box;
         border: 1px dashed rgba(133, 141, 153, 0.2);
         border-radius: 10px;
@@ -771,6 +880,8 @@ export default {
             width: 18px;
             height: 18px;
             cursor: pointer;
+            margin-left: 30px;
+            transition: all .3s;
           }
         }
         .parame-w {
@@ -857,7 +968,7 @@ export default {
       }
       .execute {
         border: 1px solid rgba(133, 141, 153, 0.2);
-        padding: 20px;
+        padding: 15px;
         border-radius: 10px;
         margin-bottom: 24px;
       }
@@ -966,6 +1077,10 @@ export default {
             .result-section-content-hd {
               padding: 0 18px;
               height: 30px;
+              img {
+                margin-left: 12px;
+                cursor: pointer;
+              }
             }
             .result-section-content-main {
               background: #0A0A0C;
@@ -976,9 +1091,9 @@ export default {
               }
               .result-param {
                 width: 100%;
-                padding: 0 18px;
+                padding: 12px 18px;
                 box-sizing: border-box;
-                height: 40px;
+                // height: 40px;
                 border-bottom: 1px solid #1F1E27;
                 font-size: 12px;
                 line-height: 15px;
@@ -992,8 +1107,11 @@ export default {
                   margin-right: 10px;
                 }
                 .result-param-value {
-                  width: 410px;
+                  flex: 1;
+                  max-width: 538px;
                   margin-right: 10px;
+                  white-space: normal;
+                  word-wrap: break-word;
                 }
                 img {
                   width: 18px;
@@ -1019,6 +1137,43 @@ export default {
         }
        }
     }
+  }
+}
+.demo-hint {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(133, 141, 153, 0.2);
+  border-radius: 10px;
+  padding: 24px;
+  box-sizing: border-box;
+  .demo-hint-title {
+    font-size: 16px;
+    line-height: 18px;
+    font-family: Montserrat-Medium;
+    color: #FFFFFF;
+  }
+  .demo-hint-desc {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 24px;
+    color: #FFFFFF;
+    width: 100%;
+    max-width: 792px;
+    img {
+      width: 34px;
+      height: auto;
+      margin: 0 12px 0 0;
+    }
+    .down {
+      transform: rotate(-90deg);
+      margin-left: 12px;
+    }
+  }
+  .hint-img {
+    margin-top: 26px;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
   }
 }
 </style>

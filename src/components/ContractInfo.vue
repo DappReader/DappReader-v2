@@ -66,7 +66,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .info {
-  margin-top: 40px;
+  margin-top: 30px;
   .info-item {
     width: 160px;
     &.info-copy {

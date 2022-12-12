@@ -174,9 +174,26 @@ export const useUtils = () => {
     }
   }
 
+  const setOpenSols = async (contarctData) => {
+    let { name } = contarctData
+    let openSols = await getLs('openSols') || []
+    if (name) {
+      openSols.forEach((e, index) => {
+        if (e.name == name) {
+          openSols[index] = contarctData
+        }
+      })
+      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
+        console.log(res)
+        store.commit("setOpenSols", res)
+      })
+    }
+  }
+
   return {
     toEtherscanAddress,
     copy,
-    setData
+    setData,
+    setOpenSols
   }
 }

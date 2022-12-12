@@ -7,9 +7,11 @@ import './assets/css/main.scss'
 import { create, NSelect, NConfigProvider, NMessageProvider, NModal, 
   NFormItem, NInput, NPopconfirm, NTabs, NTabPane, NCollapse, 
   NCollapseItem, NPopover, NSpin, NDialogProvider } from 'naive-ui'
+import VueHighlightJS from 'vue3-highlightjs'
+import 'highlight.js/styles/hybrid.css'
 const naive = create({
   components: [ NSelect, NConfigProvider, NMessageProvider, 
     NModal, NFormItem, NInput, NPopconfirm, NTabs, NTabPane, 
     NCollapse, NCollapseItem, NPopover, NSpin, NDialogProvider ]
 })
-createApp(App).use(naive).use(store).use(router).mount('#app')
+createApp(App).use(naive).use(store).use(router).use(VueHighlightJS).mount('#app')

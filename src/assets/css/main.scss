@@ -277,12 +277,8 @@ $mainColor: #1C42FF;
   background: rgba(133, 141, 153, 0) !important;
 }
 
-.jv-container.boxed {
-  border: 1px solid rgba(133, 141, 153, 0.1) !important;
-}
-
 .jv-container .jv-code {
-  padding: 20px !important;
+  padding: 15px !important;
 }
 
 .jv-container .jv-more:after {
@@ -312,4 +308,18 @@ $mainColor: #1C42FF;
 
 .n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab.n-tabs-tab--active {
   color: #ffffff !important;
+}
+
+.jv-container.boxed {
+  border: 1px solid rgba(133, 141, 153, 0.1) !important;
+  background: #0A0A0C !important;
+  border-radius: 9px !important;
+}
+
+.result-params .jv-container.boxed {
+  border: none !important;
+}
+
+.jv-more {
+  display: none !important;
 }
