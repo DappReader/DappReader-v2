@@ -386,7 +386,9 @@ export default {
         .folder-item-main {
           position: relative;
           padding: 0 12px;
-          box-sizing: border-box;
+          box-sizing: content-box;
+          margin-left: -12px;
+          width: 100%;
           &:hover {
             background: rgba(133, 141, 153, 0.1);
             border-radius: 4px;
