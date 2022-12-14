@@ -4,8 +4,8 @@
     <ContractInfo v-if="contarctData" :contarct="contarctData.content" />
     <div class="contract-main flex-start">
       <div class="collapse">
-        <div class="collapse-item" @click="() => showType = 'readFun'" :style="{'height': showType == 'readFun' ? 'calc(100% - 66px)' : '56px'}">
-          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'readFun' ? '10px' : '0'}">
+        <div class="collapse-item" @click="showFun(1)" :style="{'height': getFunHeight(1)}">
+          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType.indexOf(1) > -1 ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/read.svg" alt=""><span>Read function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
@@ -24,8 +24,8 @@
             </div>
           </div>
         </div>
-        <div class="collapse-item" @click="() => showType = 'writeFun'" :style="{'height': showType == 'writeFun' ? 'calc(100% - 66px)' : '56px'}">
-          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType == 'writeFun' ? '10px' : '0'}">
+        <div class="collapse-item" @click="showFun(2)" :style="{'height': getFunHeight(2)}">
+          <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType.indexOf(2) > -1 ? '10px' : '0'}">
             <div class="title flex-center"><img src="@/assets/images/write.svg" alt=""><span>Write function</span></div>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
           </div>
@@ -152,10 +152,18 @@
                   <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt="">Resend</div>
                 </div>
               </div>
-              <div  v-if="item.content.hash" class="result-info flex-center">
+              <div v-if="item.content.hash" class="result-info flex-center">
                 <div class="result-info-item flex-center">
                   <div class="result-info-item-key flex-center-center">Tx Type</div>
                   <div class="result-info-item-value flex-center-center">{{item.content.type == 2 ? "2(EIP-1599)" : "1"}}</div>
+                </div>
+                <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">Nonce</div>
+                  <div class="result-info-item-value flex-center-center">{{ item.content.nonce }}</div>
+                </div>
+                <div class="result-info-item flex-center">
+                  <div class="result-info-item-key flex-center-center">BlockNumber</div>
+                  <div class="result-info-item-value flex-center-center">{{ item.content.blockNumber || "--" }}</div>
                 </div>
               </div>
               <div v-if="item.params && item.params.length" class="result-section">
@@ -192,20 +200,10 @@
                         <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.hash)">
                       </div>
                       <div class="result-params">
-                        <div class="result-param flex-center" v-if="item.content && item.content.nonce">
-                          <div class="result-param-name">Nonce</div>
-                          <div class="result-param-value">{{item.content.nonce}}</div>
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.nonce)">
-                        </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.transactionIndex">
                           <div class="result-param-name">TransactionIndex</div>
                           <div class="result-param-value">{{item.content.transactionIndex}}</div>
                           <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.transactionIndex)">
-                        </div>
-                        <div class="result-param flex-center" v-if="item.content && item.content.blockNumber">
-                          <div class="result-param-name">BlockNumber</div>
-                          <div class="result-param-value">{{item.content.blockNumber}}</div>
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.blockNumber)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.data">
                           <div class="result-param-name">Data</div>
@@ -214,19 +212,19 @@
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasPrice">
                           <div class="result-param-name">GasPrice</div>
-                          <div v-if="!item.isFormatGasPrice" class="result-param-value">{{formatUnits(item.content.gasPrice, 9)}} Gwei</div>
+                          <div v-if="!item.isFormatGasPrice" class="result-param-value">{{(formatUnits(item.content.gasPrice, 9) * 1).toFixed(4)}} Gwei</div>
                           <div v-else class="result-param-value">{{item.content.gasPrice}}</div>
                           <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasPrice', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasLimit">
                           <div class="result-param-name">GasLimit</div>
-                          <div v-if="!item.isFormatGasLimit" class="result-param-value">{{formatUnits(item.content.gasLimit, 0)}} Wei</div>
+                          <div v-if="!item.isFormatGasLimit" class="result-param-value">{{formatUnits(item.content.gasLimit, 0)}}</div>
                           <div v-else class="result-param-value">{{item.content.gasLimit}}</div>
                           <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasLimit', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasUsed">
                           <div class="result-param-name">GasUsed</div>
-                          <div v-if="!item.isFormatGasUsed" class="result-param-value">{{formatUnits(item.content.gasUsed, 0)}} Wei</div>
+                          <div v-if="!item.isFormatGasUsed" class="result-param-value">{{formatUnits(item.content.gasUsed, 0)}}</div>
                           <div v-else class="result-param-value">{{item.content.gasUsed}}</div>
                           <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)">
                         </div>
@@ -238,7 +236,7 @@
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.maxFeePerGas">
                           <div class="result-param-name">MaxFeePerGas</div>
-                          <div v-if="!item.isFormatMaxFee" class="result-param-value">{{formatUnits(item.content.maxFeePerGas, 0)}} Wei</div>
+                          <div v-if="!item.isFormatMaxFee" class="result-param-value">{{(formatUnits(item.content.maxFeePerGas, 9) * 1).toFixed(4)}} Gwei</div>
                           <div v-else class="result-param-value">{{item.content.maxFeePerGas}}</div>
                           <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxFee', index)">
                         </div>
@@ -335,6 +333,7 @@ export default {
     const abiItem = ref(null)
     const showSpin = ref(false)
     const parameData = ref({})
+    const showType = ref([1, 2])
     const abiType = ref('')
     const networkErrorModal = ref(null)
     const conversionModal = ref(null)
@@ -582,6 +581,31 @@ export default {
       setOpenSols(contarct)
     }
 
+    const getFunHeight = (type) => {
+      // showType == 'writeFun' ? 'calc(100% - 66px)' : '56px'
+      let st = showType.value
+      if (st.length == 2) {
+        return 'calc(50% - 5px)'
+      } else if (st.indexOf(type) > -1) {
+        return 'calc(100% - 66px)'
+      } else {
+        return '56px'
+      }
+    }
+
+    const showFun = (type) => {
+      let st = showType.value
+      console.log(st.indexOf(type))
+      if (st.indexOf(type) > -1) {
+        let index = st.indexOf(type)
+        st.splice(index, 1)
+        console.log(st)
+      } else {
+        st.push(type)
+      }
+      showType.value = st
+    }
+
     watch(activeId, async () => {
       getContarctData()
     }, {immediate: true})
@@ -596,7 +620,7 @@ export default {
       getContarctData()
     }, {deep: true})
     return {
-      showType: ref('readFun'),
+      showType,
       mainContent,
       conversionModal,
       funOtherName,
@@ -627,7 +651,9 @@ export default {
       toWei,
       convert,
       showConvert,
-      clickConversion
+      clickConversion,
+      showFun,
+      getFunHeight
     }
   }
 }
