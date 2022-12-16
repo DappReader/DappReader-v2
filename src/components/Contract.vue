@@ -54,11 +54,11 @@
                   <img src="@/assets/images/note_edit.svg" alt="" @click="() => showPopover = !showPopover">
                   <div class="popover" v-if="showPopover">
                     <div class="popover-hd flex-center-sb">
-                      <div class="popover-title">function name <span>notes</span></div>
+                      <div class="popover-title">function name</div>
                       <img src="@/assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
                     </div>
                     <div class="popover-input">
-                      <n-input class="form-input popover-input-item" v-model:value="funOtherName" />
+                      <n-input class="form-input popover-input-item" v-model:value="abiItem.otherName" />
                       <div class="popover-btn flex-center-center" @click="saveOtherName">Save</div>
                     </div>
                   </div>
@@ -526,17 +526,8 @@ export default {
 
     const saveOtherName = () => {
       let contarct = contarctData.value.content
-      let abi = contarct.abi
-      let fun = abiItem.value
-      for (let i = 0; i < abi.length; i++) {
-        if (abi[i].name == fun.name) {
-          abi[i].otherName = funOtherName.value
-        }
-      }
-      contarct.abi = abi
       setData(contarct)
       hiddenPopover()
-      // this.$emit("updateSol", sol);
     }
 
     const showConvert = (data, type) => {
