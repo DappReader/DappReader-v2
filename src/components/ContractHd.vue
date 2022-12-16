@@ -1,15 +1,18 @@
 <template>
   <div class="hd">
     <div class="hd-section flex-center-sb">
-      <div class="title">{{contarct.name}}</div>
+      <div class="title-w flex-center">
+        <div class="title">{{contarct.name}}</div>
+        <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contarct.address, contarct.chain, contarct.sources)">
+          <img src="@/assets/images/show.svg" alt="">
+          <span>Source Code</span>
+        </div>
+      </div>
+      
       <div class="hd-btns flex-center">
         <div class="hd-btn-item flex-center-center btn" @click="copy(contarct.abi, 'abi')">
           <img src="@/assets/images/copy.svg" alt="">
           <span>Copy ABI</span>
-        </div>
-        <div class="hd-btn-item flex-center-center btn" @click="getSourceCode(contarct.address, contarct.chain)">
-          <img src="@/assets/images/show.svg" alt="">
-          <span>Source Code</span>
         </div>
         <div class="hd-btn-item flex-center-center btn" @click="toEtherscanAddress(contarct.address, contarct.chain)">
           <img src="@/assets/images/show.svg" alt="">
@@ -36,23 +39,33 @@
     <div class="desc">{{contarct.remark}}</div>
     <CreateContract ref="createContract" />
     <ShareModal ref="shareModal" :contract="contarctData" />
-    <n-modal
-      v-model:show="sourceCode.length"
-      :mask-closable="false"
-      class="custom-card"
-      preset="card"
-      :style="{width: '70vw',maxWidth: '1000px',background: '#15141B', 'border-radius': '10px'}"
-      title="Create Contract"
-      :on-after-leave="afterLeave"
-    >
-      <div style="max-height: 80vh; overflow: auto;border-radius: 10px">
-        <div v-for="item in sourceCode" :key="item.name" style="margin-bottom: 20px">
-          <p style="margin-bottom: 10px">{{item.name}}</p>
-          <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 10px"></code></pre>
-        </div>
-      </div>
-      
-    </n-modal>
+      <n-modal
+        v-model:show="showSourceCode"
+        :mask-closable="false"
+        class="custom-card"
+        preset="card"
+        :style="{width: '70vw',maxWidth: '1400px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+        title="View Source Code"
+      >
+        <n-spin :show="showLoading">
+          <div style="max-height: 80vh; overflow: auto;border-radius: 10px;position: relative;">
+            <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
+              <div class="source-tbas flex-center">
+                <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
+                  <div class="source-tab-item-content flex-center-sb">
+                    <span>{{item.name}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-for="item in sourceCode" :key="item.name">
+              <div class="source-pane" v-if="activeName == item.name">
+                <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 10px"></code></pre>
+              </div>
+            </div>
+          </div>
+        </n-spin>
+      </n-modal>
   </div>
 </template>
 <script>
@@ -62,8 +75,7 @@ import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from "@/service/service";
-import { useDialog } from "naive-ui"
-import { useMessage } from 'naive-ui'
+import { useDialog, useMessage } from "naive-ui"
 export default {
   props: ['contarct'],
   components: {
@@ -77,46 +89,77 @@ export default {
     const createContract = ref(null)
     const sourceCode = ref([])
     const shareModal = ref(null)
+    const showSourceCode = ref(false)
+    const showLoading = ref(false)
+    const activeName = ref('')
+    const activeIndex = ref(-1)
     const contarctData = ref(props.contarct)
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
-    const { toEtherscanAddress, copy } = useUtils()
-    const getSourceCode = async (address, chain) => {
-      console.log(chain)
-      let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
-      let name = 'api'
-      if (chain.chainId == 42) name = 'api-kovan' 
-      else if (chain.chainId == 3) name = 'api-ropsten'
-      else if (chain.chainId == 5) name = 'api-goerli'
-      else if (chain.chainId == 11155111) name = 'api-sepolia'
-      let data = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`)
-      let result = data.result
-      if (data.status == 0) {
-        if (result == 'Contract source code not verified') {
-          message.error('The current contract is not open source, can not be obtained through etherscan')
-        } else {
-          message.error(result)
-        }
-      } else if (data.status == 1) {
-        result = result[0]
-        if (result.SourceCode) {
-          let source = result.SourceCode
-          source = source.slice(1, -1)
-          source = JSON.parse(source)
-          let sources = source.sources
-          let sourcesArr = []
-          for (let k in sources) {
-            let item = {
-              name: k,
-              content: sources[k].content
-            }
-            sourcesArr.push(item)
+    const { toEtherscanAddress, copy, setData } = useUtils()
+    const getSourceCode = async (address, chain, sources) => {
+      console.log('sources', sources)
+      showSourceCode.value = true
+      if (sources) {
+        console.log(contarctData.value)
+        sourceCode.value = sources
+        activeName.value = sources[0].name
+        activeIndex.value = 0
+      } else {
+        showLoading.value = true
+        let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
+        let name = 'api'
+        if (chain.chainId == 42) name = 'api-kovan' 
+        else if (chain.chainId == 3) name = 'api-ropsten'
+        else if (chain.chainId == 5) name = 'api-goerli'
+        else if (chain.chainId == 11155111) name = 'api-sepolia'
+        let data = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`)
+        let result = data.result
+        if (data.status == 0) {
+          showLoading.value = false
+          showSourceCode.value = false
+          if (result == 'Contract source code not verified') {
+            message.error('The current contract is not open source, can not be obtained through etherscan')
+          } else {
+            message.error(result)
           }
-          console.log(sourcesArr)
-          sourceCode.value = sourcesArr
-        } else {
-          message.error('The current contract is not open source, can not be obtained through etherscan')
+        } else if (data.status == 1) {
+          result = result[0]
+          if (result.SourceCode) {
+            let source = result.SourceCode
+            console.log(source[0])
+            let sourcesArr = []
+            if (source[0] == '{') {
+              source = source.slice(1, -1)
+              source = JSON.parse(source)
+              let sources = source.sources
+              for (let k in sources) {
+                let item = {
+                  name: k,
+                  content: sources[k].content
+                }
+                sourcesArr.push(item)
+              }
+            } else {
+              let item = {
+                name: 'sol.sol',
+                content: source
+              }
+              sourcesArr.push(item)
+            }
+            console.log(sourcesArr)
+            sourceCode.value = sourcesArr
+            activeName.value = sourcesArr[0].name
+            activeIndex.value = 0
+            let CD = props.contarct
+            CD.sources = sourcesArr
+            setData(CD)
+            showLoading.value = false
+          } else {
+            showLoading.value = false
+            showSourceCode.value = false
+            message.error('The current contract is not open source, can not be obtained through etherscan')
+          }
         }
-        console.log(data.status)
       }
     }
     const edit = () => {
@@ -129,6 +172,17 @@ export default {
     }
     const share = () => {
       shareModal.value.showModal = true
+    }
+    const update = (name, index) => {
+      let el = document.querySelector('.source-tabs-w')
+      let el1 = el.querySelectorAll('.source-tab-item')[index]
+      let scrollLeft = el1.offsetLeft
+      const containWidth = el.offsetWidth
+      console.log(scrollLeft, containWidth)
+      let resultSpot = scrollLeft - 160 - containWidth / 2 
+      activeName.value = name
+      activeIndex.value = index
+      el.scrollTo((resultSpot + 50), 100)
     }
     const del = () => {
       dialog.warning({
@@ -182,6 +236,10 @@ export default {
       })
     }
     return {
+      showLoading,
+      showSourceCode,
+      activeIndex,
+      activeName,
       sourceCode,
       contarctData,
       createContract,
@@ -191,7 +249,8 @@ export default {
       copy,
       share,
       toEtherscanAddress,
-      getSourceCode
+      getSourceCode,
+      update
     }
   }
 }
@@ -209,10 +268,31 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+    .title-btn-item {
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 16px;
+      color: #FFFFFF;
+      padding: 0 12px;
+      box-sizing: border-box;
+      height: 40px;
+      background: #1F1E27;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-left: 12px;
+      &:hover {
+        background: #302E38 !important;
+      }
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+    }
     .hd-btns {
       // width: 754px;
       // flex: 0 0 754px;
-      margin-left: 20px;
+      // margin-left: 20px;
       .hd-btn-item {
         font-weight: 400;
         font-size: 13px;
@@ -245,5 +325,118 @@ export default {
     color: #858D99;
     margin-top: 16px;
   }
+}
+.source-tabs-w {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-radius: 10px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .source-tbas {
+    height: 40px;
+    .source-tab-item {
+      flex: 0 0 280px;
+      cursor: pointer;
+      position: relative;
+      svg {
+        display: none;
+      }
+      .source-tab-item-content {
+        position: relative;
+        background: #1F1E27;
+        z-index: 1;
+        width: 280px;
+        height: 40px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        font-family: 'Montserrat-Medium';
+        font-size: 13px;
+        line-height: 16px;
+        color: #858D99;
+        span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      &::before {
+        content: '';
+        width: 1px;
+        height: 12px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        z-index: 2;
+        background: rgba(133, 141, 153, 0.2);
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 0;
+        background: linear-gradient( to bottom, #1F1E27 40%, rgb(21, 20, 27) 60%);
+      }
+      &:hover {
+        .source-tab-item-content {
+          background: #2A2A32;
+          border-radius: 10px 10px 0px 0px;
+          color: #FFFFFF;
+          svg {
+            display: inline-block;
+          }
+        }
+      }
+      &:first-child {
+        border-top-left-radius: 10px;
+        overflow: hidden;
+      }
+      &:last-child {
+        border-top-right-radius: 10px;
+        overflow: hidden;
+        &::before {
+          display: none;
+        }
+      }
+      &.source-tab-item-activated {
+        &::before {
+          display: none;
+        }
+        .source-tab-item-content {
+          color: #FFFFFF;
+          background: rgb(21, 20, 27);
+          border-radius: 10px 10px 0px 0px;
+          svg {
+            display: inline-block;
+          }
+        }
+        & + .source-tab-item {
+          .source-tab-item-content {
+            border-radius: 0px 0px 0px 10px;
+          }
+        }
+      }
+      &.source-tab-item-activated-prev {
+        &::before {
+          display: none;
+        }
+        .source-tab-item-content {
+          border-radius: 0px 0px 10px 0px;
+        }
+      }
+    }
+  }
+}
+.source-pane {
+  height: calc(80vh - 50px);
+  margin-top: 10px;
+  overflow: auto;
+  border-radius: 10px;
 }
 </style>

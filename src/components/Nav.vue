@@ -103,9 +103,13 @@ export default {
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
       if (interval) clearInterval(interval)
-      getGas()
-      interval = setInterval(() => {
+      if (provider.value) {
         getGas()
+      }
+      interval = setInterval(() => {
+        if (provider.value) {
+          getGas()
+        }
       }, 5000)
     }, {immediate: true})
     return {
