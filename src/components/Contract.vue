@@ -17,7 +17,7 @@
                 <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <div>
+              <div class="item-name">
                 <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
                 <p>{{item.name}}</p>
               </div>
@@ -37,7 +37,7 @@
                 <path d="M13.5 9C13.5 10.2426 11.4853 11.25 9 11.25C6.51472 11.25 4.5 10.2426 4.5 9" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 7.5C11.4853 7.5 13.5 6.49264 13.5 5.25C13.5 4.00736 11.4853 3 9 3C6.51472 3 4.5 4.00736 4.5 5.25C4.5 6.49264 6.51472 7.5 9 7.5Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <div>
+              <div class="item-name">
                 <p v-if="item.otherName" class="other-name">{{item.otherName}}</p>
                 <p>{{item.name}}</p>
               </div>
@@ -666,7 +666,7 @@ export default {
     margin-top: 30px;
     height: calc(100% - 189px);
     .collapse {
-      width: 220px;
+      width: 250px;
       height: 100%;
       overflow: hidden;
       scrollbar-width: none;
@@ -740,17 +740,24 @@ export default {
               width: 18px;
               height: 18px;
             }
-            p {
-              font-weight: 400;
-              font-size: 12px;
-              line-height: 18px;
-              color: #FFFFFF;
+            .item-name {
+              flex: 0 0 180px;
+              width: 180px;
               margin-left: 12px;
-              &.other-name {
-                font-size: 14px;
+              p {
+                font-weight: 400;
+                font-size: 12px;
                 line-height: 18px;
-                font-family: Montserrat-Medium;
-                margin-bottom: 2px;
+                color: #FFFFFF;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                &.other-name {
+                  font-size: 14px;
+                  line-height: 18px;
+                  font-family: Montserrat-Medium;
+                  margin-bottom: 2px;
+                }
               }
             }
           }
