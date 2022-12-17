@@ -44,7 +44,7 @@
         :mask-closable="false"
         class="custom-card"
         preset="card"
-        :style="{width: '70vw',maxWidth: '1400px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+        :style="{width: '70vw',maxWidth: '1408px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
         title="View Source Code"
       >
         <n-spin :show="showLoading">
@@ -60,7 +60,7 @@
             </div>
             <div v-for="item in sourceCode" :key="item.name">
               <div class="source-pane" v-if="activeName == item.name">
-                <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 10px"></code></pre>
+                <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
               </div>
             </div>
           </div>
@@ -330,7 +330,10 @@ export default {
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0;
+  padding-top: 4px;
+  box-sizing: border-box;
+  background: #1F1E27;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -381,7 +384,7 @@ export default {
         top: 0;
         bottom: 0;
         z-index: 0;
-        background: linear-gradient( to bottom, #1F1E27 40%, rgb(21, 20, 27) 60%);
+        background: linear-gradient( to bottom, #1F1E27 40%, #0D0D0E 60%);
       }
       &:hover {
         .source-tab-item-content {
@@ -410,7 +413,7 @@ export default {
         }
         .source-tab-item-content {
           color: #FFFFFF;
-          background: rgb(21, 20, 27);
+          background: #0D0D0E;
           border-radius: 10px 10px 0px 0px;
           svg {
             display: inline-block;
@@ -434,9 +437,8 @@ export default {
   }
 }
 .source-pane {
-  height: calc(80vh - 50px);
-  margin-top: 10px;
+  height: calc(80vh - 40px);
   overflow: auto;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
 }
 </style>

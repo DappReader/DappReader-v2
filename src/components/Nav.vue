@@ -1,6 +1,18 @@
 <template>
   <div class="nav flex-center">
-    <div class="nav-l"></div>
+    <div class="nav-l">
+      <div class="input-group flex-center">
+        <n-select
+          class="input-group-select"
+          :options="selectOptions"
+          v-model:value="contractChainId"
+          label-field="name"
+          value-field="chainId" 
+        />
+        <input class="form-input" v-model="contractAddress" placeholder="input contract address" />
+        <n-button class="input-group-btn" :loading="searchLoading" @click="handleClickSearch">Search</n-button>
+      </div>
+    </div>
     <div class="nav-r flex-center">
       <div class="flex-center-center gas-price">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,6 +50,8 @@
       </div>
       <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
     </div>
+    <CreateContract ref="createContract" />
+    <AddFolder ref="addFolder" />
   </div>
 </template>
 <script>
@@ -48,10 +62,15 @@ import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
 import { useMessage } from 'naive-ui'
 import { ethers } from 'ethers'
+import { chainsOptions } from '../libs/chainsOptions'
 import Avatar from "vue-boring-avatars"
+import AddFolder from '@/components/AddFolder.vue'
+import CreateContract from '@/components/CreateContract.vue'
 export default {
   components: {
-    Avatar
+    Avatar,
+    AddFolder,
+    CreateContract
   },
   setup() {
     let interval = null
@@ -60,7 +79,13 @@ export default {
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
     const chainId = ref(null)
+    const searchLoading = ref(false)
+    const addFolder = ref(null)
+    const createContract = ref(null)
+    const contractAddress = ref('')
     const gasPrice = ref('')
+    const contractChainId = ref(1)
+    const selectOptions = ref(chainsOptions)
     const formatAddress = computed(() => {
       return (address) => {
         return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
@@ -100,6 +125,46 @@ export default {
       gasPrice.value = (ethers.utils.formatUnits(GP, "gwei") * 1).toFixed(2)
     }
 
+    const handleClickSearch = async () => {
+      if (!contractChainId.value || !contractAddress.value) {
+        message.error('Please input contract address')
+        return
+      } else {
+        try {
+          searchLoading.value = true
+          let formData = {
+            address: contractAddress.value,
+            chainId: contractChainId.value
+          }
+          const apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
+          const fetcher = (...args) => fetch(...args).then((res) => res.json())
+          let chain = chainsOptions.filter(e => e.chainId == contractChainId.value)[0]
+          let endpointURL = chain.endpointURL   
+          let abiData = await fetcher(`${endpointURL}/api?module=contract&action=getabi&address=${contractAddress.value}&apikey=${apiKey}`)
+          let result = abiData.result
+          if (abiData.status == 0) {
+            if (result == 'Contract source code not verified') {
+              message.error('The current contract is not open source, can not be obtained through etherscan')
+            } else {
+              message.error(result)
+            }
+          } else if (abiData.status == 1) {
+            formData.abi = result
+          }
+          createContract.value.show()
+          createContract.value.formData = formData
+          contractAddress.value = ''
+          searchLoading.value = false
+        } catch (error) {
+          message.error(error)
+          searchLoading.value = false
+        }
+      }
+      // searchLoading.value = true
+      // createContract.value.show()
+      // createContract.value.formData = formData
+    }
+
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
       if (interval) clearInterval(interval)
@@ -113,6 +178,12 @@ export default {
       }, 5000)
     }, {immediate: true})
     return {
+      addFolder,
+      createContract,
+      contractChainId,
+      searchLoading,
+      contractAddress,
+      selectOptions,
       gasPrice,
       chains,
       network,
@@ -124,7 +195,8 @@ export default {
       handleUpdateValue,
       connectWallet,
       copy,
-      getGas
+      getGas,
+      handleClickSearch
     }
   }
 }
@@ -132,12 +204,49 @@ export default {
 <style lang="scss" scoped>
 .nav {
   width: 100%;
-  height: 70px;
+  height: 60px;
   background: #15141B;
   padding-right: 32px;
   box-sizing: border-box;
   .nav-l {
     flex: 1;
+    .input-group {
+      width: 494px;
+      overflow: hidden;
+      padding-right: 1px;
+      border: 1px solid rgba(133, 141, 153, 0.15);
+      border-radius: 10px;
+      margin-left: 32px;
+      .input-group-select {
+        width: 150px;
+        box-sizing: border-box;
+        height: 34px;
+      }
+      .form-input {
+        margin-top: 0;
+        height: 34px;
+        width: 250px;
+        border-radius: 0;
+        outline: none;
+        font-size: 14px;
+        padding: 0 14px;
+        color: #FFFFFF;
+      }
+      .input-group-btn {
+        width: 90px;
+        background: none;
+        border: none;
+        background: #375CFF;
+        height: 34px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        border-radius: 0 10px 10px 0;
+        cursor: pointer;
+      }
+    }
   }
   .nav-r {
     position: relative;

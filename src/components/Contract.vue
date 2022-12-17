@@ -281,7 +281,7 @@
             </div>
           </div>
         </div>
-        <div v-if="!abiItem && !(contarctData.result && contarctData.result.length)" style="height: 100%">
+        <div v-if="!abiItem && !(contarctData.result && contarctData.result.length)" >
           <div v-if="contarctData.content.address == '0x89de39F47236522D6552131b81aD14bABDBCBf67'" class="demo-hint">
             <div class="demo-hint-title">Welcome to Mammoth, this is a sample card</div>
             <div class="demo-hint-desc flex-center"><img src="@/assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.<img src="@/assets/images/left.png" alt="" class="down"></div>
@@ -415,50 +415,55 @@ export default {
         running = true
       } else {
         showSpin.value = true
-        let user = toRaw(provider.value).getSigner()
-        let C = await contract(contarct.address, contarct.abi, user)
-        let param = []
-        let inputs = abiItem.inputs
-        for (let i = 0; i < inputs.length; i++) {
-          let name = inputs[i].name
-          let type = inputs[i].type
-          let item = parameData.value[name]
-          if (type.indexOf("[]") > -1) {
-            item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
-            item = item.split(",")
-            item = item.filter((e) => e && e.trim())
-            item = item.map((e) => ethers.utils.hexlify(e))
-          }
-          param.push(item)
-        }
-        let resultData = null
-        let tx = null
-        let resultState = ''
         try {
-          tx = await C[abiItem.name](...param, sendInfo.value)
-          resultState = 'success'
-        } catch (error) {
-          resultState = 'error'
-          tx = error
-        }
-        resultData = {
-          content: tx,
-          state: resultState,
-          parameData: parameData.value,
-          formData: Object.assign(parameData.value, sendInfo.value),
-          sendInfo: sendInfo.value,
-          funData: abiItem,
-          name: abiItem.name,
-          createAt: new Date(),
-        }
-        setResult(resultData)
-        init()
-        if (tx && tx.hash) {
-          const receipt = await tx.wait()
-          console.log(receipt)
-          resultData.content = Object.assign(resultData.content, receipt)
-          resultData.confirmed = Math.ceil((new Date().getTime() - resultData.createAt.getTime()) / 1000)
+          let user = toRaw(provider.value).getSigner()
+          let C = await contract(contarct.address, contarct.abi, user)
+          let param = []
+          let inputs = abiItem.inputs
+          for (let i = 0; i < inputs.length; i++) {
+            let name = inputs[i].name
+            let type = inputs[i].type
+            let item = parameData.value[name]
+            if (type.indexOf("[]") > -1) {
+              item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
+              item = item.split(",")
+              item = item.filter((e) => e && e.trim())
+              item = item.map((e) => ethers.utils.hexlify(e))
+            }
+            param.push(item)
+          }
+          let resultData = null
+          let tx = null
+          let resultState = ''
+          try {
+            tx = await C[abiItem.name](...param, sendInfo.value)
+            resultState = 'success'
+          } catch (error) {
+            resultState = 'error'
+            tx = error
+          }
+          resultData = {
+            content: tx,
+            state: resultState,
+            parameData: parameData.value,
+            formData: Object.assign(parameData.value, sendInfo.value),
+            sendInfo: sendInfo.value,
+            funData: abiItem,
+            name: abiItem.name,
+            createAt: new Date(),
+          }
           setResult(resultData)
+          init()
+          if (tx && tx.hash) {
+            const receipt = await tx.wait()
+            console.log(receipt)
+            resultData.content = Object.assign(resultData.content, receipt)
+            resultData.confirmed = Math.ceil((new Date().getTime() - resultData.createAt.getTime()) / 1000)
+            setResult(resultData)
+          }
+        } catch (error) {
+          message.error(error)
+          showSpin.value = false
         }
       }
     }
@@ -652,9 +657,10 @@ export default {
 <style lang="scss" scoped>
 .contract-content {
   padding: 32px 32px 0;
+  margin-top: -34px;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 94px);
   overflow: hidden;
   .contract-main {
     margin-top: 30px;

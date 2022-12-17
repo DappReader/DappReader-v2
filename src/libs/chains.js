@@ -1,5 +1,22 @@
 export const chains = [
 	{
+		"name": "localhost:8545",
+		"chain": "ETH",
+		"icon": "ethereum",
+		"rpc": [
+			"http://127.0.0.1:8545/"
+		],
+		"faucets": [],
+		"nativeCurrency": {
+			"name": "Ether",
+			"symbol": "ETH",
+			"decimals": 18
+		},
+		"shortName": "eth",
+		"chainId": 31337,
+		"networkId": 31337,
+	},
+	{
 		"name": "Ethereum Mainnet",
 		"chain": "ETH",
 		"icon": "ethereum",
@@ -7507,31 +7524,6 @@ export const chains = [
 		"chainId": 31102,
 		"networkId": 1,
 		"slip44": 31102
-	},
-	{
-		"name": "GoChain Testnet",
-		"chain": "GO",
-		"rpc": [
-			"https://testnet-rpc.gochain.io"
-		],
-		"faucets": [],
-		"nativeCurrency": {
-			"name": "GoChain Coin",
-			"symbol": "GO",
-			"decimals": 18
-		},
-		"infoURL": "https://gochain.io",
-		"shortName": "got",
-		"chainId": 31337,
-		"networkId": 31337,
-		"slip44": 6060,
-		"explorers": [
-			{
-				"name": "GoChain Testnet Explorer",
-				"url": "https://testnet-explorer.gochain.io",
-				"standard": "EIP3091"
-			}
-		]
 	},
 	{
 		"name": "Bitgert Mainnet",

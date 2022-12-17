@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <Nav />
-    <div v-if="openSols && openSols.length">
+    <div v-if="openSols && openSols.length" class="main">
       <div class="tabs-w">
         <div class="tbas flex-center">
           <div v-for="(item, index) in openSols" :key="item.name" :class="['tab-item', activeId == item.name ? 'tab-item-activated' : '', index == activeIndex - 1 ? 'tab-item-activated-prev' : '']" @click="update(item.name)">
@@ -115,12 +115,17 @@ export default {
 .content {
   flex: 1;
   height: 100vh;
-  background: #0D0D0E;
+  background: #15141B;
   width: calc(100vw - 248px);
+  .main {
+    margin-top: 34px;
+    background: #0D0D0E;
+  }
   .tabs-w {
-    max-width: 40%;
+    max-width: 60%;
     overflow-x: auto;
-    margin-top: -40px;
+    position: relative;
+    top: -34px;
     scrollbar-width: none;
     border-radius: 0px 10px 0px 0px;
     &::-webkit-scrollbar {
@@ -128,7 +133,7 @@ export default {
     }
   }
   .tbas {
-    height: 40px;
+    height: 34px;
     .tab-item {
       flex: 0 0 140px;
       cursor: pointer;
@@ -141,7 +146,7 @@ export default {
         background: #1F1E27;
         z-index: 1;
         width: 140px;
-        height: 40px;
+        height: 34px;
         padding: 0 12px;
         box-sizing: border-box;
         font-family: 'Montserrat-Medium';
