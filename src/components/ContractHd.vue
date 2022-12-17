@@ -442,3 +442,8 @@ export default {
   border-radius: 0 0 10px 10px;
 }
 </style>
+<style>
+  .hljs {
+    background: #0D0D0E !important;
+  }
+</style>
