@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content flex-start">
     <div class="logo">
       <img src="@/assets/images/logo.svg" alt="">
     </div>
@@ -16,8 +16,8 @@
         <img src="@/assets/images/add_folder.svg" alt="">
       </div>
     </div>
+    <div class="contract-title">contract</div>
     <div class="contract">
-      <div class="contract-title">contract</div>
       <div class="folder-list">
         <div v-for="(item, index) in menuList" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)">
           <div class="flex-center folder-item-main" style="height: 30px" @click="() => {item.open = !item.open;openFolderIndex = -1}">
@@ -305,9 +305,10 @@ export default {
   width: 248px;
   height: 100vh;
   background: #15141B;
-  padding: 24px;
+  padding: 24px 24px 10px;
   box-sizing: border-box;
   border-right: 1px solid rgba(133, 141, 153, 0.1);
+  flex-direction: column;
   .logo {
     img {
       width: 142px;
@@ -343,6 +344,7 @@ export default {
   .add {
     font-size: 0;
     margin-top: 16px;
+    width: 100%;
     .add-contract {
       padding: 0 16px 0 12px;
       width: 139px;
@@ -369,17 +371,23 @@ export default {
       cursor: pointer;
     }
   }
+  .contract-title {
+    width: 100%;
+    margin-top: 20px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    text-transform: capitalize;
+    color: #858D99;
+  }
   .contract {
-    margin-top: 25px;
-    .contract-title {
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 18px;
-      text-transform: capitalize;
-      color: #858D99;
-    }
+    flex: 1;
+    width: 100%;
+    padding-top: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
     .folder-list {
-      margin-top: 14px;
       .folder-item {
         cursor: pointer;
         min-height: 30px;
