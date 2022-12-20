@@ -79,6 +79,7 @@ export default {
       })
     }
     const update = (id) => {
+      console.log(id)
       let index = openSols.value.findIndex(e => e.name == id)
       let el = document.querySelector('.tabs-w')
       let el1 = el.querySelectorAll('.tab-item')[index]

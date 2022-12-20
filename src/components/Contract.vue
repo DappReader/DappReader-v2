@@ -371,10 +371,15 @@ export default {
     })
     const eventParam = computed(() => {
       return (val) => {
-        val.match(/\((.+)\)/g)[0]
-        let arrStr = RegExp.$1
-        let arr = arrStr.split(',')
-        return arr
+        if (val) {
+          val.match(/\((.+)\)/g)[0]
+          let arrStr = RegExp.$1
+          let arr = arrStr.split(',')
+          return arr
+        } else {
+          return []
+        }
+        
       }
     })
     const hiddenPopover = () => {
