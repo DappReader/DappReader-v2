@@ -510,7 +510,7 @@ export default {
         padding: 12px;
         box-sizing: border-box;
         font-family: 'Montserrat-Medium';
-        font-size: 13px;
+        font-size: 12px;
         line-height: 16px;
         text-transform: capitalize;
         color: #FFFFFF;

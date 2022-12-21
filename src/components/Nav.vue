@@ -256,7 +256,7 @@ export default {
       border: 1px solid rgba(133, 141, 153, 0.15);
       border-radius: 10px;
       font-family: 'Montserrat-Medium';
-      font-size: 13px;
+      font-size: 12px;
       line-height: 18px;
       color: #FFFFFF;
       height: 34px;

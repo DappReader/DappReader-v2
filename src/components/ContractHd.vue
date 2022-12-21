@@ -270,7 +270,7 @@ export default {
     }
     .title-btn-item {
       font-weight: 400;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 16px;
       color: #FFFFFF;
       padding: 0 12px;
@@ -295,7 +295,7 @@ export default {
       // margin-left: 20px;
       .hd-btn-item {
         font-weight: 400;
-        font-size: 13px;
+        font-size: 12px;
         line-height: 16px;
         color: #FFFFFF;
         padding: 0 12px;
@@ -319,7 +319,7 @@ export default {
   }
   .desc {
     font-weight: 400;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 16px;
     text-transform: capitalize;
     color: #858D99;
@@ -355,7 +355,7 @@ export default {
         padding: 0 12px;
         box-sizing: border-box;
         font-family: 'Montserrat-Medium';
-        font-size: 13px;
+        font-size: 12px;
         line-height: 16px;
         color: #858D99;
         span {

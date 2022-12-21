@@ -1175,7 +1175,7 @@ export default {
   }
   .demo-hint-desc {
     margin-top: 16px;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 24px;
     color: #FFFFFF;
     width: 100%;

@@ -2,17 +2,26 @@
   <div class="content">
     <Nav />
     <div v-if="openSols && openSols.length" class="main">
-      <div class="tabs-w">
-        <div class="tbas flex-center">
-          <div v-for="(item, index) in openSols" :key="item.name" :class="['tab-item', activeId == item.name ? 'tab-item-activated' : '', index == activeIndex - 1 ? 'tab-item-activated-prev' : '']" @click="update(item.name)">
-            <div class="tab-item-content flex-center-sb">
-              <span>{{item.title}}</span>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="handleClose(item.name)">
-                <path d="M10 10L2 2" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10 2L2 10" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+      <div class="tabs-b">
+        <div class="tabs-right flex-center-sb">
+          <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="tabs-w">
+          <div class="tbas flex-center">
+            <div v-for="(item, index) in openSols" :key="item.name" :class="['tab-item', activeId == item.name ? 'tab-item-activated' : '', index == activeIndex - 1 ? 'tab-item-activated-prev' : '']" @click="update(item.name)">
+              <div class="tab-item-content flex-center-sb">
+                <span>{{item.title}}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="handleClose(item.name)">
+                  <path d="M10 10L2 2" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M10 2L2 10" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             </div>
-            
           </div>
         </div>
       </div>
@@ -93,6 +102,19 @@ export default {
         store.commit('setActiveId', res)
       })
     }
+    const domMove = (i) => {
+      let el = document.querySelector('.tabs-w')
+      let scrollLeft = el.scrollLeft
+      if (i == 1) {
+        if (scrollLeft > 140) {
+          el.scrollLeft = scrollLeft - 140
+        } else {
+          el.scrollLeft = 0
+        }
+      } else if (i == 2) {
+        el.scrollLeft = scrollLeft + 140
+      }
+    }
     watch(activeId, async () => {
       let openSols = await getLs('openSols') || []
       for (let i = 0; i < openSols.length; i++) {
@@ -106,7 +128,8 @@ export default {
       openSols,
       activeId,
       handleClose,
-      update
+      update,
+      domMove
     }
   }
 }
@@ -119,22 +142,55 @@ export default {
   background: #15141B;
   width: calc(100vw - 248px);
   .main {
-    margin-top: 34px;
     background: #0D0D0E;
   }
+  .tabs-b {
+    position: relative;
+    background: #1F1E27;
+    height: 34px;
+    margin-bottom: 34px;
+    padding-right: 60px;
+    box-sizing: border-box;
+  }
+  .tabs-right {
+    position: absolute;
+    background: #1A1922;
+    width: 60px;
+    position: absolute;
+    height: 34px;
+    right: 0;
+    z-index: 9;
+    padding: 0 8px;
+    box-sizing: border-box;
+    svg {
+      cursor: pointer;
+    }
+    &::before {
+      content: '';
+      width: 1px;
+      height: 12px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      z-index: 2;
+      background: rgba(133, 141, 153, 0.2);
+    }
+  }
   .tabs-w {
-    max-width: 60%;
+    width: 100%;
     overflow-x: auto;
     position: relative;
-    top: -34px;
     scrollbar-width: none;
-    border-radius: 0px 10px 0px 0px;
+    border-radius: 0px 0px 0px 0px;
     &::-webkit-scrollbar {
       display: none;
     }
   }
   .tbas {
     height: 34px;
+    position: relative;
     .tab-item {
       flex: 0 0 140px;
       cursor: pointer;
@@ -144,14 +200,14 @@ export default {
       }
       .tab-item-content {
         position: relative;
-        background: #1F1E27;
+        background: #1A1922;
         z-index: 1;
         width: 140px;
         height: 34px;
         padding: 0 12px;
         box-sizing: border-box;
         font-family: 'Montserrat-Medium';
-        font-size: 13px;
+        font-size: 12px;
         line-height: 16px;
         color: #858D99;
       }
@@ -192,7 +248,7 @@ export default {
         overflow: hidden;
       }
       &:last-child {
-        border-top-right-radius: 10px;
+        // border-top-right-radius: 10px;
         overflow: hidden;
         &::before {
           display: none;

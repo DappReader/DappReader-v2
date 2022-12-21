@@ -40,7 +40,7 @@ export default {
   margin-top: -8px;
   .hint {
     font-weight: 400;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 24px;
     color: #858D99;
   }
