@@ -282,14 +282,14 @@
           </div>
         </div>
         <div v-if="!abiItem && !(contarctData.result && contarctData.result.length)" >
-          <div v-if="contarctData.content.address == '0x89de39F47236522D6552131b81aD14bABDBCBf67'" class="demo-hint">
+          <div class="demo-hint">
             <div class="demo-hint-title">Welcome to DappReader, this is a sample card</div>
             <div class="demo-hint-desc flex-center"><img src="@/assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.<img src="@/assets/images/left.png" alt="" class="down"></div>
             <img src="@/assets/images/hint.png" alt="" class="hint-img">
             <div class="demo-hint-desc flex-center"><p>After entering the parameters according to the functional requirements, click the "run" button, and you can see the running results in the results bar below.</p><img src="@/assets/images/left.png" alt="" class="down"></div>
             <div class="demo-hint-desc flex-center" style="margin-top: 14px">You can even customize GasPrice and accompany ETH.</div>
           </div>
-          <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div>
+          <!-- <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
         </div>
       </div>
     </div>
