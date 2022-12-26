@@ -105,6 +105,14 @@
         </div>
       </div>
     </div>
+    <div class="group">
+      <n-image
+        width="200"
+        object-fit="cover"
+        :src="imgUrl"
+        :preview-src="previewSrc"
+      />
+    </div>
     <AddFolder ref="addFolder" />
     <CreateContract ref="createContract" />
   </div>
@@ -116,6 +124,8 @@ import CreateContract from '@/components/CreateContract.vue'
 import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
+import group from '../assets/images/group.png'
+import groupQrCode from '../assets/images/groupQRCode.jpg'
 export default {
   name: '',
   components: {
@@ -294,7 +304,9 @@ export default {
       edit,
       delFolder,
       delFile,
-      openFile
+      openFile,
+      imgUrl: ref(group),
+      previewSrc: ref(groupQrCode)
     }
   }
 }
@@ -309,6 +321,7 @@ export default {
   box-sizing: border-box;
   border-right: 1px solid rgba(133, 141, 153, 0.1);
   flex-direction: column;
+  position: relative;
   .logo {
     img {
       width: 142px;
@@ -386,7 +399,12 @@ export default {
     padding-top: 10px;
     box-sizing: border-box;
     overflow-y: auto;
+    position: relative;
     overflow-x: hidden;
+    padding-bottom: 101px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .folder-list {
       .folder-item {
         cursor: pointer;
@@ -528,5 +546,20 @@ export default {
 .popconfirm-msg {
   width: 200px;
   line-height: 1.6;
+}
+.group {
+  position: absolute;
+  padding-top: 12px;
+  border-top: 1px solid rgba(133, 141, 153, 0.15);
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  z-index: 99;
+  background: #15141B;
+  img {
+    width: 200px;
+    height: auto;
+    border-radius: 6px;
+  }
 }
 </style>

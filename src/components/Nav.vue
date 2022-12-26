@@ -1,24 +1,14 @@
 <template>
   <div class="nav flex-center">
-    <div class="nav-l">
-      <div class="input-group flex-center">
-        <n-select
-          class="input-group-select"
-          :options="selectOptions"
-          v-model:value="contractChainId"
-          label-field="name"
-          value-field="chainId" 
-        />
-        <input class="form-input" v-model="contractAddress" placeholder="input contract address" />
-        <n-button class="input-group-btn" :loading="searchLoading" @click="handleClickSearch">Search</n-button>
-      </div>
-    </div>
+    <div class="nav-l"></div>
     <div class="nav-r flex-center">
-      <div class="flex-center-center gas-price">
-        <img src="@/assets/images/gas.gif" alt="">
-        <p>{{gasPrice}}</p>
+      <div class="input-group flex-center">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input class="form-input" v-model="contractAddress" placeholder="search contract" @input="inputFun" @keyup.enter="handleClickSearch"  />
       </div>
-      
       <n-select
         v-if="address"
         class="select"
@@ -30,6 +20,11 @@
         value-field="chainId"
       />
       <div v-if="address" class="wallet flex-center" @click="copy">
+        <div class="flex-center-center gas-price">
+          <img src="@/assets/images/gas.gif" alt="">
+          <p>{{gasPrice}}</p>
+        </div>
+        <div class="line"></div>
         <div class="balance">{{fixed(balance)}}</div>
         <div class="line"></div>
         <div class="address">{{formatAddress(address)}}</div>
@@ -76,7 +71,6 @@ export default {
     const createContract = ref(null)
     const contractAddress = ref('')
     const gasPrice = ref('')
-    const contractChainId = ref(1)
     const selectOptions = ref(chainsOptions)
     const formatAddress = computed(() => {
       return (address) => {
@@ -118,7 +112,7 @@ export default {
     }
 
     const handleClickSearch = async () => {
-      if (!contractChainId.value || !contractAddress.value) {
+      if (!contractAddress.value) {
         message.error('Please input contract address')
         return
       } else {
@@ -126,11 +120,11 @@ export default {
           searchLoading.value = true
           let formData = {
             address: contractAddress.value,
-            chainId: contractChainId.value
+            chainId: chainId.value
           }
           const apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
           const fetcher = (...args) => fetch(...args).then((res) => res.json())
-          let chain = chainsOptions.filter(e => e.chainId == contractChainId.value)[0]
+          let chain = chainsOptions.filter(e => e.chainId == chainId.value)[0]
           let endpointURL = chain.endpointURL   
           let abiData = await fetcher(`${endpointURL}/api?module=contract&action=getabi&address=${contractAddress.value}&apikey=${apiKey}`)
           let result = abiData.result
@@ -157,6 +151,12 @@ export default {
       // createContract.value.formData = formData
     }
 
+    const inputFun = () => {
+      if (contractAddress.value.length == 42) {
+        handleClickSearch()
+      }
+    }
+
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
       if (interval) clearInterval(interval)
@@ -172,7 +172,6 @@ export default {
     return {
       addFolder,
       createContract,
-      contractChainId,
       searchLoading,
       contractAddress,
       selectOptions,
@@ -188,7 +187,8 @@ export default {
       connectWallet,
       copy,
       getGas,
-      handleClickSearch
+      handleClickSearch,
+      inputFun
     }
   }
 }
@@ -202,47 +202,37 @@ export default {
   box-sizing: border-box;
   .nav-l {
     flex: 1;
-    .input-group {
-      width: 494px;
-      overflow: hidden;
-      padding-right: 1px;
-      border: 1px solid rgba(133, 141, 153, 0.15);
-      border-radius: 10px;
-      margin-left: 32px;
-      .input-group-select {
-        width: 150px;
-        box-sizing: border-box;
-        height: 34px;
-      }
-      .form-input {
-        margin-top: 0;
-        height: 34px;
-        width: 250px;
-        border-radius: 0;
-        outline: none;
-        font-size: 14px;
-        padding: 0 14px;
-        color: #FFFFFF;
-      }
-      .input-group-btn {
-        width: 90px;
-        background: none;
-        border: none;
-        background: #375CFF;
-        height: 34px;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #FFFFFF;
-        border-radius: 0 10px 10px 0;
-        cursor: pointer;
-      }
-    }
   }
   .nav-r {
     position: relative;
     z-index: 9;
+    .input-group {
+      width: 200px;
+      overflow: hidden;
+      padding-right: 1px;
+      border: 1px solid rgba(133, 141, 153, 0.15);
+      border-radius: 10px;
+      padding: 0 12px;
+      box-sizing: border-box;
+      margin-right: 16px;
+      svg {
+        flex: 0 0 18px;
+      }
+      .form-input {
+        margin-top: 0;
+        height: 34px;
+        flex: 1;
+        border-radius: 0;
+        outline: none;
+        font-size: 14px;
+        padding: 0 0 0 12px;
+        color: #FFFFFF;
+        width: 158px;
+        box-sizing: border-box;
+        background: none !important;
+        border: none !important;
+      }
+    }
     .select {
       width: 260px;
       border: 1px solid rgba(133, 141, 153, 0.15);
@@ -307,7 +297,6 @@ export default {
       line-height: 17px;
       color: #FFFFFF;
       margin-left: 8px;
-      margin-right: 16px;
     }
   }
 }
