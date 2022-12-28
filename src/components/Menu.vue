@@ -465,6 +465,9 @@ export default {
       box-sizing: content-box;
       margin-left: -12px;
       width: 100%;
+      svg {
+        flex: 0 0 18px;
+      }
       &:hover {
         background: rgba(133, 141, 153, 0.1);
         border-radius: 4px;
@@ -487,6 +490,10 @@ export default {
         line-height: 18px;
         color: #FFFFFF;
         margin: 0 !important;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       &.file-item-activated {
         .file-arrow {
