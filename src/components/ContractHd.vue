@@ -4,7 +4,7 @@
       <div class="title-w flex-center">
         <div class="title">{{contarct.name}}</div>
         <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contarct.address, contarct.chain, contarct.sources)">
-          <img src="@/assets/images/show.svg" alt="">
+          <img src="@/assets/images/code.svg" alt="">
           <span>Source Code</span>
         </div>
       </div>
