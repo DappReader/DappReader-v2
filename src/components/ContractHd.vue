@@ -52,9 +52,14 @@
             <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
               <div class="source-tbas flex-center">
                 <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
-                  <div class="source-tab-item-content flex-center-sb">
-                    <span>{{item.name}}</span>
-                  </div>
+                    <n-tooltip trigger="hover">
+                      <template #trigger>
+                        <div class="source-tab-item-content flex-center-sb">
+                          <span>{{item.name}}</span>
+                        </div>
+                      </template>
+                      {{item.name}}
+                    </n-tooltip>
                 </div>
               </div>
             </div>
@@ -331,7 +336,6 @@ export default {
   overflow-x: auto;
   scrollbar-width: none;
   border-radius: 10px 10px 0 0;
-  padding-top: 4px;
   box-sizing: border-box;
   background: #1F1E27;
   &::-webkit-scrollbar {
@@ -340,7 +344,7 @@ export default {
   .source-tbas {
     height: 40px;
     .source-tab-item {
-      flex: 0 0 280px;
+      flex: 0 0 140px;
       cursor: pointer;
       position: relative;
       svg {
@@ -350,7 +354,7 @@ export default {
         position: relative;
         background: #1F1E27;
         z-index: 1;
-        width: 280px;
+        width: 140px;
         height: 40px;
         padding: 0 12px;
         box-sizing: border-box;
@@ -445,5 +449,9 @@ export default {
 <style>
   .hljs {
     background: #0D0D0E !important;
+  }
+  .custom-card .n-spin-content {
+    border: 1px solid rgba(133, 141, 153, 0.1);
+    border-radius: 10px;
   }
 </style>
