@@ -49,20 +49,31 @@
       >
         <n-spin :show="showLoading">
           <div style="max-height: 80vh; overflow: auto;border-radius: 10px;position: relative;">
-            <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
-              <div class="source-tbas flex-center">
-                <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
-                    <n-tooltip trigger="hover">
-                      <template #trigger>
-                        <div class="source-tab-item-content flex-center-sb">
-                          <span>{{item.name}}</span>
-                        </div>
-                      </template>
-                      {{item.name}}
-                    </n-tooltip>
+            <div class="source-tabs-b">
+              <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
+                <div class="source-tbas flex-center">
+                  <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
+                      <n-tooltip trigger="hover">
+                        <template #trigger>
+                          <div class="source-tab-item-content flex-center-sb">
+                            <span>{{item.name}}</span>
+                          </div>
+                        </template>
+                        {{item.name}}
+                      </n-tooltip>
+                  </div>
                 </div>
               </div>
+              <div class="source-tabs-right flex-center-sb">
+                <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             </div>
+            
             <div v-for="item in sourceCode" :key="item.name">
               <div class="source-pane" v-if="activeName == item.name">
                 <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
@@ -189,6 +200,19 @@ export default {
       activeIndex.value = index
       el.scrollTo((resultSpot + 50), 100)
     }
+    const domMove = (i) => {
+      let el = document.querySelector('.source-tabs-w')
+      let scrollLeft = el.scrollLeft
+      if (i == 1) {
+        if (scrollLeft > 140) {
+          el.scrollLeft = scrollLeft - 140
+        } else {
+          el.scrollLeft = 0
+        }
+      } else if (i == 2) {
+        el.scrollLeft = scrollLeft + 140
+      }
+    }
     const del = () => {
       dialog.warning({
         title: "Notice",
@@ -255,7 +279,8 @@ export default {
       share,
       toEtherscanAddress,
       getSourceCode,
-      update
+      update,
+      domMove
     }
   }
 }
@@ -281,7 +306,7 @@ export default {
       padding: 0 12px;
       box-sizing: border-box;
       height: 40px;
-      background: #1F1E27;
+      background: #1A1922;
       border-radius: 10px;
       cursor: pointer;
       margin-left: 12px;
@@ -306,7 +331,7 @@ export default {
         padding: 0 12px;
         box-sizing: border-box;
         height: 40px;
-        background: #1F1E27;
+        background: #1A1922;
         border-radius: 10px;
         cursor: pointer;
         margin-left: 12px;
@@ -331,13 +356,47 @@ export default {
     margin-top: 16px;
   }
 }
+.source-tabs-b {
+  position: relative;
+  background: #1A1922;
+  height: 34px;
+  padding-right: 60px;
+  box-sizing: border-box;
+}
+.source-tabs-right {
+  position: absolute;
+  background: #1A1922;
+  width: 60px;
+  position: absolute;
+  height: 40px;
+  right: 0;
+  top: 0;
+  z-index: 9;
+  padding: 0 8px;
+  box-sizing: border-box;
+  svg {
+    cursor: pointer;
+  }
+  &::before {
+    content: '';
+    width: 1px;
+    height: 12px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    z-index: 2;
+    background: rgba(133, 141, 153, 0.2);
+  }
+}
 .source-tabs-w {
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
   border-radius: 10px 10px 0 0;
   box-sizing: border-box;
-  background: #1F1E27;
+  background: #1A1922;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -352,7 +411,7 @@ export default {
       }
       .source-tab-item-content {
         position: relative;
-        background: #1F1E27;
+        background: #1A1922;
         z-index: 1;
         width: 140px;
         height: 40px;
@@ -388,7 +447,7 @@ export default {
         top: 0;
         bottom: 0;
         z-index: 0;
-        background: linear-gradient( to bottom, #1F1E27 40%, #0D0D0E 60%);
+        background: linear-gradient( to bottom, #1A1922 40%, #0D0D0E 60%);
       }
       &:hover {
         .source-tab-item-content {
