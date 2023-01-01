@@ -84,3 +84,9 @@ export default {
   }
 }
 </style>
+
+<style>
+  .custom-card .modal-content .n-spin-content {
+    border: none;
+  }
+</style>

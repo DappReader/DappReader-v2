@@ -526,7 +526,7 @@ export default {
       right: 0;
       padding: 4px 0;
       box-sizing: border-box;
-      z-index: 9;
+      z-index: 999;
       .right-menu-item {
         cursor: pointer;
         width: 192px;

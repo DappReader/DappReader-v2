@@ -100,8 +100,8 @@ export const chains = [
 		]
 	},
 	{
-		"name": "Görli",
-		"title": "Ethereum Testnet Görli",
+		"name": "Gorli",
+		"title": "Ethereum Testnet Gorli",
 		"chain": "ETH",
 		"network": "testnet",
 		"rpc": [
@@ -115,7 +115,7 @@ export const chains = [
 			"https://faucet.goerli.mudit.blog"
 		],
 		"nativeCurrency": {
-			"name": "Görli Ether",
+			"name": "Gorli Ether",
 			"symbol": "GOR",
 			"decimals": 18
 		},
@@ -3428,7 +3428,7 @@ export const chains = [
 		],
 		"faucets": [],
 		"nativeCurrency": {
-			"name": "Görli Ether",
+			"name": "Gorli Ether",
 			"symbol": "GOR",
 			"decimals": 18
 		},
