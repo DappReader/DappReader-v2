@@ -433,7 +433,11 @@ export default {
               item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
               item = item.split(",")
               item = item.filter((e) => e && e.trim())
-              item = item.map((e) => ethers.utils.hexlify(e))
+              try {
+                item = item.map((e) => ethers.utils.hexlify(e))
+              } catch (error) {
+                console.log(error)
+              }
             }
             param.push(item)
           }
@@ -467,6 +471,7 @@ export default {
             setResult(resultData)
           }
         } catch (error) {
+          console.log(error)
           message.error(error)
           showSpin.value = false
         }
