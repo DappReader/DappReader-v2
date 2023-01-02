@@ -445,9 +445,11 @@ export default {
           let tx = null
           let resultState = ''
           try {
+            console.log(abiItem.name)
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
+            console.error(error)
             resultState = 'error'
             tx = error
           }
@@ -471,7 +473,7 @@ export default {
             setResult(resultData)
           }
         } catch (error) {
-          console.log(error)
+          console.error(error)
           message.error(error)
           showSpin.value = false
         }

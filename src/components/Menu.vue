@@ -17,7 +17,10 @@
       </div>
     </div>
     <div class="contract-title">contract</div>
-    <div class="contract">
+    <div 
+      class="contract" 
+      group-name="cols"
+    >
       <div class="folder-list">
         <div v-for="(item, index) in menuList" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)">
           <div class="flex-center folder-item-main" style="height: 30px" @click="() => {item.open = !item.open;openFolderIndex = -1}">
@@ -47,8 +50,8 @@
               </div> -->
             </div>
           </div>
-          <div class="folder-file" v-show="item.open">
-            <div class="file-item-w" v-for="(file, i) in item.son" :key="file.id" @contextmenu.prevent.stop="fileContextmenu(file.id)">
+          <Container class="folder-file" v-show="item.open" group-name="col-items" @drop="(e) => onDrop(index, e)">
+            <Draggable class="file-item-w" v-for="(file, i) in item.son" :key="file.id" @contextmenu.prevent.stop="fileContextmenu(file.id)">
               <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
                 <svg width="16" height="18" class="file-arrow" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 0V5.2C9 6.88016 9 7.72024 9.32698 8.36197C9.6146 8.92646 10.0735 9.3854 10.638 9.67302C11.2798 10 12.1198 10 13.8 10H16" stroke-width="1.5"/>
@@ -74,35 +77,37 @@
                   <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
                 </n-popconfirm>
               </div>
-            </div>
-          </div>
+            </Draggable>
+          </Container>
         </div>
       </div>
       <div class="file-list">
-        <div v-for="(file, index) in contractList" :key="file.id" class="file-item-w" @contextmenu.prevent="fileContextmenu(file.id)">
-          <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
-            <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>{{file.name}}</span>
-          </div>
-          <div class="right-menu" v-if="file.id == fileContextmenuId">
-            <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-            <div class="right-menu-item flex-center" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
-            <n-popconfirm :show-icon="false"
-              class="right-menu-popconfirm"
-              negative-text="Cancel"
-              positive-text="Ok"
-              @positive-click="delFile(index)"
-            >
-              <template #trigger>
-                <div class="right-menu-item flex-center" @click.stop><img src="@/assets/images/del.svg" alt="">Delete</div>
-              </template>
-              <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
-            </n-popconfirm>
-          </div>
-        </div>
+        <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
+          <Draggable v-for="(file, index) in contractList" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent="fileContextmenu(file.id)">
+            <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
+              <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{file.name}}</span>
+            </div>
+            <div class="right-menu" v-if="file.id == fileContextmenuId">
+              <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
+              <div class="right-menu-item flex-center" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
+              <n-popconfirm :show-icon="false"
+                class="right-menu-popconfirm"
+                negative-text="Cancel"
+                positive-text="Ok"
+                @positive-click="delFile(index)"
+              >
+                <template #trigger>
+                  <div class="right-menu-item flex-center" @click.stop><img src="@/assets/images/del.svg" alt="">Delete</div>
+                </template>
+                <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
+              </n-popconfirm>
+            </div>
+          </Draggable>
+        </Container>
       </div>
     </div>
     <div class="group">
@@ -126,13 +131,19 @@ import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.jpg'
+import { Container, Draggable } from "vue3-smooth-dnd"
 export default {
   name: '',
   components: {
     AddFolder,
-    CreateContract
+    CreateContract,
+    Container,
+    Draggable
   },
   setup() {
+    let moveData = null
+    let dropIndex = -2
+    let dropAddIndex = -2
     const store = useStore()
     const addFolder = ref(null)
     const createContract = ref(null)
@@ -146,16 +157,14 @@ export default {
       return store.state.menuList
     })
     const contractList = computed(() => {
-      return store.state.contractList
+      return store.state.contractList || []
     })
     const showAddFolder = () => {
       addFolder.value.show()
     }
     const showCreateContract = (index) => {
-      console.log(createContract.value, index)
       if (index >= 0) {
         openFolderIndex.value = index
-        console.log(openFolderIndex.value)
         createContract.value.setFolderIndex(index)
       }
       createContract.value.show()
@@ -271,12 +280,61 @@ export default {
           result: []
         }
         openSols.push(item)
+        console.log(openSols)
         setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
           store.commit("setOpenSols", res)
           setLs('activeId', file.id).then(rep => {
             store.commit('setActiveId', rep)
           })
         })
+      }
+    }
+    const onDrop = (index, dragResult) => {
+      let menuListData = menuList.value
+      let contractListData = contractList.value
+      const { removedIndex, addedIndex } = dragResult
+      if (removedIndex !== null || addedIndex !== null) {
+        if (index == -1) {
+          if (addedIndex !== null) {
+            dropAddIndex = addedIndex
+            dropIndex = index
+          }
+          if (removedIndex !== null) {
+            moveData = contractListData.splice(removedIndex, 1)[0]
+          }
+          if (moveData && dropAddIndex > -1) {
+            if (dropIndex == -1) {
+              contractListData.splice(dropAddIndex, 0, moveData)
+            } else {
+              menuListData[dropIndex].son.splice(dropAddIndex, 0, moveData)
+              setMenuList(menuListData)
+            }
+            moveData = null
+            dropAddIndex = -2
+            dropIndex = -2
+          }
+          setContractList(contractListData)
+        } else {
+          if (addedIndex !== null) {
+            dropAddIndex = addedIndex
+            dropIndex = index
+          }
+          if (removedIndex !== null) {
+            moveData = menuListData[index].son.splice(removedIndex, 1)[0]
+          }
+          if (moveData && dropAddIndex > -1) {
+            if (dropIndex == -1) {
+              contractListData.splice(dropAddIndex, 0, moveData)
+              setContractList(contractListData)
+            } else {
+              menuListData[dropIndex].son.splice(dropAddIndex, 0, moveData)
+            }
+            moveData = null
+            dropAddIndex = -2
+            dropIndex = -2
+          }
+          setMenuList(menuListData)
+        }
       }
     }
     watch(menuList, (val) => {
@@ -306,7 +364,8 @@ export default {
       delFile,
       openFile,
       imgUrl: ref(group),
-      previewSrc: ref(groupQrCode)
+      previewSrc: ref(groupQrCode),
+      onDrop
     }
   }
 }
@@ -568,5 +627,10 @@ export default {
     height: auto;
     border-radius: 6px;
   }
+}
+</style>
+<style>
+.smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
+  overflow: visible;
 }
 </style>

@@ -18,6 +18,7 @@
     "vue-router": "^4.0.0-0",
     "vue3-highlightjs": "^1.0.5",
     "vue3-json-viewer": "^2.2.2",
+    "vue3-smooth-dnd": "^0.0.2",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
