@@ -99,5 +99,7 @@ export default {
 }
 </script>
 <style lang="scss">
-
+.jv-container .jv-code.boxed {
+  overflow-y: auto;
+}
 </style>

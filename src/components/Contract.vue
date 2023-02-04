@@ -445,13 +445,16 @@ export default {
           let tx = null
           let resultState = ''
           try {
-            console.log(abiItem.name)
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
             console.error(error)
             resultState = 'error'
             tx = error
+          }
+          console.log(tx)
+          if (tx._isBigNumber) {
+            tx = ethers.utils.formatUnits(tx, 0)
           }
           resultData = {
             content: tx,
