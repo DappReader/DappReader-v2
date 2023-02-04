@@ -389,7 +389,15 @@ export default {
     const updateAbi = (item, type) => {
       mainContent.value.scrollTop = 0
       abiItem.value = item
-      abiType.value = type
+      if (type) {
+        abiType.value = type
+      } else {
+        if (item.stateMutability == 'view') {
+          abiType.value = 'read'
+        } else {
+          abiType.value = 'write'
+        }
+      }
       parameData.value = {}
       sendInfo.value = {}
     }
