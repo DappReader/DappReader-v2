@@ -127,6 +127,7 @@ export default {
           const sign_msg = `${msg}_${time}`
           let signature = await toRaw(provider.value).getSigner().signMessage(sign_msg)
           let contract = props.contract
+          console.log(contract)
           let openSourceType = itemIndex.value == 0 ? 'Private' : itemIndex.value == 1 ? 'Global' : itemIndex.value == 2 ? 'Limited' : ''
           publishContract({
             password: password.value,
@@ -170,6 +171,8 @@ export default {
     }
     watch(props.contract, (val) => {
       console.log(val)
+      token.value = props.contract && props.contract.token || ''
+      title.value = `Contract ${props.contract && props.contract.name || ''} sharing`
     }, {immediate: true})
     return {
       password,
