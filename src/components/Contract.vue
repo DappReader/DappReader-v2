@@ -58,7 +58,7 @@
                       <img src="@/assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
                     </div>
                     <div class="popover-input">
-                      <n-input class="form-input popover-input-item" v-model:value="abiItem.otherName" />
+                      <n-input class="form-input popover-input-item" v-model:value="abiItem.tempName" />
                       <div class="popover-btn flex-center-center" @click="saveOtherName">Save</div>
                     </div>
                   </div>
@@ -182,7 +182,7 @@
                 </div>
               </div>
               <div class="result-section">
-                <div v-if="item && item.content && (item.content.data)" class="result-section">
+                <div v-if="item && item.content && (item.content.hash)" class="result-section">
                   <div class="result-section-content">
                     <div class="result-section-content-hd flex-center">Transaction Info 
                       <img v-if="!item.isShowJson" src="@/assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
@@ -258,7 +258,10 @@
                     <JsonViewer v-else :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" expanded />
                   </div>
                 </div>
-                <JsonViewer v-else :value="(item && item.content) || ''" preview-mode boxed sort theme="dark" />
+                <div v-else class="result-section-content">
+                  <div class="result-section-content-hd flex-center">Result</div>
+                  <JsonViewer :value="(item && item.content) || ''" preview-mode boxed sort theme="dark" />
+                </div>
               </div>
               <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
                 <div class="result-section-title">event list</div>
@@ -460,10 +463,37 @@ export default {
             resultState = 'error'
             tx = error
           }
-          console.log(tx)
-          if (tx._isBigNumber) {
-            tx = ethers.utils.formatUnits(tx, 0)
+          console.log(tx, abiItem)
+          if (abiItem.stateMutability == 'view') {
+            if (tx._isBigNumber) {
+              tx = ethers.utils.formatUnits(tx, 0)
+            }
+            if (Array.isArray(tx)) {
+              let td = []
+              tx.forEach(el => {
+                if (el._isBigNumber) {
+                  let num = ethers.utils.formatUnits(el, 0)
+                  td.push(num)
+                } else {
+                  if (Array.isArray(el)) {
+                    let t = []
+                    el.forEach(e => {
+                      if (e._isBigNumber) {
+                        let num = ethers.utils.formatUnits(e, 0)
+                        t.push(num)
+                      } else {
+                        t.push(e)
+                      }
+                    })
+                    el = JSON.parse(JSON.stringify(t))
+                  }
+                  td.push(el)
+                }
+              })
+              tx = JSON.parse(JSON.stringify(td))
+            }
           }
+          console.log(tx)
           resultData = {
             content: tx,
             state: resultState,
@@ -553,7 +583,10 @@ export default {
     }
 
     const saveOtherName = () => {
+      abiItem.value.otherName = abiItem.value.tempName
+      abiItem.value.tempName = ''
       let contarct = contarctData.value.content
+      console.log(contarct)
       setData(contarct)
       hiddenPopover()
     }

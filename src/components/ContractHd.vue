@@ -85,7 +85,7 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useUtils } from '../hooks/useUtils'
 import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
@@ -109,7 +109,7 @@ export default {
     const showLoading = ref(false)
     const activeName = ref('')
     const activeIndex = ref(-1)
-    const contarctData = ref(props.contarct)
+    const contarctData = ref({})
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const { toEtherscanAddress, copy, setData } = useUtils()
     const getSourceCode = async (address, chain, sources) => {
@@ -264,6 +264,9 @@ export default {
         }
       })
     }
+    watch(() => props.contarct, () => {
+      contarctData.value = props.contarct
+    }, {immediate: true})
     return {
       showLoading,
       showSourceCode,

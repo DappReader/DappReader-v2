@@ -101,5 +101,6 @@ export default {
 <style lang="scss">
 .jv-container .jv-code.boxed {
   overflow-y: auto;
+  max-height: 500px !important;
 }
 </style>
