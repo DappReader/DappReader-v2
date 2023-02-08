@@ -1,7 +1,7 @@
 <template>
   <div class="contract-content">
-    <ContractHd v-if="contarctData" :contarct="contarctData.content"  />
-    <ContractInfo v-if="contarctData" :contarct="contarctData.content" />
+    <ContractHd v-if="contractData" :contract="contractData.content"  />
+    <ContractInfo v-if="contractData" :contract="contractData.content" />
     <div class="contract-main flex-start">
       <div class="collapse">
         <div class="collapse-item" @click="showFun(1)" :style="{'height': getFunHeight(1)}">
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div v-if="contarctData" class="contract-main-content" ref="mainContent">
+      <div v-if="contractData" class="contract-main-content" ref="mainContent">
         <div v-if="abiItem" class="execute">
           <n-spin :show="showSpin">
             <div class="contract-main-content-hd flex-center-sb">
@@ -138,8 +138,8 @@
           </n-spin>
         </div>
         <div class="result">
-          <div v-if="contarctData.result && contarctData.result.length">
-            <div v-for="(item, index) in contarctData.result" :key="index" class="result-item">
+          <div v-if="contractData.result && contractData.result.length">
+            <div v-for="(item, index) in contractData.result" :key="index" class="result-item">
               <div class="result-item-hd flex-center">
                 <div class="result-item-hd-l">
                   <div class="result-name">{{item.state == 'success' ? '✅' : '❌'}} Run function : {{item.name}}</div>
@@ -148,7 +148,7 @@
                   <div class="result-time flex-center"><img src="@/assets/images/time.svg" alt="">
                     {{createAt(item.createAt)}}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed within {{item.confirmed}} sec</span> 
                   </div>
-                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contarctData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt="">View Etherscan</div>
+                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contractData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt="">View Etherscan</div>
                   <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt="">Resend</div>
                 </div>
               </div>
@@ -284,7 +284,7 @@
             </div>
           </div>
         </div>
-        <div v-if="!abiItem && !(contarctData.result && contarctData.result.length)" >
+        <div v-if="!abiItem && !(contractData.result && contractData.result.length)" >
           <div class="demo-hint">
             <div class="demo-hint-title">Welcome to DappReader, this is a sample card</div>
             <div class="demo-hint-desc flex-center"><img src="@/assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.</div>
@@ -296,7 +296,7 @@
         </div>
       </div>
     </div>
-    <NetworkErrorModal v-if="contarctData && contarctData.content" :chain="contarctData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
+    <NetworkErrorModal v-if="contractData && contractData.content" :chain="contractData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
     <ConversionModal ref="conversionModal" @convert="convert" />
   </div>
 </template>
@@ -315,7 +315,7 @@ import "vue3-json-viewer/dist/index.css"
 import { useUtils } from '../hooks/useUtils'
 import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
-import { contract } from "../libs/connectWallet"
+import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
 export default {
   components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal, ConversionModal },
@@ -332,7 +332,7 @@ export default {
     const readFun = ref(null)
     const mainContent = ref(null)
     const writeFun = ref(null)
-    const contarctData = ref(null)
+    const contractData = ref(null)
     const abiItem = ref(null)
     const showSpin = ref(false)
     const parameData = ref({})
@@ -351,6 +351,9 @@ export default {
     })
     const activeId = computed(() => {
       return store.state.activeId
+    })
+    const address = computed(() => {
+      return store.state.address
     })
     const openSols = computed(() => {
       return store.state.openSols
@@ -391,6 +394,7 @@ export default {
 
     const updateAbi = (item, type) => {
       mainContent.value.scrollTop = 0
+      item.tempName = JSON.parse(JSON.stringify(item.otherName))
       abiItem.value = item
       if (type) {
         abiType.value = type
@@ -406,8 +410,8 @@ export default {
     }
 
     const switchChainFun = () => {
-      let contarct = contarctData.value.content
-      switchChain(contarct.chain.chainId)
+      let contract = contractData.value.content
+      switchChain(contract.chain.chainId)
       networkErrorModal.value.showModal = false
     }
 
@@ -421,19 +425,19 @@ export default {
 
     const runFunction = async (abiItem) => {
       running = false
-      let contarct = contarctData.value.content
+      let contract = contractData.value.content
       if (!provider.value) {
         getProvider()
         return
       }
-      if (network.value.chainId != contarct.chain.chainId) {
+      if (network.value.chainId != contract.chain.chainId) {
         networkErrorModal.value.showModal = true
         running = true
       } else {
         showSpin.value = true
         try {
           let user = toRaw(provider.value).getSigner()
-          let C = await contract(contarct.address, contarct.abi, user)
+          let C = await connectContract(contract.address, contract.abi, user)
           let param = []
           let inputs = abiItem.inputs
           for (let i = 0; i < inputs.length; i++) {
@@ -544,10 +548,10 @@ export default {
 
     const getContarctData = async () => {
       let openSols = await getLs('openSols') || []
-      let contarct = openSols.filter(e => e.name == activeId.value)[0]
-      if (contarct) {
-        if (contarct.result && contarct.result.length) {
-          contarct.result.forEach(e => {
+      let contract = openSols.filter(e => e.name == activeId.value)[0]
+      if (contract) {
+        if (contract.result && contract.result.length) {
+          contract.result.forEach(e => {
             let params = []
             let formData = e.formData
             for (let key in formData) {
@@ -560,9 +564,8 @@ export default {
             e.params = params
           })
         }
-        console.log(contarct)
-        contarctData.value = toRaw(contarct)
-        let abi = contarct.content.abi || []
+        contractData.value = toRaw(contract)
+        let abi = contract.content.abi || []
         let list = abi.filter((e) => e.type == "function")
         let readAbi = list.filter((e) => e.stateMutability == "view")
         let writeAbi = list.filter((e) => e.stateMutability != "view")
@@ -583,11 +586,16 @@ export default {
     }
 
     const saveOtherName = () => {
+      let contract = contractData.value.content
+      if (abiItem.value.otherName != abiItem.value.tempName && contract.authorAddress == address.value) {
+        contract.hasUpdate = true
+      } else {
+        contract.hasUpdate = false
+      }
       abiItem.value.otherName = abiItem.value.tempName
-      abiItem.value.tempName = ''
-      let contarct = contarctData.value.content
-      console.log(contarct)
-      setData(contarct)
+      // abiItem.value.tempName = ''
+      console.log(contract)
+      setData(contract)
       hiddenPopover()
     }
 
@@ -623,14 +631,14 @@ export default {
     }
 
     const clickConversion = (type, index) => {
-      let contarct = contarctData.value
-      let result = contarct.result
+      let contract = contractData.value
+      let result = contract.result
       let item = result[index]
       item[type] = !item[type]
       result[index] = item
-      contarct.result = result
-      contarctData.value = JSON.parse(JSON.stringify(contarct))
-      setOpenSols(contarct)
+      contract.result = result
+      contractData.value = JSON.parse(JSON.stringify(contract))
+      setOpenSols(contract)
     }
 
     const getFunHeight = (type) => {
@@ -685,7 +693,7 @@ export default {
       abiType,
       createAt,
       formatStr,
-      contarctData,
+      contractData,
       showPopover,
       readFun,
       writeFun,

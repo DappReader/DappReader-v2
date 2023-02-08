@@ -142,7 +142,7 @@ export const useUtils = () => {
         await open(has, openSols)
         return
       }
-      data.id = `${info.contract_address}${new Date().getTime()}`
+      data.id = crypto.randomUUID()
       data.createAt = new Date().getTime()
       if (folderIndex && folderIndex >= 0) {
         let folderItem = menuList[folderIndex]
@@ -174,13 +174,13 @@ export const useUtils = () => {
     }
   }
 
-  const setOpenSols = async (contarctData) => {
-    let { name } = contarctData
+  const setOpenSols = async (contractData) => {
+    let { name } = contractData
     let openSols = await getLs('openSols') || []
     if (name) {
       openSols.forEach((e, index) => {
         if (e.name == name) {
-          openSols[index] = contarctData
+          openSols[index] = contractData
         }
       })
       setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {

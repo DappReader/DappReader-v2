@@ -76,9 +76,8 @@
       </div>
       <div class="success-status">Share success</div>
       <div class="success-sub-status">Share your contract link</div>
-      <div class="input flex-center" @click="copy(token)">
-        <input class="link flex-center" v-model="token" disabled ref="
-        input">
+      <div class="input flex-center" @click="copy(link)">
+        <input class="link flex-center" v-model="link" disabled ref="input">
         <div class="copy-btn flex-center-center">Copy link</div>
       </div>
     </div>
@@ -108,6 +107,7 @@ export default {
     const password = ref('')
     const token = ref(props.contract && props.contract.token || '')
     const title = ref(`Contract ${props.contract && props.contract.name || ''} sharing`)
+    const link = ref('')
     const provider = computed(() => {
       return store.state.provider
     })
@@ -131,7 +131,6 @@ export default {
           let openSourceType = itemIndex.value == 0 ? 'Private' : itemIndex.value == 1 ? 'Global' : itemIndex.value == 2 ? 'Limited' : ''
           publishContract({
             password: password.value,
-            repeat: password.value,
             message: sign_msg,
             signature,
             address: address.value,
@@ -140,17 +139,19 @@ export default {
               contract_address: contract.address,
               contract_abi: JSON.stringify(contract.abi),
               name: contract.name,
-              chain_info: contract.chain,
+              chain_info: {
+                chainName: contract.chain.chainName || contract.chain.name,
+                chainId: contract.chain.chainId,
+              },
               description: contract.remark
             }
           }).then(res => {
-            console.log(res)
             loading.value = false
             if (res.code == 0) {
-              let origin = window.location.origin
-              token.value = `${origin}/${res.token}`
+              token.value = `${res.token}`
               title.value = 'Share Contract'
-              contract.token = token.value
+              contract.token = res.token
+              contract.authorAddress = address.value
               setData(contract)
             } else {
               message.error(res.msg)
@@ -169,12 +170,17 @@ export default {
       itemIndex.value = -1
       password.value = ''
     }
+    watch(() => token.value, () => {
+      let origin = window.location.origin
+      link.value = `${origin}/${token.value}`
+    }, {immediate: true})
     watch(props.contract, (val) => {
       console.log(val)
       token.value = props.contract && props.contract.token || ''
       title.value = `Contract ${props.contract && props.contract.name || ''} sharing`
     }, {immediate: true})
     return {
+      link,
       password,
       showModal,
       itemIndex,

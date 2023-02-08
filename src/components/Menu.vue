@@ -220,8 +220,8 @@ export default {
         setContractList(contractList)
       }
     }
-    const edit = (contarct, index, folderIndex) => {
-      let { abi, address, chain, createAt, id, name } = contarct
+    const edit = (contract, index, folderIndex) => {
+      let { abi, address, chain, createAt, id, name } = contract
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
       let formData = {abi, address, chainId, createAt, id, name}

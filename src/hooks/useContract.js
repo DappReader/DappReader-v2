@@ -1,5 +1,5 @@
 import { toRaw, computed } from "vue";
-import { contract } from "../libs/connectWallet";
+import { connectContract } from "../libs/connectWallet";
 import { useStore } from 'vuex'
 // import { ethers } from 'ethers'
 export const useContract = (contractData) => {
@@ -16,7 +16,7 @@ export const useContract = (contractData) => {
   const setContract = async(provider) => {
     if (contractChainId.value != network.value.chainId) return
     let user = toRaw(provider).getSigner()
-    C = await contract(contractData.contractAddress, contractData.abi, user)
+    C = await connectContract(contractData.contractAddress, contractData.abi, user)
     console.log(C)
   }
   return {

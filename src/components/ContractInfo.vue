@@ -2,17 +2,17 @@
   <div class="info flex-center">
     <div class="info-item">
       <div class="info-item-key">Chain</div>
-      <div class="info-item-value">{{contarct.chain.name || contarct.chain.chainName}}</div>
+      <div class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
     </div>
     <div class="info-line"></div>
     <div class="info-item">
       <div class="info-item-key">creation time</div>
-      <div class="info-item-value">{{contarct.createAt ? createAt(contarct.createAt) : '--'}}</div>
+      <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
     </div>
     <div class="info-line"></div>
-    <div class="info-item info-copy" @click="copy(contarct.address)">
+    <div class="info-item info-copy" @click="copy(contract.address)">
       <div class="info-item-key">contract address</div>
-      <div class="info-item-value flex-center"><span>{{address(contarct.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+      <div class="info-item-value flex-center"><span>{{address(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
     </div>
     <div class="info-line"></div>
     <div class="info-item">
@@ -28,7 +28,7 @@ import { ethers } from 'ethers'
 import { useUtils } from '../hooks/useUtils'
 import { formatDate, formatAddress } from '../libs/utils'
 export default {
-  props: ['contarct'],
+  props: ['contract'],
   setup(props) {
     const store = useStore()
     const balance = ref(0)
@@ -46,7 +46,7 @@ export default {
         return formatAddress(value)
       }
     })
-    watch(props.contarct, async (val) => {
+    watch(props.contract, async (val) => {
       if (val && provider.value) {
         let balanceEth = await toRaw(provider.value).getBalance(val.address)
         let balanceInEth = await ethers.utils.formatEther(balanceEth)

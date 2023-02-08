@@ -30,7 +30,7 @@ export const connectWallet = (init) => {
   })
 }
 
-export const contract = (contractAddress, abi, provider) => {
+export const connectContract = (contractAddress, abi, provider) => {
   return new ethers.Contract(contractAddress, abi, provider)
 }
 

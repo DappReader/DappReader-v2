@@ -30,6 +30,7 @@ export default {
     const loading = ref(false)
     const showModal = ref(false)
     const confirm = () => {
+      console.log(password.value)
       if (!password.value) return
       emit('confirm', password.value)
     }

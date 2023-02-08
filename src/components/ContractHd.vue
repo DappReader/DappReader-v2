@@ -2,19 +2,28 @@
   <div class="hd">
     <div class="hd-section flex-center-sb">
       <div class="title-w flex-center">
-        <div class="title">{{contarct.name}}</div>
-        <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contarct.address, contarct.chain, contarct.sources)">
+        <div class="title">{{contract.name}}</div>
+        <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
           <img src="@/assets/images/code.svg" alt="">
           <span>Source Code</span>
         </div>
       </div>
-      
       <div class="hd-btns flex-center">
-        <div class="hd-btn-item flex-center-center btn" @click="copy(contarct.abi, 'abi')">
+        <div v-if="contract.token">
+          <div v-if="contract.authorAddress == address && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
+            <img src="@/assets/images/update.svg" alt="">
+            <span>Uptede</span>
+          </div>
+          <div v-if="contract.authorAddress != address && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
+            <img src="@/assets/images/arrow_reload.svg" alt="">
+            <span>Sync</span>
+          </div>
+        </div>
+        <div class="hd-btn-item flex-center-center btn" @click="copy(contract.abi, 'abi')">
           <img src="@/assets/images/copy.svg" alt="">
           <span>Copy ABI</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn" @click="toEtherscanAddress(contarct.address, contarct.chain)">
+        <div class="hd-btn-item flex-center-center btn" @click="toEtherscanAddress(contract.address, contract.chain)">
           <img src="@/assets/images/show.svg" alt="">
           <span>View Etherscan</span>
         </div>
@@ -30,73 +39,95 @@
           <img src="@/assets/images/edit.svg" alt="">
           <span>Edit</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn">
-          <img src="@/assets/images/arrow_reload.svg" alt="">
-          <span>Switch Network</span>
-        </div>
+        
       </div>
     </div>
-    <div class="desc">{{contarct.remark}}</div>
+    <div class="desc">{{contract.remark}}</div>
     <CreateContract ref="createContract" />
-    <ShareModal ref="shareModal" :contract="contarctData" />
-      <n-modal
-        v-model:show="showSourceCode"
-        :mask-closable="false"
-        class="custom-card"
-        preset="card"
-        :style="{width: '70vw',maxWidth: '1408px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
-        title="View Source Code"
-      >
-        <n-spin :show="showLoading">
-          <div style="max-height: 80vh; overflow: auto;border-radius: 10px;position: relative;">
-            <div class="source-tabs-b">
-              <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
-                <div class="source-tbas flex-center">
-                  <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
-                      <n-tooltip trigger="hover">
-                        <template #trigger>
-                          <div class="source-tab-item-content flex-center-sb">
-                            <span>{{item.name}}</span>
-                          </div>
-                        </template>
-                        {{item.name}}
-                      </n-tooltip>
-                  </div>
-                </div>
-              </div>
-              <div class="source-tabs-right flex-center-sb">
-                <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            
-            <div v-for="item in sourceCode" :key="item.name">
-              <div class="source-pane" v-if="activeName == item.name">
-                <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
-              </div>
-            </div>
+    <ShareModal ref="shareModal" :contract="contractData" />
+    <GetContractModel ref="getContractModel" @confirm="getContractFun" />
+    <n-modal
+      v-model:show="showHint"
+      :mask-closable="false"
+      class=""
+      preset="card"
+      :style="{width: '500px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+      title="提示"
+    >
+      <div>
+        是否确认同步,如果同步则本地修改的内容都会被覆盖
+      </div>
+      <div class="ft flex-center">
+        <div class="cancel btn" @click="() => showHint = false">cancel</div>
+        <n-spin :show="syncing" style="color: #FFF">
+          <div class="ok btn" @click="sync">
+            <span>{{syncing ? 'Syncing' : 'Ok'}}</span>
           </div>
         </n-spin>
-      </n-modal>
+      </div>
+    </n-modal>
+    <n-modal
+      v-model:show="showSourceCode"
+      :mask-closable="false"
+      class="custom-card"
+      preset="card"
+      :style="{width: '70vw',maxWidth: '1408px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+      title="View Source Code"
+    >
+      <n-spin :show="showLoading">
+        <div style="max-height: 80vh; overflow: auto;border-radius: 10px;position: relative;">
+          <div class="source-tabs-b">
+            <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
+              <div class="source-tbas flex-center">
+                <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
+                    <n-tooltip trigger="hover">
+                      <template #trigger>
+                        <div class="source-tab-item-content flex-center-sb">
+                          <span>{{item.name}}</span>
+                        </div>
+                      </template>
+                      {{item.name}}
+                    </n-tooltip>
+                </div>
+              </div>
+            </div>
+            <div class="source-tabs-right flex-center-sb">
+              <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div v-for="item in sourceCode" :key="item.name">
+            <div class="source-pane" v-if="activeName == item.name">
+              <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
+            </div>
+          </div>
+        </div>
+      </n-spin>
+    </n-modal>
   </div>
 </template>
 <script>
-import { ref, watch } from 'vue'
+import { ref, watch, computed, toRaw } from 'vue'
 import { useUtils } from '../hooks/useUtils'
 import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
+import GetContractModel from '@/components/GetContractModel.vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from "@/service/service";
 import { useDialog, useMessage } from "naive-ui"
+import { updateContract, checkContractInfo, getContract } from '../http/abi'
+import { chains } from '../libs/chains'
 export default {
-  props: ['contarct'],
+  props: ['contract'],
   components: {
     CreateContract,
-    ShareModal
+    ShareModal,
+    GetContractModel
   },
   setup(props) {
     const store = useStore()
@@ -105,18 +136,29 @@ export default {
     const createContract = ref(null)
     const sourceCode = ref([])
     const shareModal = ref(null)
+    const showHint = ref(false)
     const showSourceCode = ref(false)
     const showLoading = ref(false)
+    const getContractModel = ref(null)
+    const syncing = ref(false)
     const activeName = ref('')
     const activeIndex = ref(-1)
-    const contarctData = ref({})
+    const contractData = ref({})
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const { toEtherscanAddress, copy, setData } = useUtils()
+    
+    const provider = computed(() => {
+      return store.state.provider
+    })
+    const address = computed(() => {
+      return store.state.address
+    })
+
     const getSourceCode = async (address, chain, sources) => {
       console.log('sources', sources)
       showSourceCode.value = true
       if (sources) {
-        console.log(contarctData.value)
+        console.log(contractData.value)
         sourceCode.value = sources
         activeName.value = sources[0].name
         activeIndex.value = 0
@@ -166,7 +208,7 @@ export default {
             sourceCode.value = sourcesArr
             activeName.value = sourcesArr[0].name
             activeIndex.value = 0
-            let CD = props.contarct
+            let CD = props.contract
             CD.sources = sourcesArr
             setData(CD)
             showLoading.value = false
@@ -178,11 +220,103 @@ export default {
         }
       }
     }
+
+    const getContractFun = (password='') => {
+      console.log(password)
+      let token = props.contract.token
+      syncing.value = true
+      getContract({token, password}).then(res => {
+        if (res.code == 1) {
+          message.error(res.msg)
+        } else {
+          let contract = res.contract.contract_info
+          let chainInfo = contract.chain_info
+          let chainId = chainInfo.chainId
+          let chain = chains.filter(e => e.chainId == chainId)[0]
+          let sol = {
+            id: props.contract.id,
+            isImport: true,
+            authorAddress: res.contract.authorAddress,
+            name: contract.name,
+            address: contract.contract_address,
+            abi: JSON.parse(contract.contract_abi),
+            chain: chain,
+            remark: contract.description,
+            token: res.contract.token,
+            versionNumber: res.contract.version_number || 1
+          }
+          setData(sol)
+          getContractModel.value.showModal = false
+          message.success('Sync successfully')
+        }
+        syncing.value = false
+        showHint.value = false
+      }).catch(err => {
+        console.log(err)
+        message.error(err)
+        syncing.value = false
+        showHint.value = false
+      })
+    }
+    const sync = async () => {
+      syncing.value = true
+      checkContractInfo({token: props.contract.token}).then(res => {
+        console.log(res, props.contract)
+        if (res.version_number == props.contract.versionNumber) {
+          message.info('is latest version')
+          showHint.value = false
+          syncing.value = false
+        } else {
+          if (res.openSourceType == 'Limited') {
+            getContractModel.value.showModal = true
+          } else {
+            getContractFun()
+          }
+        }
+      })
+    }
+    const updateShare = async () => {
+      let contract = props.contract
+      let msg = "Sign"
+      const time = new Date().getTime()
+      const sign_msg = `${msg}_${time}`
+      let signature = await toRaw(provider.value).getSigner().signMessage(sign_msg)
+      updateContract({
+        token: contract.token,
+        message: sign_msg,
+        signature,
+        address: address.value,
+        contract_info: {
+          contract_address: contract.address,
+          contract_abi: JSON.stringify(contract.abi),
+          name: contract.name,
+          chain_info: {
+            chainName: contract.chain.chainName || contract.chain.name,
+            chainId: contract.chain.chainId,
+          },
+          description: contract.remark
+        }
+      }).then(res => {
+        if (res.code == 0) {
+          message.success('Update successfully')
+          contractData.value.hasUpdate = false
+          checkContractInfo({token: contractData.value.token}).then(res => {
+            contractData.value.versionNumber = res.version_number
+            console.log(contractData.value)
+            setData(contractData.value)
+          })
+        } else {
+          message.error(res.msg)
+        }
+      }).catch (error => {
+        message.error(error)
+      })
+    }
     const edit = () => {
-      let { abi, address, chain, createAt, id, name } = props.contarct
+      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1 } = props.contract
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
-      let formData = {abi, address, chainId, createAt, id, name}
+      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber}
       createContract.value.show()
       createContract.value.formData = formData
     }
@@ -224,7 +358,7 @@ export default {
           let menuList = await getLs('menuList') || []
           let contractList = await getLs('contractList') || []
           let openSols = await getLs('openSols') || []
-          let id = props.contarct.id
+          let id = props.contract.id
           for (let i = 0; i < menuList.length; i++) {
             let son = menuList[i].son
             son.forEach((e, index) => {
@@ -264,16 +398,31 @@ export default {
         }
       })
     }
-    watch(() => props.contarct, () => {
-      contarctData.value = props.contarct
+    watch(() => props.contract, () => {
+      contractData.value = props.contract
+      if (contractData.value.authorAddress != address.value) {
+        checkContractInfo({token: props.contract.token}).then(res => {
+          console.log(res.version_number == props.contract.versionNumber, res.version_number, props.contract.versionNumber)
+          if (res.version_number == props.contract.versionNumber) {
+            contractData.value.hasUpdate = false
+          } else {
+            contractData.value.hasUpdate = true
+          }
+        })
+      }
+      
     }, {immediate: true})
     return {
+      syncing,
+      showHint,
+      address,
+      getContractModel,
       showLoading,
       showSourceCode,
       activeIndex,
       activeName,
       sourceCode,
-      contarctData,
+      contractData,
       createContract,
       del,
       shareModal,
@@ -283,7 +432,10 @@ export default {
       toEtherscanAddress,
       getSourceCode,
       update,
-      domMove
+      domMove,
+      updateShare,
+      sync,
+      getContractFun
     }
   }
 }
@@ -346,7 +498,12 @@ export default {
           height: 20px;
           margin-right: 8px;
         }
-
+        &.hd-btn-item-red {
+          background: #F43658 !important;
+          &:hover {
+            background: #EF5671 !important;
+          }
+        }
       }
     }
   }
@@ -506,6 +663,23 @@ export default {
   height: calc(80vh - 40px);
   overflow: auto;
   border-radius: 0 0 10px 10px;
+}
+.ft {
+  justify-content: flex-end;
+  margin-top: 20px;
+  .ok {
+    margin-left: 20px;
+    background: #375CFF;
+  }
+  .cancel {
+    background: rgba(133, 141, 153, 0.1);
+  }
+  .btn {
+    padding: 5px 16px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 }
 </style>
 <style>

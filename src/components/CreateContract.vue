@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from 'vuex'
 import { chains } from '../libs/chains'
 import { getLs, setLs } from "@/service/service";
@@ -107,6 +107,9 @@ export default {
     const showAbi = ref(false)
     const showSpin = ref(false)
     const folderIndex = ref(-1)
+    const walletAddress = computed(() => {
+      return store.state.address
+    })
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const show = () => {
       showModal.value = true
@@ -117,18 +120,23 @@ export default {
     }
     const create = async () => {
       if (!formData.value.name || !formData.value.chainId || !formData.value.address || !formData.value.abi) return
-      let {abi, address, chainId, name, remark, id = '', createAt = ''} = formData.value
+      let {abi, address, chainId, name, remark, id = '', createAt = '', token='', authorAddress='', versionNumber = 1} = formData.value
       let chain = chains.filter(e => e.chainId == chainId)[0]
       abi = JSON.parse(abi)
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
       let openSols = await getLs('openSols') || []
       if (formData.value.id) {
-        let info = {name, address, abi, chain, id, remark, createAt}
+        let info = {name, address, abi, chain, id, remark, createAt, token, authorAddress, versionNumber}
         for (let i = 0; i < menuList.length; i++) {
           let son = menuList[i].son
           son.forEach((e, index) => {
             if (e.id == id) {
+              if (name == e.name && remark == e.remark && chainId == e.chain.chainId && address == e.address && JSON.stringify(abi) == JSON.stringify(e.abi) && e.authorAddress == walletAddress.value) {
+                info.hasUpdate = false
+              } else {
+                info.hasUpdate = true
+              }
               son[index] = info
             }
           })
@@ -136,6 +144,12 @@ export default {
         }
         contractList.forEach((e, index) => {
           if (e.id == id) {
+            if (name == e.name && remark == e.remark && chainId == e.chain.chainId && address == e.address && JSON.stringify(abi) == JSON.stringify(e.abi) && e.authorAddress == walletAddress.value) {
+              console.log(1)
+              info.hasUpdate = false
+            } else {
+              info.hasUpdate = true
+            }
             contractList[index] = info
           }
         })

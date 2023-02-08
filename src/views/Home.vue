@@ -45,11 +45,14 @@ export default {
           let chain = chains.filter(e => e.chainId == chainId)[0]
           let sol = {
             isImport: true,
+            authorAddress: res.contract.authorAddress,
             name: contract.name,
             address: contract.contract_address,
             abi: JSON.parse(contract.contract_abi),
             chain: chain,
             remark: contract.description,
+            token: res.contract.token,
+            versionNumber: res.contract.version_number || 1
           }
           setData(sol)
           getContractModel.value.showModal = false
