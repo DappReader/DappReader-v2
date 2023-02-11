@@ -144,7 +144,7 @@ export default {
         }
         contractList.forEach((e, index) => {
           if (e.id == id) {
-            if (name == e.name && remark == e.remark && chainId == e.chain.chainId && address == e.address && JSON.stringify(abi) == JSON.stringify(e.abi) && e.authorAddress == walletAddress.value) {
+            if (name == e.name && remark == e.remark && (chainId == e.chain && e.chain.chainId || '') && address == e.address && (abi &&JSON.stringify(abi) || '') == (e.abi && JSON.stringify(e.abi) || '') && e.authorAddress == walletAddress.value) {
               console.log(1)
               info.hasUpdate = false
             } else {
