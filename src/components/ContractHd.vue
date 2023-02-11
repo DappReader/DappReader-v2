@@ -35,7 +35,7 @@
           <img src="@/assets/images/trash.svg" alt="">
           <span>Delete</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn" @click="edit">
+        <div v-if="(contract.authorAddress == address && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn" @click="edit">
           <img src="@/assets/images/edit.svg" alt="">
           <span>Edit</span>
         </div>
