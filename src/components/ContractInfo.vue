@@ -2,7 +2,7 @@
   <div class="info flex-center">
     <div class="info-item">
       <div class="info-item-key">Chain</div>
-      <div class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
+      <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
     </div>
     <div class="info-line"></div>
     <div class="info-item">

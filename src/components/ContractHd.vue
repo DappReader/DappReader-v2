@@ -314,7 +314,8 @@ export default {
     }
     const edit = () => {
       let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1 } = props.contract
-      let chainId = chain.chainId
+      let chainId = ''
+      if (chain && chain.chainId) chainId = chain.chainId
       abi = JSON.stringify(abi)
       let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber}
       createContract.value.show()
@@ -402,9 +403,14 @@ export default {
       contractData.value = props.contract
       if (contractData.value.authorAddress != address.value && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
+          if (!contractData.value.authorAddress) {
+            contractData.value.authorAddress = res.authorAddress
+            setData(toRaw(contractData.value))
+          }
           console.log(res.version_number == props.contract.versionNumber, res.version_number, props.contract.versionNumber)
           let versionNumber = props.contract.versionNumber || 1
-          if (res.version_number == versionNumber) {
+          let resVersionNumber = res.version_number || 1
+          if (resVersionNumber == versionNumber) {
             contractData.value.hasSync = false
           } else {
             contractData.value.hasSync = true
