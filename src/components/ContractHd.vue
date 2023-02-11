@@ -400,7 +400,7 @@ export default {
     }
     watch(() => props.contract, () => {
       contractData.value = props.contract
-      if (contractData.value.authorAddress != address.value) {
+      if (contractData.value.authorAddress != address.value && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
           console.log(res.version_number == props.contract.versionNumber, res.version_number, props.contract.versionNumber)
           let versionNumber = props.contract.versionNumber || 1
