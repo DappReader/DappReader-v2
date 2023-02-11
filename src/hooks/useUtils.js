@@ -7,8 +7,10 @@ export const useUtils = () => {
   const message = useMessage()
   const copy = (value, type) => {
     if (type == 'abi') {
+      value = JSON.parse(JSON.stringify(value))
       value = value.map(e => {
         delete e.otherName
+        delete e.tempName
         return e
       })
       console.log(value)

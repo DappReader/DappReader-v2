@@ -394,7 +394,9 @@ export default {
 
     const updateAbi = (item, type) => {
       mainContent.value.scrollTop = 0
-      item.tempName = JSON.parse(JSON.stringify(item.otherName))
+      if (item.otherName) {
+        item.tempName = JSON.parse(JSON.stringify(item.otherName))
+      }
       abiItem.value = item
       if (type) {
         abiType.value = type

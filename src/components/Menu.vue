@@ -221,10 +221,10 @@ export default {
       }
     }
     const edit = (contract, index, folderIndex) => {
-      let { abi, address, chain, createAt, id, name } = contract
+      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1 } = contract
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
-      let formData = {abi, address, chainId, createAt, id, name}
+      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber}
       createContract.value.formData = formData
       if (folderIndex >= 0) {
         createContract.value.setFolderIndex(folderIndex)

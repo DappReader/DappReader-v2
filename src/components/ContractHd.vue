@@ -14,7 +14,7 @@
             <img src="@/assets/images/update.svg" alt="">
             <span>Uptede</span>
           </div>
-          <div v-if="contract.authorAddress != address && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
+          <div v-if="contract.authorAddress != address && contract.hasSync" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
             <img src="@/assets/images/arrow_reload.svg" alt="">
             <span>Sync</span>
           </div>
@@ -403,10 +403,11 @@ export default {
       if (contractData.value.authorAddress != address.value) {
         checkContractInfo({token: props.contract.token}).then(res => {
           console.log(res.version_number == props.contract.versionNumber, res.version_number, props.contract.versionNumber)
-          if (res.version_number == props.contract.versionNumber) {
-            contractData.value.hasUpdate = false
+          let versionNumber = props.contract.versionNumber || 1
+          if (res.version_number == versionNumber) {
+            contractData.value.hasSync = false
           } else {
-            contractData.value.hasUpdate = true
+            contractData.value.hasSync = true
           }
         })
       }

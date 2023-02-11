@@ -176,7 +176,13 @@ export default {
     }, {immediate: true})
     watch(props.contract, (val) => {
       console.log(val)
-      token.value = props.contract && props.contract.token || ''
+      let t = props.contract && props.contract.token || ''
+      if (t && t.indexOf('dappreader.com')) {
+        let tArr = t.split('/')
+        token.value = tArr[tArr.length - 1]
+      }  else {
+        token.value = t
+      }
       title.value = `Contract ${props.contract && props.contract.name || ''} sharing`
     }, {immediate: true})
     return {
