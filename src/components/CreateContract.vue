@@ -61,7 +61,7 @@
             <p>Paste ABI Text</p>
           </div>
           <n-spin :show="showSpin">
-            <div class="import-item flex-center-center" @click="importAbiFromEtherscan">
+            <div :class="['import-item', 'flex-center-center', isDisabled ? 'disabled' : '']" @click="importAbiFromEtherscan">
               <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="stroke" d="M20.9997 25H6.99968C6.35534 25 5.83301 24.4777 5.83301 23.8333L5.83301 5.16667C5.83301 4.52234 6.35534 4 6.99967 4L15.8233 4C16.1483 4 16.4585 4.13556 16.6793 4.37402L21.8557 9.96454C22.0554 10.1802 22.1663 10.4633 22.1663 10.7572L22.1663 23.8333C22.1663 24.4777 21.644 25 20.9997 25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path class="fill" d="M16.8633 15.1364C16.5704 14.8435 16.0956 14.8435 15.8027 15.1364C15.5098 15.4293 15.5098 15.9042 15.8027 16.1971L16.8633 15.1364ZM18.6663 18.0001L19.1967 18.5304C19.4896 18.2375 19.4896 17.7626 19.1967 17.4698L18.6663 18.0001ZM15.8027 19.8031C15.5098 20.096 15.5098 20.5709 15.8027 20.8637C16.0956 21.1566 16.5704 21.1566 16.8633 20.8637L15.8027 19.8031ZM15.8027 16.1971L18.136 18.5304L19.1967 17.4698L16.8633 15.1364L15.8027 16.1971ZM18.136 17.4698L15.8027 19.8031L16.8633 20.8637L19.1967 18.5304L18.136 17.4698Z" fill="#858D99"/>
@@ -106,6 +106,7 @@ export default {
     const showModal = ref(false)
     const showAbi = ref(false)
     const showSpin = ref(false)
+    const isDisabled = ref(false)
     const folderIndex = ref(-1)
     const walletAddress = computed(() => {
       return store.state.address
@@ -254,10 +255,11 @@ export default {
           showSpin.value = false
           let result = abiData.result
           if (abiData.status == 0) {
+            isDisabled.value = true
             if (result == 'Contract source code not verified') {
-              message.error('The current contract is not open source, can not be obtained through etherscan')
+              // message.error('The current contract is not open source, can not be obtained through etherscan')
             } else {
-              message.error(result)
+              // message.error(result)
             }
           } else if (abiData.status == 1) {
             formData.value.abi = result
@@ -273,8 +275,11 @@ export default {
       formData.value = {}
       showAbi.value = false
       folderIndex.value = -1
+      showSpin.value = false
+      isDisabled.value = false
     }
     return {
+      isDisabled,
       chains,
       showModal,
       formData,
@@ -308,6 +313,33 @@ export default {
     border-radius: 10px;
     flex-direction: column;
     cursor: pointer;
+    &.disabled {
+      position: relative;
+      &::after {
+        border-radius: 10px;
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(133, 141, 153, 0.1);
+        cursor: no-drop;
+      }
+      &:hover {
+        svg {
+          .stroke {
+            stroke: #858D99;
+          }
+          .fill {
+            fill: #858D99;
+          }
+        }
+        p {
+          color: #858D99;
+        }
+      }
+    }
     &:hover {
       svg {
         .stroke {
@@ -338,5 +370,9 @@ export default {
       color: #858D99;;
     }
   }
+}
+.form {
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 </style>

@@ -52,7 +52,8 @@ export default {
             chain: chain,
             remark: contract.description,
             token: res.contract.token,
-            versionNumber: res.contract.version_number || 1
+            versionNumber: res.contract.version_number || 1,
+            password
           }
           setData(sol)
           getContractModel.value.showModal = false

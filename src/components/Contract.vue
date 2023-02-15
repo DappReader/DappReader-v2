@@ -1,8 +1,10 @@
 <template>
   <div class="contract-content">
-    <ContractHd v-if="contractData" :contract="contractData.content"  />
-    <ContractInfo v-if="contractData" :contract="contractData.content" />
-    <div class="contract-main flex-start">
+    <div v-if="isShowHd" style="margin-bottom: 30px;">
+      <ContractHd v-if="contractData" :contract="contractData.content"  />
+      <ContractInfo v-if="contractData" :contract="contractData.content" />
+    </div>
+    <div class="contract-main flex-start" ref="contractRef">
       <div class="collapse">
         <div class="collapse-item" @click="showFun(1)" :style="{'height': getFunHeight(1)}">
           <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType.indexOf(1) > -1 ? '10px' : '0'}">
@@ -295,6 +297,7 @@
           <!-- <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
         </div>
       </div>
+      <ContractMsg v-if="!isShowHd && contractData" :contract="contractData.content" />
     </div>
     <NetworkErrorModal v-if="contractData && contractData.content" :chain="contractData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
     <ConversionModal ref="conversionModal" @convert="convert" />
@@ -303,11 +306,12 @@
 <script>
 import ContractHd from '@/components/ContractHd.vue'
 import ContractInfo from '@/components/ContractInfo.vue'
+import ContractMsg from '@/components/ContractMsg.vue'
 import NetworkErrorModal from '@/components/NetworkErrorModal.vue'
 import ConversionModal from '@/components/ConversionModal.vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
-import { ref, computed, watch, toRaw } from 'vue'
+import { ref, computed, watch, toRaw, onMounted } from 'vue'
 import { getLs, setLs } from '@/service/service'
 import { formatDate, formatAddress } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
@@ -318,7 +322,7 @@ import { useNetwork } from '../hooks/useNetwork'
 import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
 export default {
-  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal, ConversionModal },
+  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
   setup() {
     let toWeiData = ''
     let toWeiType = ''
@@ -333,6 +337,7 @@ export default {
     const mainContent = ref(null)
     const writeFun = ref(null)
     const contractData = ref(null)
+    const contractRef = ref(null)
     const abiItem = ref(null)
     const showSpin = ref(false)
     const parameData = ref({})
@@ -342,6 +347,7 @@ export default {
     const conversionModal = ref(null)
     const sendInfo = ref({})
     const showSendInfo = ref(false)
+    const isShowHd = ref(true)
     const funOtherName = ref('')
     const provider = computed(() => {
       return store.state.provider
@@ -388,6 +394,22 @@ export default {
         
       }
     })
+
+    window.onresize = () =>{
+      return (() => {
+        window.screenwidth = document.body.clientWidth
+        let screenwidth = window.screenwidth
+        console.log(screenwidth)
+        if (screenwidth < 1680) {
+          isShowHd.value = true
+          contractRef.value.style.height = 'calc(100% - 180px)'
+        } else {
+          isShowHd.value = false
+          contractRef.value.style.height = 'calc(100% - 2px)'
+        }
+      })()
+    }
+
     const hiddenPopover = () => {
       showPopover.value = false
     }
@@ -681,7 +703,22 @@ export default {
     watch(openSols, async () => {
       getContarctData()
     }, {deep: true})
+
+    onMounted(() => {
+      let screenwidth = document.body.clientWidth
+      console.log(screenwidth)
+      if (screenwidth < 1680) {
+        isShowHd.value = true
+        contractRef.value.style.height = 'calc(100% - 180px)'
+      } else {
+        isShowHd.value = false
+        contractRef.value.style.height = 'calc(100% - 2px)'
+      }
+    })
+
     return {
+      contractRef,
+      isShowHd,
       showType,
       mainContent,
       conversionModal,
@@ -729,7 +766,6 @@ export default {
   height: calc(100vh - 94px);
   overflow: hidden;
   .contract-main {
-    margin-top: 30px;
     height: calc(100% - 189px);
     .collapse {
       width: 250px;

@@ -177,9 +177,16 @@ $mainColor: #1C42FF;
   --n-color: #0A0A0C !important;
 }
 
+.n-card__content {
+  padding: 20px !important;
+  padding-top: 0 !important;
+}
+
+.n-form-item-feedback-wrapper {
+  min-height: 16px !important;
+}
+
 .form {
-  border-top: 1px solid rgba(133, 141, 153, 0.2);
-  padding-top: 32px;
   box-sizing: border-box;
 }
 
@@ -205,12 +212,16 @@ $mainColor: #1C42FF;
 }
 
 .custom-card {
-  --n-padding-top: 32px !important;
-  --n-padding-bottom: 32px !important;
-  --n-padding-left: 32px !important;
-  --n-padding-right: 32px !important;
+  --n-padding-top: 20px !important;
+  --n-padding-bottom: 20px !important;
+  --n-padding-left: 20px !important;
+  --n-padding-right: 20px !important;
   .n-card-header {
-    padding-bottom: 24px !important;
+    padding: 20px !important;
+  }
+  .n-card__content {
+    padding: 0 !important;
+    padding-bottom: 20px !important;
   }
 }
 

@@ -376,12 +376,14 @@ export default {
   width: 248px;
   height: 100vh;
   background: #15141B;
-  padding: 24px 24px 10px;
+  padding: 24px 0 10px 0;
   box-sizing: border-box;
   border-right: 1px solid rgba(133, 141, 153, 0.1);
   flex-direction: column;
   position: relative;
   .logo {
+    padding: 0 20px;
+    box-sizing: border-box;
     img {
       width: 142px;
       height: auto;
@@ -417,6 +419,8 @@ export default {
     font-size: 0;
     margin-top: 16px;
     width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
     .add-contract {
       padding: 0 16px 0 12px;
       width: 139px;
@@ -451,6 +455,8 @@ export default {
     line-height: 18px;
     text-transform: capitalize;
     color: #858D99;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
   .contract {
     flex: 1;
@@ -470,9 +476,8 @@ export default {
         min-height: 30px;
         .folder-item-main {
           position: relative;
-          padding: 0 12px;
-          box-sizing: content-box;
-          margin-left: -12px;
+          padding: 0 20px;
+          box-sizing: border-box;
           width: 100%;
           &:hover {
             background: rgba(133, 141, 153, 0.1);
@@ -501,7 +506,7 @@ export default {
           transition: all .3s;
           // overflow: hidden;
           height: auto;
-          padding: 0 12px;
+          // padding: 0 12px;
           box-sizing: border-box;
         }
         &.folder-item-activated {
@@ -511,7 +516,7 @@ export default {
         }
       }
       .file-item {
-        padding: 0;
+        // padding: 0;
       }
     }
     .file-item-w {
@@ -520,10 +525,11 @@ export default {
     .file-item {
       height: 30px;
       cursor: pointer;
-      padding: 0 12px;
-      box-sizing: content-box;
-      margin-left: -12px;
+      padding: 0 20px;
+      box-sizing: border-box;
+      // margin-left: -12px;
       width: 100%;
+      
       svg {
         flex: 0 0 18px;
       }
@@ -574,7 +580,7 @@ export default {
     }
     .right-menu {
       position: absolute;
-      width: 200px;
+      width: 198px;
       background: rgba(27, 26, 34, 0.9);
       border: 1px solid rgba(133, 141, 153, 0.1);
       box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);

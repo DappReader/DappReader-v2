@@ -53,19 +53,21 @@
         <div v-if="itemIndex == 2" class="input">
           <n-input v-model:value="password" placeholder="Please enter your password" class="form-input" />
         </div>
-        <div :class="['share-btn', 'flex-center-center', (itemIndex == 0 || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']" @click="share">
-          <svg v-if="itemIndex != 0" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 16.75C16.2426 16.75 17.25 15.7426 17.25 14.5C17.25 13.2574 16.2426 12.25 15 12.25C13.7574 12.25 12.75 13.2574 12.75 14.5C12.75 15.7426 13.7574 16.75 15 16.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M8.25 11.125L12.75 13.375" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 12.25C7.24264 12.25 8.25 11.2426 8.25 10C8.25 8.75736 7.24264 7.75 6 7.75C4.75736 7.75 3.75 8.75736 3.75 10C3.75 11.2426 4.75736 12.25 6 12.25Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.75 6.625L8.25 8.875" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15 7.75C16.2426 7.75 17.25 6.74264 17.25 5.5C17.25 4.25736 16.2426 3.25 15 3.25C13.7574 3.25 12.75 4.25736 12.75 5.5C12.75 6.74264 13.7574 7.75 15 7.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <svg v-else width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.14258 7.61881H15.8569L11.6902 3.45215" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15.8569 12.3809H5.14258L9.30924 16.5475" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p>{{itemIndex == 0 ? 'Synchronized' : 'Share'}}</p>
+        <div class="btn-w">
+          <div :class="['share-btn', 'flex-center-center', (itemIndex == 0 || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']" @click="share">
+            <svg v-if="itemIndex != 0" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 16.75C16.2426 16.75 17.25 15.7426 17.25 14.5C17.25 13.2574 16.2426 12.25 15 12.25C13.7574 12.25 12.75 13.2574 12.75 14.5C12.75 15.7426 13.7574 16.75 15 16.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8.25 11.125L12.75 13.375" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 12.25C7.24264 12.25 8.25 11.2426 8.25 10C8.25 8.75736 7.24264 7.75 6 7.75C4.75736 7.75 3.75 8.75736 3.75 10C3.75 11.2426 4.75736 12.25 6 12.25Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12.75 6.625L8.25 8.875" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 7.75C16.2426 7.75 17.25 6.74264 17.25 5.5C17.25 4.25736 16.2426 3.25 15 3.25C13.7574 3.25 12.75 4.25736 12.75 5.5C12.75 6.74264 13.7574 7.75 15 7.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg v-else width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.14258 7.61881H15.8569L11.6902 3.45215" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15.8569 12.3809H5.14258L9.30924 16.5475" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>{{itemIndex == 0 ? 'Synchronized' : 'Share'}}</p>
+          </div>
         </div>
       </n-spin>
     </div>
@@ -204,8 +206,8 @@ export default {
 
 <style scoped lang="scss">
 .modal-content {
-  border-top: 1px solid rgba(133, 141, 153, 0.2);
-  padding-top: 32px;
+  // border-top: 1px solid rgba(133, 141, 153, 0.2);
+  // padding-top: 32px;
   box-sizing: border-box;
   .hint {
     font-weight: 400;
@@ -213,13 +215,14 @@ export default {
     line-height: 17px;
     color: #858D99;
     margin-bottom: 32px;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
   .item {
     height: 82px;
     width: 100%;
-    border-radius: 10px;
     box-sizing: border-box;
-    padding: 0 16px;
+    padding: 0 20px;
     cursor: pointer;
     svg {
       path {
@@ -233,31 +236,49 @@ export default {
       }
     }
     &.item-activate {
-      background: rgba(55, 92, 255, 0.15);
-      border: 1px solid rgba(55, 92, 255, 0.3);
+      background: #fff;
+      border: none;
+      .item-info {
+        .item-title {
+          color: #15141B;
+        }
+        .item-desc {
+          color: #15141B;
+        }
+      }
       svg {
         path {
-          stroke: #375CFF;
+          stroke: #fff;
         }
         rect {
-          stroke: #375CFF;
+          stroke: #fff;
         }
         circle {
           fill: #375CFF;
+          fill-opacity: 1;
         }
       }
       &:hover {
-        background: rgba(55, 92, 255, 0.15);
-        border: 1px solid rgba(55, 92, 255, 0.3);
+        background: #fff;
+        border: none;
+        .item-info {
+          .item-title {
+            color: #15141B;
+          }
+          .item-desc {
+            color: #15141B;
+          }
+        }
         svg {
           path {
-            stroke: #375CFF;
+            stroke: #fff;
           }
           rect {
-            stroke: #375CFF;
+            stroke: #fff;
           }
           circle {
             fill: #375CFF;
+            fill-opacity: 1;
           }
         }
       }
@@ -295,9 +316,15 @@ export default {
   }
   .input {
     margin-top: 16px;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  .btn-w {
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-top: 32px;
   }
   .share-btn {
-    margin-top: 32px;
     height: 50px;
     background: rgba(133, 141, 153, 0.1);
     border-radius: 10px;
@@ -326,6 +353,8 @@ export default {
 }
 .modal-success {
   margin-top: 36px;
+  padding: 0 20px;
+  box-sizing: border-box;
   .status {
     height: 80px;
     position: relative;

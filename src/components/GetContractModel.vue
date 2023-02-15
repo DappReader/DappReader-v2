@@ -50,9 +50,8 @@ export default {
 
 <style scoped lang="scss">
 .modal-content {
-  border-top: 1px solid rgba(133, 141, 153, 0.2);
-  padding-top: 32px;
   box-sizing: border-box;
+  padding: 0 20px;
   .input {
     // margin-top: 16px;
   }

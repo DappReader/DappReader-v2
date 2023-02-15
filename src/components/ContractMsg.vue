@@ -1,14 +1,32 @@
 <template>
-  <div class="hd">
-    <div class="hd-section flex-center-sb">
-      <div class="title-w flex-center">
+  <div class="msg">
+    <div class="hd-section">
+      <div class="title-w">
         <div class="title">{{contract.name}}</div>
-        <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
-          <img src="@/assets/images/code.svg" alt="">
-          <span>Source Code</span>
+        <div class="desc">{{contract.remark}}</div>
+      </div>
+      <div class="info">
+        <div class="info-item">
+          <div class="info-item-key">Chain</div>
+          <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item">
+          <div class="info-item-key">creation time</div>
+          <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item info-copy" @click="copy(contract.address)">
+          <div class="info-item-key">contract address</div>
+          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item">
+          <div class="info-item-key">contract balance</div>
+          <div class="info-item-value flex-center"><span>{{balance}}</span></div>
         </div>
       </div>
-      <div class="hd-btns flex-center">
+      <div class="hd-btns">
         <div v-if="contract.token">
           <div v-if="contract.authorAddress == address && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
             <img src="@/assets/images/update.svg" alt="">
@@ -19,30 +37,37 @@
             <span>Sync</span>
           </div>
         </div>
+        <div class="hd-btn-item flex-center-center btn" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
+          <img src="@/assets/images/code.svg" alt="">
+          <span>Source Code</span>
+        </div>
         <div class="hd-btn-item flex-center-center btn" @click="copy(contract.abi, 'abi')">
           <img src="@/assets/images/copy.svg" alt="">
           <span>Copy ABI</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="toEtherscanAddress(contract.address, contract.chain)">
-          <img src="@/assets/images/show.svg" alt="">
-          <span>View Etherscan</span>
+        <div class="flex-center btn-group">
+          <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="toEtherscanAddress(contract.address, contract.chain)">
+            <img src="@/assets/images/show.svg" alt="">
+            <span>View Etherscan</span>
+          </div>
+          <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
+            <img src="@/assets/images/share.svg" alt="">
+            <span>Share</span>
+          </div>
+          <div v-if="(contract.authorAddress == address && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
+            <img src="@/assets/images/edit.svg" alt="">
+            <span>Edit</span>
+          </div>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
-          <img src="@/assets/images/share.svg" alt="">
-          <span>Share</span>
-        </div>
-        <div v-if="(contract.authorAddress == address && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
-          <img src="@/assets/images/edit.svg" alt="">
-          <span>Edit</span>
-        </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="del">
-          <img src="@/assets/images/trash.svg" alt="">
-          <span>Delete</span>
+        <div class="flex-center btn-group">
+          <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="del">
+            <img src="@/assets/images/trash.svg" alt="">
+            <span>Delete</span>
+          </div>
         </div>
         
       </div>
     </div>
-    <div class="desc">{{contract.remark}}</div>
     <CreateContract ref="createContract" />
     <ShareModal ref="shareModal" :contract="contractData" />
     <GetContractModel ref="getContractModel" @confirm="getContractFun" />
@@ -118,10 +143,12 @@ import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
 import GetContractModel from '@/components/GetContractModel.vue'
 import { useStore } from 'vuex'
+import { ethers } from 'ethers'
 import { getLs, setLs } from "@/service/service";
 import { useDialog, useMessage } from "naive-ui"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
+import { formatDate, formatAddress } from '../libs/utils'
 export default {
   props: ['contract'],
   components: {
@@ -133,6 +160,7 @@ export default {
     const store = useStore()
     const dialog = useDialog()
     const message = useMessage()
+    const balance = ref(0)
     const createContract = ref(null)
     const sourceCode = ref([])
     const shareModal = ref(null)
@@ -152,6 +180,18 @@ export default {
     })
     const address = computed(() => {
       return store.state.address
+    })
+
+    const createAt = computed(() => {
+      return (date) => {
+        return formatDate('YYYY-mm-dd', date)
+      }
+    })
+
+    const formatAddr = computed(() => {
+      return (value) => {
+        return formatAddress(value)
+      }
     })
 
     const getSourceCode = async (address, chain, sources) => {
@@ -401,7 +441,7 @@ export default {
         }
       })
     }
-    watch(() => props.contract, () => {
+    watch(() => props.contract, async (val) => {
       contractData.value = props.contract
       if (contractData.value.authorAddress != address.value && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
@@ -419,9 +459,16 @@ export default {
           }
         })
       }
-      
+      if (val && provider.value) {
+        let balanceEth = await toRaw(provider.value).getBalance(val.address)
+        let balanceInEth = await ethers.utils.formatEther(balanceEth)
+        balance.value = balanceInEth
+      } else {
+        balance.value = 0
+      }
     }, {immediate: true})
     return {
+      balance,
       syncing,
       showHint,
       address,
@@ -444,13 +491,23 @@ export default {
       domMove,
       updateShare,
       sync,
-      getContractFun
+      getContractFun,
+      formatAddr,
+      createAt
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.hd {
+.msg {
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid rgba(47, 52, 61, 0.4);
+  border-radius: 10px;
+  margin-left: -1px;
+  width: 266px;
+  flex: 0 0 266px;
+  height: 100%;
   .hd-section {
     .title {
       font-family: Montserrat-Bold;
@@ -462,44 +519,65 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .title-btn-item {
-      font-weight: 400;
-      font-size: 12px;
+    .desc {
+      margin-top: 16px;
+      font-size: 13px;
       line-height: 16px;
-      color: #FFFFFF;
-      padding: 0 12px;
-      box-sizing: border-box;
-      height: 40px;
-      background: #1A1922;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-left: 12px;
-      &:hover {
-        background: #302E38 !important;
-      }
-      img {
-        width: 20px;
-        height: 20px;
-        margin-right: 8px;
+      text-transform: capitalize;
+      color: #858D99;
+    }
+
+    .info {
+      margin-top: 24px;
+      .info-item {
+        margin-bottom: 16px;
+        .info-item-key {
+          font-size: 12px;
+          line-height: 15px;
+          text-transform: capitalize;
+          color: #858D99;
+        }
+        .info-item-value {
+          margin-top: 10px;
+          font-size: 16px;
+          line-height: 20px;
+          text-transform: capitalize;
+          color: #FFFFFF;
+          font-family: 'Montserrat-Medium';
+          img {
+            margin-left: 12px;
+            cursor: pointer;
+          }
+        }
       }
     }
     .hd-btns {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
       // width: 754px;
       // flex: 0 0 754px;
       // margin-left: 20px;
       justify-content: flex-end;
+      .btn-group {
+        flex-wrap: wrap;
+        .hd-btn-item {
+          margin-right: 16px;
+          padding: 0 12px;
+          box-sizing: border-box;
+        }  
+      }
       .hd-btn-item {
         font-weight: 400;
         font-size: 12px;
         line-height: 16px;
         color: #FFFFFF;
-        padding: 0 12px;
         box-sizing: border-box;
         height: 40px;
         background: #1A1922;
         border-radius: 10px;
         cursor: pointer;
-        margin-left: 12px;
+        margin-bottom: 16px;
         &:hover {
           background: #302E38 !important;
         }
