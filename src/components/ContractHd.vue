@@ -470,7 +470,7 @@ export default {
       padding: 0 12px;
       box-sizing: border-box;
       height: 40px;
-      background: #1A1922;
+      background: #2C2D34;
       border-radius: 10px;
       cursor: pointer;
       margin-left: 12px;
@@ -496,12 +496,12 @@ export default {
         padding: 0 12px;
         box-sizing: border-box;
         height: 40px;
-        background: #1A1922;
+        background: #2C2D34;
         border-radius: 10px;
         cursor: pointer;
         margin-left: 12px;
         &:hover {
-          background: #302E38 !important;
+          background: #3D3D48 !important;
         }
         img {
           width: 20px;
@@ -544,14 +544,14 @@ export default {
 }
 .source-tabs-b {
   position: relative;
-  background: #1A1922;
+  background: #2C2D34;
   height: 34px;
   padding-right: 60px;
   box-sizing: border-box;
 }
 .source-tabs-right {
   position: absolute;
-  background: #1A1922;
+  background: #2C2D34;
   width: 60px;
   position: absolute;
   height: 40px;
@@ -582,7 +582,7 @@ export default {
   scrollbar-width: none;
   border-radius: 10px 10px 0 0;
   box-sizing: border-box;
-  background: #1A1922;
+  background: #2C2D34;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -597,7 +597,7 @@ export default {
       }
       .source-tab-item-content {
         position: relative;
-        background: #1A1922;
+        background: #2C2D34;
         z-index: 1;
         width: 140px;
         height: 40px;
@@ -633,7 +633,7 @@ export default {
         top: 0;
         bottom: 0;
         z-index: 0;
-        background: linear-gradient( to bottom, #1A1922 40%, #0D0D0E 60%);
+        background: linear-gradient( to bottom, #2C2D34 40%, #17171A 60%);
       }
       &:hover {
         .source-tab-item-content {
@@ -662,7 +662,7 @@ export default {
         }
         .source-tab-item-content {
           color: #FFFFFF;
-          background: #0D0D0E;
+          background: #17171A;
           border-radius: 10px 10px 0px 0px;
           svg {
             display: inline-block;
@@ -710,7 +710,7 @@ export default {
 </style>
 <style>
   .hljs {
-    background: #0D0D0E !important;
+    background: #17171A !important;
   }
   .custom-card .n-spin-content {
     border: 1px solid rgba(133, 141, 153, 0.1);

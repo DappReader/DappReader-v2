@@ -375,7 +375,7 @@ export default {
 .content {
   width: 248px;
   height: 100vh;
-  background: #15141B;
+  background: #23242A;
   padding: 24px 0 10px 0;
   box-sizing: border-box;
   border-right: 1px solid rgba(133, 141, 153, 0.1);
@@ -393,7 +393,7 @@ export default {
     margin-top: 28px;
     width: 200px;
     height: 40px;
-    background: #0A0A0C;
+    background: #17171A;
     box-sizing: border-box;
     border: 1px solid rgba(133, 141, 153, 0.1);
     border-radius: 10px;
@@ -410,7 +410,7 @@ export default {
       cursor: pointer;
       &.switch-item-activated {
         background: rgba(133, 141, 153, 0.2);
-        border: 1px solid #0A0A0C;
+        border: 1px solid #17171A;
         color: #FFFFFF;
       }
     }
@@ -627,7 +627,7 @@ export default {
   left: 24px;
   right: 24px;
   z-index: 99;
-  background: #15141B;
+  // background: #15141B;
   img {
     width: 200px;
     height: auto;

@@ -11,7 +11,7 @@
     <div v-if="!token" class="modal-content">
       <n-spin :show="loading">
         <div class="input">
-          <n-input v-model:value="password" placeholder="Please enter your password" class="form-input" />
+          <n-input v-model:value="password" placeholder="Please enter your password" class="form-input" @keydown.enter="confirm" />
         </div>
         <div :class="['share-btn', 'flex-center-center',  password ? 'btn-activate' : '']" @click="confirm">Confirm</div>
       </n-spin>

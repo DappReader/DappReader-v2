@@ -2,7 +2,7 @@
   <div class="content">
     <Nav />
     <div v-if="openSols && openSols.length" class="main">
-      <div class="tabs-b">
+      <!-- <div class="tabs-b">
         <div class="tabs-right flex-center-sb">
           <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
@@ -24,7 +24,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       
       <div class="pane" v-for="item in openSols" :key="item.name">
         <Contract v-if="activeId == item.name" :contract="item" />
@@ -139,14 +139,14 @@ export default {
 .content {
   flex: 1;
   height: 100vh;
-  background: #15141B;
+  background: #1C1C20;
   width: calc(100vw - 248px);
   .main {
-    background: #0D0D0E;
+    background: #1C1C20;
   }
   .tabs-b {
     position: relative;
-    background: #1F1E27;
+    background: #2C2D34;
     height: 34px;
     margin-bottom: 34px;
     padding-right: 60px;
@@ -154,7 +154,7 @@ export default {
   }
   .tabs-right {
     position: absolute;
-    background: #1A1922;
+    background: #2C2D34;
     width: 60px;
     position: absolute;
     height: 34px;
@@ -200,7 +200,7 @@ export default {
       }
       .tab-item-content {
         position: relative;
-        background: #1A1922;
+        background: #2C2D34;
         z-index: 1;
         width: 140px;
         height: 34px;
@@ -231,7 +231,7 @@ export default {
         top: 0;
         bottom: 0;
         z-index: 0;
-        background: linear-gradient( to bottom, #1F1E27 40%, #0D0D0E 60%);
+        background: linear-gradient( to bottom, #2C2D34 40%, #17171A 60%);
       }
       &:hover {
         .tab-item-content {
@@ -260,7 +260,7 @@ export default {
         }
         .tab-item-content {
           color: #FFFFFF;
-          background: #0D0D0E;
+          background: #17171A;
           border-radius: 10px 10px 0px 0px;
           svg {
             display: inline-block;

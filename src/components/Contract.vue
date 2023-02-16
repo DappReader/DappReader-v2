@@ -709,10 +709,10 @@ export default {
       console.log(screenwidth)
       if (screenwidth < 1680) {
         isShowHd.value = true
-        contractRef.value.style.height = 'calc(100% - 180px)'
+        contractRef.value.style.height = 'calc(100% - 150px)'
       } else {
         isShowHd.value = false
-        contractRef.value.style.height = 'calc(100% - 2px)'
+        contractRef.value.style.height = 'calc(100% - 5px)'
       }
     })
 
@@ -759,11 +759,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .contract-content {
-  padding: 32px 32px 0;
-  margin-top: -34px;
+  padding: 24px 24px 0;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 94px);
+  height: calc(100vh - 60px);
   overflow: hidden;
   .contract-main {
     height: calc(100% - 189px);
@@ -1157,7 +1156,7 @@ export default {
               margin-left: 16px;
             }
             width: 180px;
-            background: #0D0D0E;
+            background: #17171A;
             border: 1px solid rgba(133, 141, 153, 0.1);
             border-radius: 5px;
             height: 27px;
@@ -1166,7 +1165,7 @@ export default {
             .result-info-item-key {
               width: 92px;
               height: 23px;
-              background: #1F1E27;
+              background: #2C2D34;
               border-radius: 3px;
               font-size: 10px;
               text-transform: capitalize;
@@ -1188,7 +1187,7 @@ export default {
           color: #FFFFFF;
           .result-section-content {
             margin-top: 12px;
-            background: #1F1E27;
+            background: #2C2D34;
             border-radius: 10px;
             padding: 0 2px 2px;
             box-sizing: border-box;
@@ -1201,7 +1200,7 @@ export default {
               }
             }
             .result-section-content-main {
-              background: #0A0A0C;
+              background: #17171A;
               border-radius: 9px;
               .result-params {
                 overflow: hidden;
@@ -1212,7 +1211,7 @@ export default {
                 padding: 12px 18px;
                 box-sizing: border-box;
                 // height: 40px;
-                border-bottom: 1px solid #1F1E27;
+                border-bottom: 1px solid #2C2D34;
                 font-size: 12px;
                 line-height: 15px;
                 text-transform: capitalize;
@@ -1238,7 +1237,7 @@ export default {
                 }
               }
               .result-param-show {
-                background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #0A0A0C 50%);
+                background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #17171A 50%);
                 border-radius: 0px 0px 10px 10px;
                 width: 100%;
                 height: 20px;

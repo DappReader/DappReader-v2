@@ -390,7 +390,7 @@ export default {
     margin-top: 32px;
     padding: 5px 5px 5px 16px;
     height: 50px;
-    background: #0A0A0C;
+    background: #17171A;
     box-sizing: border-box;
     border: 1px solid rgba(47, 52, 61, 0.4);
     border-radius: 5px;
