@@ -299,6 +299,7 @@
       </div>
       <ContractMsg v-if="!isShowHd && contractData" :contract="contractData.content" />
     </div>
+    
     <NetworkErrorModal v-if="contractData && contractData.content" :chain="contractData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
     <ConversionModal ref="conversionModal" @convert="convert" />
   </div>

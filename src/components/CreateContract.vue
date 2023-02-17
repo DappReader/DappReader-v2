@@ -309,7 +309,7 @@ export default {
     width: 156px;
     height: 80px;
     background: #0A0A0C;
-    border: 1px solid rgba(133, 141, 153, 0.1);
+    border: 1px solid rgba(133, 141, 153, 0.2);
     border-radius: 10px;
     flex-direction: column;
     cursor: pointer;

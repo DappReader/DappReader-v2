@@ -2,7 +2,7 @@
   <div class="home flex-start" @click="hiddenRightMenu">
     <Menu ref="menuDom" />
     <Main />
-    <GetContractModel ref="getContractModel" @confirm="confirm" />
+    <GetContractModal ref="getContractModal" @confirm="confirm" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
 import Menu from '../components/Menu.vue'
 import Main from '../components/Main.vue'
-import GetContractModel from '../components/GetContractModel.vue'
+import GetContractModal from '../components/GetContractModal.vue'
 import { checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
 export default {
@@ -21,7 +21,7 @@ export default {
   components: {
     Menu,
     Main,
-    GetContractModel
+    GetContractModal
   },
   setup() {
     const route = useRoute()
@@ -29,7 +29,7 @@ export default {
     const { setData } = useUtils()
     const message = useMessage()
     const menuDom = ref(null)
-    const getContractModel = ref(null)
+    const getContractModal = ref(null)
     const hiddenRightMenu = () => {
       menuDom.value.hiddenRightMenu()
     }
@@ -56,7 +56,7 @@ export default {
             password
           }
           setData(sol)
-          getContractModel.value.showModal = false
+          getContractModal.value.showModal = false
           router.replace('/')
         }
       }).catch(err => {
@@ -70,7 +70,7 @@ export default {
         console.log(res)
         if (res.code == 0) {
           if (res.openSourceType == 'Limited') {
-            getContractModel.value.showModal = true
+            getContractModal.value.showModal = true
           } else {
             getContractFun()
           }
@@ -89,7 +89,7 @@ export default {
     return {
       menuDom,
       hiddenRightMenu,
-      getContractModel,
+      getContractModal,
       confirm
     }
   }

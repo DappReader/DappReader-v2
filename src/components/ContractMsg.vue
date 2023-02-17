@@ -53,6 +53,10 @@
             <img src="@/assets/images/show.svg" alt="">
             <span>View Etherscan</span>
           </div>
+          <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="decode">
+            <img src="@/assets/images/decode.svg" alt="">
+            <span>Decode Input</span>
+          </div>
           <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
             <img src="@/assets/images/share.svg" alt="">
             <span>Share</span>
@@ -71,7 +75,8 @@
     </div>
     <CreateContract ref="createContract" />
     <ShareModal ref="shareModal" :contract="contractData" />
-    <GetContractModel ref="getContractModel" @confirm="getContractFun" />
+    <DecodeModal ref="decodeModal" :contract="contractData" />
+    <GetContractModal ref="getContractModal" @confirm="getContractFun" />
     <n-modal
       v-model:show="showHint"
       :mask-closable="false"
@@ -142,7 +147,8 @@ import { ref, watch, computed, toRaw } from 'vue'
 import { useUtils } from '../hooks/useUtils'
 import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
-import GetContractModel from '@/components/GetContractModel.vue'
+import GetContractModal from '@/components/GetContractModal.vue'
+import DecodeModal from '@/components/DecodeModal.vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { getLs, setLs } from "@/service/service";
@@ -155,7 +161,8 @@ export default {
   components: {
     CreateContract,
     ShareModal,
-    GetContractModel
+    GetContractModal,
+    DecodeModal
   },
   setup(props) {
     const store = useStore()
@@ -168,7 +175,8 @@ export default {
     const showHint = ref(false)
     const showSourceCode = ref(false)
     const showLoading = ref(false)
-    const getContractModel = ref(null)
+    const getContractModal = ref(null)
+    const decodeModal = ref(null)
     const syncing = ref(false)
     const activeName = ref('')
     const activeIndex = ref(-1)
@@ -288,7 +296,7 @@ export default {
             password
           }
           setData(sol)
-          getContractModel.value.showModal = false
+          getContractModal.value.showModal = false
           message.success('Sync successfully')
         }
         syncing.value = false
@@ -311,7 +319,7 @@ export default {
         } else {
           console.log(props.contract)
           if (res.openSourceType == 'Limited' && !props.contract.password) {
-            getContractModel.value.showModal = true
+            getContractModal.value.showModal = true
           } else {
             getContractFun()
           }
@@ -366,6 +374,9 @@ export default {
     }
     const share = () => {
       shareModal.value.showModal = true
+    }
+    const decode = () => {
+      decodeModal.value.showModal = true
     }
     const update = (name, index) => {
       let el = document.querySelector('.source-tabs-w')
@@ -469,11 +480,12 @@ export default {
       }
     }, {immediate: true})
     return {
+      decodeModal,
       balance,
       syncing,
       showHint,
       address,
-      getContractModel,
+      getContractModal,
       showLoading,
       showSourceCode,
       activeIndex,
@@ -494,7 +506,8 @@ export default {
       sync,
       getContractFun,
       formatAddr,
-      createAt
+      createAt,
+      decode
     }
   }
 }
@@ -506,8 +519,8 @@ export default {
   border: 1px solid rgba(47, 52, 61, 0.4);
   border-radius: 10px;
   margin-left: -1px;
-  width: 326px;
-  flex: 0 0 326px;
+  width: 315px;
+  flex: 0 0 315px;
   height: 100%;
   .hd-section {
     .title {

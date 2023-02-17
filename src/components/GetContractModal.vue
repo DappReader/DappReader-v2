@@ -8,7 +8,7 @@
     title="Download contract"
     :on-after-leave="afterLeave"
   >
-    <div v-if="!token" class="modal-content">
+    <div class="modal-content">
       <n-spin :show="loading">
         <div class="input">
           <n-input v-model:value="password" placeholder="Please enter your password" class="form-input" @keydown.enter="confirm" />
