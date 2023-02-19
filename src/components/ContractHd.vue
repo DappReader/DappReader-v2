@@ -230,9 +230,16 @@ export default {
     }
 
     const getContractFun = () => {
-      let password = props.contract.password
-      let token = props.contract.token
       syncing.value = true
+      let password = props.contract.password
+      let token = ''
+      let t = props.contract && props.contract.token || ''
+      if (t && t.indexOf('dappreader.com')) {
+        let tArr = t.split('/')
+        token = tArr[tArr.length - 1]
+      }  else {
+        token = t
+      }
       getContract({token, password}).then(res => {
         if (res.code == 1) {
           message.error(res.msg)
@@ -269,7 +276,15 @@ export default {
     }
     const sync = async () => {
       syncing.value = true
-      checkContractInfo({token: props.contract.token}).then(res => {
+      let token = ''
+      let t = props.contract && props.contract.token || ''
+      if (t && t.indexOf('dappreader.com')) {
+        let tArr = t.split('/')
+        token = tArr[tArr.length - 1]
+      }  else {
+        token = t
+      }
+      checkContractInfo({token}).then(res => {
         console.log(res, props.contract)
         if (res.version_number == props.contract.versionNumber) {
           message.info('is latest version')

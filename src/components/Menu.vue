@@ -587,7 +587,7 @@ export default {
       backdrop-filter: blur(10px);
       border-radius: 6px;
       top: 38px;
-      left: 0;
+      left: 20px;
       right: 0;
       padding: 4px 0;
       box-sizing: border-box;
