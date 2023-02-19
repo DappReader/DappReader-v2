@@ -230,16 +230,9 @@ export default {
     }
 
     const getContractFun = () => {
-      syncing.value = true
       let password = props.contract.password
-      let token = ''
-      let t = props.contract && props.contract.token || ''
-      if (t && t.indexOf('dappreader.com')) {
-        let tArr = t.split('/')
-        token = tArr[tArr.length - 1]
-      }  else {
-        token = t
-      }
+      let token = props.contract.token
+      syncing.value = true
       getContract({token, password}).then(res => {
         if (res.code == 1) {
           message.error(res.msg)
@@ -276,15 +269,7 @@ export default {
     }
     const sync = async () => {
       syncing.value = true
-      let token = ''
-      let t = props.contract && props.contract.token || ''
-      if (t && t.indexOf('dappreader.com')) {
-        let tArr = t.split('/')
-        token = tArr[tArr.length - 1]
-      }  else {
-        token = t
-      }
-      checkContractInfo({token}).then(res => {
+      checkContractInfo({token: props.contract.token}).then(res => {
         console.log(res, props.contract)
         if (res.version_number == props.contract.versionNumber) {
           message.info('is latest version')
@@ -428,14 +413,14 @@ export default {
       })
     }
     watch(() => props.contract, () => {
+      console.log(2)
       contractData.value = props.contract
-      if (contractData.value.authorAddress != address.value && props.contract.token) {
+      if (contractData.value.authorAddress.toLocaleLowerCase() != address.value.toLocaleLowerCase() && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
           if (!contractData.value.authorAddress) {
             contractData.value.authorAddress = res.authorAddress
             setData(toRaw(contractData.value))
           }
-          console.log(res.version_number == props.contract.versionNumber, res.version_number, props.contract.versionNumber)
           let versionNumber = props.contract.versionNumber || 1
           let resVersionNumber = res.version_number || 1
           if (resVersionNumber == versionNumber) {

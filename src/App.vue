@@ -46,7 +46,7 @@ export default {
       let contractList = await getLs('contractList') || []
       let openSols = await getLs('openSols') || []
       let activeId = await getLs('activeId') || ''
-
+      
       if (!inited) {
         let { abi, address, chainId, name, remark} = demo
         let chain = chains.filter(e => e.chainId == chainId)[0]

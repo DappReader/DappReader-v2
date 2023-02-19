@@ -574,6 +574,19 @@ export default {
     const getContarctData = async () => {
       let openSols = await getLs('openSols') || []
       let contract = openSols.filter(e => e.name == activeId.value)[0]
+      let token = toRaw(contract.content.token)
+      if (token && token != 'undefined') token = `https://dappreader.com/${token}`
+      if (token) {
+        if (token == 'undefined') {
+          token = ''
+        } else if (token.indexOf('dappreader.com') > -1) {
+          let tArr = token.split('/')
+          token = tArr[tArr.length - 1]
+        }
+      }
+      
+      contract.content.token = token
+      console.log(contract)
       if (contract) {
         if (contract.result && contract.result.length) {
           contract.result.forEach(e => {
