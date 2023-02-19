@@ -718,7 +718,6 @@ export default {
 
     onMounted(() => {
       let screenwidth = document.body.clientWidth
-      console.log(screenwidth)
       if (screenwidth < 1680) {
         isShowHd.value = true
         contractRef.value.style.height = 'calc(100% - 150px)'

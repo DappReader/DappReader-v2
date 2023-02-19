@@ -176,8 +176,7 @@ export default {
       let origin = window.location.origin
       link.value = `${origin}/${token.value}`
     }, {immediate: true})
-    watch(props.contract, (val) => {
-      console.log(val)
+    watch(props.contract, () => {
       let t = props.contract && props.contract.token || ''
       if (t && t.indexOf('dappreader.com')) {
         let tArr = t.split('/')

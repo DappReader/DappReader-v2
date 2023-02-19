@@ -422,7 +422,6 @@ export default {
       })
     }
     watch(() => props.contract, () => {
-      console.log(2)
       contractData.value = props.contract
       if (props.contract.isImport && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
