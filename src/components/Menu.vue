@@ -83,7 +83,7 @@
       </div>
       <div class="file-list">
         <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
-          <Draggable v-for="(file, index) in contractList" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent="fileContextmenu(file.id)">
+          <Draggable v-for="(file, index) in contractList" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent.stop="fileContextmenu(file.id)">
             <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click.stop="openFile(file)">
               <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -186,6 +186,7 @@ export default {
       fileContextmenuId.value = ''
     }
     const fileContextmenu = (id) => {
+      console.log(id)
       fileContextmenuId.value = id
     }
     const setMenuList = (menuList) => {
