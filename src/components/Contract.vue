@@ -625,14 +625,12 @@ export default {
 
     const saveOtherName = () => {
       let contract = contractData.value.content
-      if (abiItem.value.otherName != abiItem.value.tempName && contract.authorAddress == address.value) {
+      if (abiItem.value.otherName != abiItem.value.tempName && !contract.isImport) {
         contract.hasUpdate = true
       } else {
         contract.hasUpdate = false
       }
       abiItem.value.otherName = abiItem.value.tempName
-      // abiItem.value.tempName = ''
-      console.log(contract)
       setData(contract)
       hiddenPopover()
     }
@@ -731,6 +729,7 @@ export default {
     })
 
     return {
+      address,
       contractRef,
       isShowHd,
       showType,

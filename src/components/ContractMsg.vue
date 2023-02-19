@@ -28,11 +28,11 @@
       </div>
       <div class="hd-btns">
         <div v-if="contract.token">
-          <div v-if="contract.authorAddress == address && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
+          <div v-if="!contract.isImport && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
             <img src="@/assets/images/update.svg" alt="">
             <span>Uptede</span>
           </div>
-          <div v-if="contract.authorAddress != address && contract.hasSync" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
+          <div v-if="contract.isImport && contract.hasSync" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
             <img src="@/assets/images/arrow_reload.svg" alt="">
             <span>Sync</span>
           </div>
@@ -61,7 +61,7 @@
             <img src="@/assets/images/share.svg" alt="">
             <span>Share</span>
           </div>
-          <div v-if="(contract.authorAddress == address && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
+          <div v-if="(!contract.isImport && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
             <img src="@/assets/images/edit.svg" alt="">
             <span>Edit</span>
           </div>
@@ -455,7 +455,7 @@ export default {
     }
     watch(() => props.contract, async (val) => {
       contractData.value = props.contract
-      if (contractData.value.authorAddress != address.value && props.contract.token) {
+      if (props.contract.isImport && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
           if (!contractData.value.authorAddress) {
             contractData.value.authorAddress = res.authorAddress
