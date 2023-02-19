@@ -186,7 +186,6 @@ export default {
       fileContextmenuId.value = ''
     }
     const fileContextmenu = (id) => {
-      console.log(id)
       fileContextmenuId.value = id
     }
     const setMenuList = (menuList) => {
@@ -638,6 +637,6 @@ export default {
 </style>
 <style>
 .smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
-  overflow: visible;
+  overflow: visible !important;
 }
 </style>
