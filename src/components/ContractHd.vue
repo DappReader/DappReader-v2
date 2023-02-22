@@ -3,10 +3,6 @@
     <div class="hd-section flex-center-sb">
       <div class="title-w flex-center">
         <div class="title">{{contract.name}}</div>
-        <div class="title-btn-item flex-center-center btn" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
-          <img src="@/assets/images/code.svg" alt="">
-          <span>Source Code</span>
-        </div>
       </div>
       <div class="hd-btns flex-center">
         <div v-if="contract.token">
@@ -20,27 +16,63 @@
           </div>
         </div>
         <div class="hd-btn-item flex-center-center btn" @click="copy(contract.abi, 'abi')">
-          <img src="@/assets/images/copy.svg" alt="">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.8333 17.5L3.33333 17.5C2.8731 17.5 2.5 17.1269 2.5 16.6667L2.5 5.83333C2.5 5.3731 2.8731 5 3.33333 5L7.98816 5C8.20917 5 8.42113 5.0878 8.57741 5.24408L11.4226 8.08925C11.5789 8.24554 11.6667 8.4575 11.6667 8.67851V16.6667C11.6667 17.1269 11.2936 17.5 10.8333 17.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.33325 5L8.33325 3.33333C8.33325 2.8731 8.70635 2.5 9.16659 2.5L13.8214 2.5C14.0424 2.5 14.2544 2.5878 14.4107 2.74408L17.2558 5.58925C17.4121 5.74554 17.4999 5.9575 17.4999 6.17851V14.1667C17.4999 14.6269 17.1268 15 16.6666 15L11.6666 15" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.6667 9.16667L8.33333 9.16667C7.8731 9.16667 7.5 8.79357 7.5 8.33333L7.5 5" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.4999 6.66667L14.1666 6.66667C13.7063 6.66667 13.3333 6.29357 13.3333 5.83333L13.3333 2.5" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Copy ABI</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="toEtherscanAddress(contract.address, contract.chain)">
+        <div class="hd-btn-item flex-center-center hd-btn-item-h btn hover-6F4AC5" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1151_17154)">
+            <path d="M6.66669 5.41669L1.66669 10.5968L6.66669 15.4167" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.3333 5.41669L18.3333 10.5968L13.3333 15.4167" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.6667 1.66669L8.75 18.3334" stroke="#858D99" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_1151_17154">
+            <rect width="20" height="20" fill="white"/>
+            </clipPath>
+            </defs>
+          </svg>
+          <span>Source Code</span>
+        </div>
+        <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-0670A6" @click="toEtherscanAddress(contract.address, contract.chain)">
           <img src="@/assets/images/show.svg" alt="">
           <span>View Etherscan</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="decode">
-          <img src="@/assets/images/decode.svg" alt="">
+        <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-57B36F" @click="decode">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.75 2.91663L9.58333 8.74996L3.75 14.5833" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7.08337 17.0834H16.25" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Decode Input</span>
         </div>
         <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
-          <img src="@/assets/images/share.svg" alt="">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 17.5C16.3807 17.5 17.5 16.3807 17.5 15C17.5 13.6193 16.3807 12.5 15 12.5C13.6193 12.5 12.5 13.6193 12.5 15C12.5 16.3807 13.6193 17.5 15 17.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7.5 11.25L12.5 13.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12.5C6.38071 12.5 7.5 11.3807 7.5 10C7.5 8.61929 6.38071 7.5 5 7.5C3.61929 7.5 2.5 8.61929 2.5 10C2.5 11.3807 3.61929 12.5 5 12.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.5 6.25L7.5 8.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 7.5C16.3807 7.5 17.5 6.38071 17.5 5C17.5 3.61929 16.3807 2.5 15 2.5C13.6193 2.5 12.5 3.61929 12.5 5C12.5 6.38071 13.6193 7.5 15 7.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Share</span>
         </div>
         <div v-if="(!contract.isImport && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
-          <img src="@/assets/images/edit.svg" alt="">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.66663 13.3334H13.3333" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.66663 13.3333H5.33329L12.8619 5.80474C13.1222 5.54439 13.1222 5.12228 12.8619 4.86193L11.138 3.13807C10.8777 2.87772 10.4556 2.87772 10.1952 3.13807L2.66663 10.6667V13.3333Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Edit</span>
         </div>
         <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="del">
-          <img src="@/assets/images/trash.svg" alt="">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.80001 2.59998H6.20001C5.86864 2.59998 5.60001 2.8686 5.60001 3.19998V4.39998H10.4V3.19998C10.4 2.8686 10.1314 2.59998 9.80001 2.59998Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Delete</span>
         </div>
         
@@ -522,11 +554,20 @@ export default {
         cursor: pointer;
         margin-left: 12px;
         &:hover {
-          background: #3D3D48 !important;
+          background: #3D3D48;
+          svg {
+            path {
+              stroke: #FFFFFF;
+            }
+          }
         }
         img {
-          width: 20px;
-          height: 20px;
+          width: 16px;
+          height: 16px;
+        }
+        svg {
+          width: 16px;
+          height: 16px;
         }
         span {
           margin-left: 8px;
@@ -535,6 +576,22 @@ export default {
           background: #F43658 !important;
           &:hover {
             background: #EF5671 !important;
+          }
+        }
+        &.hover-0670A6 {
+          background: #0784C3;
+          &:hover {
+            background: #0670A6 !important;
+          }
+        }
+        &.hover-6F4AC5 {
+          &:hover {
+            background: #6F4AC5 !important;
+          }
+        }
+        &.hover-57B36F {
+          &:hover {
+            background: #57B36F !important;
           }
         }
         &.hd-btn-item-h {

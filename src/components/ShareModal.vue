@@ -37,22 +37,25 @@
             <p class="item-desc">Everyone can view the current contract</p>
           </div>
         </div>
-        <div :class="['item', itemIndex == 2 ? 'item-activate' : '', 'flex-center']" @click="() => itemIndex = 2">
-          <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
-            <rect x="16.833" y="21.5" width="16.3333" height="14" rx="2.33333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M20.333 19.1667C20.333 16.5893 22.4223 14.5 24.9997 14.5V14.5C27.577 14.5 29.6663 16.5893 29.6663 19.1667V21.5H20.333V19.1667Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="25.0003" cy="27.3333" r="2.33333" fill="#858D99"/>
-            <path d="M25 27.3335V30.8335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="item-info">
-            <p class="item-title">Use Password</p>
-            <p class="item-desc">Anyone with the password can view the current contract</p>
+        <div :class="['item', itemIndex == 2 ? 'item-activate' : '']" @click="() => itemIndex = 2">
+          <div class="flex-center">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
+              <rect x="16.833" y="21.5" width="16.3333" height="14" rx="2.33333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20.333 19.1667C20.333 16.5893 22.4223 14.5 24.9997 14.5V14.5C27.577 14.5 29.6663 16.5893 29.6663 19.1667V21.5H20.333V19.1667Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="25.0003" cy="27.3333" r="2.33333" fill="#858D99"/>
+              <path d="M25 27.3335V30.8335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="item-info">
+              <p class="item-title">Use Password</p>
+              <p class="item-desc">Anyone with the password can view the current contract</p>
+            </div>
+          </div>
+          <div v-if="itemIndex == 2" class="input">
+            <input type="text" v-model="password" placeholder="Please enter your password">
           </div>
         </div>
-        <div v-if="itemIndex == 2" class="input">
-          <n-input v-model:value="password" placeholder="Please enter your password" class="form-input" />
-        </div>
+        
         <div class="btn-w">
           <div :class="['share-btn', 'flex-center-center', (itemIndex == 0 || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']" @click="share">
             <svg v-if="itemIndex != 0" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -218,10 +221,9 @@ export default {
     box-sizing: border-box;
   }
   .item {
-    height: 82px;
+    padding: 16px 20px;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 20px;
     cursor: pointer;
     svg {
       path {
@@ -315,13 +317,26 @@ export default {
   }
   .input {
     margin-top: 16px;
-    padding: 0 20px;
     box-sizing: border-box;
+    input {
+      height: 50px;
+      background: #FFFFFF;
+      border-radius: 10px;
+      color: #15141B;
+      border: 1px solid rgba(133, 141, 153, 0.25);
+      padding: 0 16px;
+      box-sizing: border-box;
+      width: 100%;
+      outline: none;
+      &:focus {
+        border: 1px solid #375CFF;
+      }
+    }
   }
   .btn-w {
     padding: 0 20px;
     box-sizing: border-box;
-    margin-top: 32px;
+    margin-top: 20px;
   }
   .share-btn {
     height: 50px;
