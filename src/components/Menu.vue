@@ -130,7 +130,7 @@ import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
-import groupQrCode from '../assets/images/groupQRCode.jpg'
+import groupQrCode from '../assets/images/groupQRCode.png'
 import { Container, Draggable } from "vue3-smooth-dnd"
 export default {
   name: '',
