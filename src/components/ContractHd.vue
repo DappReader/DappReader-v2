@@ -3,6 +3,7 @@
     <div class="hd-section flex-center-sb">
       <div class="title-w flex-center">
         <div class="title">{{contract.name}}</div>
+        <div class="title-btn-item flex-center">{{contract.chain.name || contract.chain.chainName}}</div>
       </div>
       <div class="hd-btns flex-center">
         <div v-if="contract.token">
@@ -67,7 +68,7 @@
           </svg>
           <span>Edit</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="del">
+        <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-F43658" @click="del">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,10 +76,26 @@
           </svg>
           <span>Delete</span>
         </div>
-        
       </div>
     </div>
     <div class="desc">{{contract.remark}}</div>
+    <div class="info flex-center">
+      <div class="info-item flex-center" @click="copy(contract.address)">
+        <div class="info-key">Contract Address</div>
+        <div class="info-value">{{getAddress(contract.address)}}</div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="info-line"></div>
+      <div class="info-item flex-center" >
+        <div class="info-key">Contract Balance</div>
+        <div class="info-value">{{balance}}</div>
+      </div>
+    </div>
     <CreateContract ref="createContract" />
     <ShareModal ref="shareModal" :contract="contractData" />
     <DecodeModal ref="decodeModal" :contract="contractData" />
@@ -156,10 +173,12 @@ import ShareModal from '@/components/ShareModal.vue'
 import GetContractModal from '@/components/GetContractModal.vue'
 import DecodeModal from '@/components/DecodeModal.vue'
 import { useStore } from 'vuex'
+import { ethers } from 'ethers'
 import { getLs, setLs } from "@/service/service";
 import { useDialog, useMessage } from "naive-ui"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
+import { formatAddress } from '../libs/utils'
 export default {
   props: ['contract'],
   components: {
@@ -184,6 +203,7 @@ export default {
     const activeName = ref('')
     const activeIndex = ref(-1)
     const contractData = ref({})
+    const balance = ref(0)
     const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const { toEtherscanAddress, copy, setData } = useUtils()
     
@@ -192,6 +212,12 @@ export default {
     })
     const address = computed(() => {
       return store.state.address
+    })
+
+    const getAddress = computed(() => {
+      return (value) => {
+        return formatAddress(value)
+      }
     })
 
     const getSourceCode = async (address, chain, sources) => {
@@ -453,7 +479,14 @@ export default {
         }
       })
     }
-    watch(() => props.contract, () => {
+    watch(() => props.contract, async (val) => {
+      if (val && provider.value) {
+        let balanceEth = await toRaw(provider.value).getBalance(val.address)
+        let balanceInEth = await ethers.utils.formatEther(balanceEth)
+        balance.value = balanceInEth
+      } else {
+        balance.value = 0
+      }
       contractData.value = props.contract
       if (props.contract.isImport && props.contract.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
@@ -470,9 +503,9 @@ export default {
           }
         })
       }
-      
     }, {immediate: true})
     return {
+      balance,
       decodeModal,
       syncing,
       showHint,
@@ -497,7 +530,8 @@ export default {
       updateShare,
       sync,
       getContractFun,
-      decode
+      decode,
+      getAddress
     }
   }
 }
@@ -516,17 +550,16 @@ export default {
       text-overflow: ellipsis;
     }
     .title-btn-item {
+      margin-left: 8px;
       font-weight: 400;
       font-size: 12px;
       line-height: 16px;
       color: #FFFFFF;
-      padding: 0 12px;
+      padding: 0 10px;
+      height: 26px;
       box-sizing: border-box;
-      height: 40px;
       background: #2C2D34;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-left: 12px;
+      border-radius: 6px;
       &:hover {
         background: #302E38 !important;
       }
@@ -589,12 +622,18 @@ export default {
             background: #6F4AC5 !important;
           }
         }
+        &.hover-F43658 {
+          &:hover {
+            background: #F43658 !important;
+          }
+        }
         &.hover-57B36F {
           &:hover {
             background: #57B36F !important;
           }
         }
         &.hd-btn-item-h {
+          transition: all .3s;
           max-width: 40px;
           min-width: 40px;
           overflow: hidden;
@@ -605,6 +644,7 @@ export default {
             max-width: 100%;
             span {
               display: block;
+              white-space: nowrap;
             }
           }
         }
@@ -618,6 +658,46 @@ export default {
     text-transform: capitalize;
     color: #858D99;
     margin-top: 16px;
+  }
+  .info {
+    margin-top: 18px;
+    .info-line {
+      height: 20px;
+      width: 1px;
+      background: rgba(133, 141, 153, 0.15);
+      margin: 0 24px;
+    }
+    .info-item {
+      .info-key {
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 16px;
+        text-transform: capitalize;
+        color: #858D99;
+      }
+      .info-value {
+        font-family: 'Montserrat-Medium';
+        font-style: normal;
+        font-size: 13px;
+        line-height: 16px;
+        text-transform: capitalize;
+        color: #FFFFFF;
+        margin-left: 10px;
+      }
+      svg {
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+        cursor: pointer;
+        &:hover {
+          path {
+            stroke: #FFFFFF
+          }
+        }
+      }
+    }
   }
 }
 .source-tabs-b {

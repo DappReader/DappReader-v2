@@ -13,6 +13,7 @@
     "ethers": "^5.7.2",
     "localforage": "^1.10.0",
     "naive-ui": "^2.33.5",
+    "terser-webpack-plugin": "^5.3.6",
     "vue": "^3.0.0",
     "vue-boring-avatars": "^1.3.0",
     "vue-router": "^4.0.0-0",

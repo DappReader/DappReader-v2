@@ -199,17 +199,17 @@ export default {
   width: 100%;
   height: 60px;
   background: #23242A;
-  padding-right: 32px;
+  padding-right: 24px;
   box-sizing: border-box;
   border-bottom: 1px solid rgba(133, 141, 153, 0.1);
   .nav-l {
     flex: 1;
     .input-group {
-      margin-left: 32px;
+      margin-left: 24px;
       width: 480px;
       overflow: hidden;
       padding-right: 1px;
-      background: none;
+      background: #1C1C20;
       border: 1px solid rgba(133, 141, 153, 0.15);
       border-radius: 10px;
       padding: 0 12px;

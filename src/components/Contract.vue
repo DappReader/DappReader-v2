@@ -2,7 +2,6 @@
   <div class="contract-content">
     <div v-if="isShowHd" style="margin-bottom: 30px;">
       <ContractHd v-if="contractData" :contract="contractData.content"  />
-      <ContractInfo v-if="contractData" :contract="contractData.content" />
     </div>
     <div class="contract-main flex-start" ref="contractRef">
       <div class="collapse">
@@ -306,7 +305,6 @@
 </template>
 <script>
 import ContractHd from '@/components/ContractHd.vue'
-import ContractInfo from '@/components/ContractInfo.vue'
 import ContractMsg from '@/components/ContractMsg.vue'
 import NetworkErrorModal from '@/components/NetworkErrorModal.vue'
 import ConversionModal from '@/components/ConversionModal.vue'
@@ -323,7 +321,7 @@ import { useNetwork } from '../hooks/useNetwork'
 import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
 export default {
-  components: { ContractHd, ContractInfo, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
+  components: { ContractHd, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
   setup() {
     let toWeiData = ''
     let toWeiType = ''

@@ -5,27 +5,6 @@
         <div class="title">{{contract.name}}</div>
         <div class="desc">{{contract.remark}}</div>
       </div>
-      <div class="info">
-        <div class="info-item">
-          <div class="info-item-key">Chain</div>
-          <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item">
-          <div class="info-item-key">creation time</div>
-          <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item info-copy" @click="copy(contract.address)">
-          <div class="info-item-key">contract address</div>
-          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item">
-          <div class="info-item-key">contract balance</div>
-          <div class="info-item-value flex-center"><span>{{balance}}</span></div>
-        </div>
-      </div>
       <div class="hd-btns">
         <div v-if="contract.token">
           <div v-if="!contract.isImport && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
@@ -94,7 +73,7 @@
 
             <span>Edit</span>
           </div>
-          <div class="hd-btn-item btn flex-center-center" @click="del">
+          <div class="hd-btn-item btn flex-center-center hover-F43658" @click="del">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -104,6 +83,27 @@
           </div>
         </div>
         
+      </div>
+      <div class="info">
+        <div class="info-item">
+          <div class="info-item-key">Chain</div>
+          <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item">
+          <div class="info-item-key">creation time</div>
+          <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item info-copy" @click="copy(contract.address)">
+          <div class="info-item-key">contract address</div>
+          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item">
+          <div class="info-item-key">contract balance</div>
+          <div class="info-item-value flex-center"><span>{{balance}}</span></div>
+        </div>
       </div>
     </div>
     <CreateContract ref="createContract" />
@@ -549,12 +549,15 @@ export default {
 .msg {
   padding: 20px;
   box-sizing: border-box;
-  border: 1px solid rgba(47, 52, 61, 0.4);
-  border-radius: 10px;
+  background: #23242A;
+  border-left: 1px solid rgba(133, 141, 153, 0.1);
   margin-left: -1px;
-  width: 315px;
-  flex: 0 0 315px;
-  height: 100%;
+  width: 308px;
+  flex: 0 0 308px;
+  height: calc(100% + 24px);
+  margin-left: 24px;
+  margin-top: -24px;
+  margin-right: -24px;
   .hd-section {
     .title {
       font-family: Montserrat-Bold;
@@ -621,7 +624,7 @@ export default {
         color: #FFFFFF;
         box-sizing: border-box;
         height: 40px;
-        background: #2C2D34;
+        background: #22212B;
         border-radius: 10px;
         cursor: pointer;
         margin-bottom: 16px;
@@ -648,6 +651,11 @@ export default {
           background: #F43658 !important;
           &:hover {
             background: #EF5671 !important;
+          }
+        }
+        &.hover-F43658 {
+          &:hover {
+            background: #F43658 !important;
           }
         }
         &.hover-0670A6 {
