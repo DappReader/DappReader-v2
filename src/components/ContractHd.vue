@@ -599,6 +599,7 @@ export default {
           height: 16px;
         }
         svg {
+          flex: 0 0 16px;
           width: 16px;
           height: 16px;
         }
@@ -633,18 +634,19 @@ export default {
           }
         }
         &.hd-btn-item-h {
-          transition: all .3s;
+          justify-content: flex-start;
+          transition: all .5s;
           max-width: 40px;
-          min-width: 40px;
           overflow: hidden;
           span {
-            display: none;
+            transition: all .5s;
+            opacity: 0;
+            white-space: nowrap;
           }
           &:hover {
-            max-width: 100%;
+            max-width: 150px;
             span {
-              display: block;
-              white-space: nowrap;
+              opacity: 1;
             }
           }
         }
