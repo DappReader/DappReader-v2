@@ -428,7 +428,12 @@ export default {
           abiType.value = 'write'
         }
       }
-      parameData.value = {}
+      let data = {}
+      abiItem.value.inputs.forEach(e => {
+        data[e.name] = ''
+      })
+      console.log(data)
+      parameData.value = data
       sendInfo.value = {}
     }
 

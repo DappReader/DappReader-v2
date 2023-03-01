@@ -2,9 +2,9 @@
   <n-modal
     v-model:show="showModal"
     :mask-closable="false"
-    class="custom-card"
+    class="custom-card modal-style"
     preset="card"
-    :style="{width: '700px',background: '#15141B', 'border-radius': '10px'}"
+    :style="{width: '700px'}"
     title="Decode Input"
     :on-after-leave="afterLeave"
   >

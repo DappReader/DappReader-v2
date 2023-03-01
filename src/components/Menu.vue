@@ -21,8 +21,8 @@
       class="contract" 
       group-name="cols"
     >
-      <div class="folder-list">
-        <div v-for="(item, index) in menuList" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)">
+      <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
+        <div v-for="(item, index) in menuList" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)" @mouseover="mouseover(index)" @mouseout="mouseout">
           <div class="flex-center folder-item-main" style="height: 30px" @click="() => {item.open = !item.open;openFolderIndex = -1}">
             <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
             <img v-else src="@/assets/images/folder.svg" alt="">
@@ -81,7 +81,7 @@
           </Container>
         </div>
       </div>
-      <div class="file-list">
+      <div class="file-list" @mousedown="mousedown" @mouseup="mouseup">
         <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
           <Draggable v-for="(file, index) in contractList" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent.stop="fileContextmenu(file.id)">
             <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)">
@@ -141,6 +141,8 @@ export default {
     Draggable
   },
   setup() {
+    let timeout = null
+    let isMousedown = false
     let moveData = null
     let dropIndex = -2
     let dropAddIndex = -2
@@ -289,6 +291,7 @@ export default {
       }
     }
     const onDrop = (index, dragResult) => {
+      console.log(index, dragResult)
       let menuListData = menuList.value
       let contractListData = contractList.value
       const { removedIndex, addedIndex } = dragResult
@@ -336,6 +339,22 @@ export default {
         }
       }
     }
+    const mousedown = () => {
+      isMousedown = true
+    }
+    const mouseup = () => {
+      isMousedown = false
+    }
+    const mouseover = (index) => {
+      if (isMousedown) {
+        timeout = setTimeout(() => {
+          menuList.value[index].open = true
+        }, 400)
+      }
+    }
+    const mouseout = () => {
+      clearTimeout(timeout)
+    }
     watch(menuList, (val) => {
       if (val && openFolderIndex.value >= 0) {
         menuList.value[openFolderIndex.value].open = true
@@ -364,7 +383,11 @@ export default {
       openFile,
       imgUrl: ref(group),
       previewSrc: ref(groupQrCode),
-      onDrop
+      onDrop,
+      mousedown,
+      mouseup,
+      mouseover,
+      mouseout
     }
   }
 }

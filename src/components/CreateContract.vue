@@ -2,9 +2,8 @@
   <n-modal
     v-model:show="showModal"
     :mask-closable="false"
-    class="custom-card"
+    class="custom-card modal-style"
     preset="card"
-    :style="{width: '564px',background: '#15141B', 'border-radius': '10px'}"
     title="Create Contract"
     :on-after-leave="afterLeave"
   >
@@ -19,11 +18,21 @@
           placeholder="Please select network"
           v-model:value="formData.chainId"
           filterable
-          :options="chains"
+          :options="defaultChains"
           @update:value="handleUpdateValue"
           label-field="name"
           value-field="chainId"
-        />
+        >
+          <template #action>
+            <div class="add-btn flex-center-center" @click="showAdd">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>添加新常用链</span>
+            </div>
+          </template>
+        </n-select>
       </n-form-item>
       <n-form-item show-require-mark label="Contract Address" >
         <n-input v-model:value="formData.address" class="form-input" @input="bindInput" />
@@ -88,21 +97,26 @@
         <div :class="['btn-item', (!formData.name || !formData.chainId || !formData.address || !formData.abi) ? '' : 'btn-item-activated', 'flex-center-center']" @click="create">Create</div>
       </div>
     </div>
+    <AddChainModal ref="addChainModal" @add="addChain" />
   </n-modal>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useStore } from 'vuex'
-import { chains } from '../libs/chains'
+import { chains, defaultChain } from '../libs/chains'
 import { getLs, setLs } from "@/service/service";
 import { useMessage } from 'naive-ui'
+import AddChainModal from '@/components/AddChainModal'
 export default {
   name: 'CreateContract',
+  components: {AddChainModal},
   setup() {
     const store = useStore()
     const message = useMessage()
     const formData = ref({})
+    const defaultChains = ref([])
+    const addChainModal = ref(null)
     const showModal = ref(false)
     const showAbi = ref(false)
     const showSpin = ref(false)
@@ -274,8 +288,29 @@ export default {
       showSpin.value = false
       isDisabled.value = false
     }
+    const showAdd = () => {
+      addChainModal.value.showModal = true
+    }
+    const addChain = async (e) => {
+      console.log(e)
+      defaultChains.value.push(e)
+      addChainModal.value.afterLeave()
+      formData.value.chainId = e.chainId
+      await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChains.value)))
+    }
+    onBeforeMount(async () => {
+      let dc = await getLs('defaultChain') || []
+      if (!dc.length) {
+        defaultChains.value = defaultChain
+        await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChain)))
+      } else {
+        defaultChains.value = dc
+      }
+    })
     return {
+      addChainModal,
       isDisabled,
+      defaultChains,
       chains,
       showModal,
       formData,
@@ -289,7 +324,9 @@ export default {
       afterLeave,
       importAbiFromEtherscan,
       setFolderIndex,
-      bindInput
+      bindInput,
+      addChain,
+      showAdd
     }
   }
 }
@@ -304,8 +341,8 @@ export default {
     box-sizing: border-box;
     width: 156px;
     height: 80px;
-    background: #0A0A0C;
-    border: 1px solid rgba(133, 141, 153, 0.2);
+    background: #17171A;
+    border: 1px solid rgba(133, 141, 153, 0.1);
     border-radius: 10px;
     flex-direction: column;
     cursor: pointer;
@@ -370,5 +407,18 @@ export default {
 .form {
   padding: 0 20px;
   box-sizing: border-box;
+}
+.add-btn {
+  background: rgba(133, 141, 153, 0.3);
+  border-radius: 6px;
+  height: 34px;
+  cursor: pointer;
+  span {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    text-transform: capitalize;
+    color: #FFFFFF;
+  }
 }
 </style>

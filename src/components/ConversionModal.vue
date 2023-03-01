@@ -2,9 +2,9 @@
   <n-modal
     v-model:show="showModal"
     :mask-closable="false"
-    class="custom-card"
+    class="custom-card modal-style"
     preset="card"
-    :style="{width: '600px',background: '#15141B', 'border-radius': '10px'}"
+    :style="{width: '600px'}"
     title="Digital Conversion"
     :on-after-leave="afterLeave"
   >

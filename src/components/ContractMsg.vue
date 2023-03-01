@@ -113,9 +113,9 @@
     <n-modal
       v-model:show="showHint"
       :mask-closable="false"
-      class=""
+      class="modal-style"
       preset="card"
-      :style="{width: '500px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+      :style="{width: '500px', 'min-height': '200px'}"
       title="提示"
     >
       <div>
@@ -133,9 +133,9 @@
     <n-modal
       v-model:show="showSourceCode"
       :mask-closable="false"
-      class="custom-card"
+      class="custom-card modal-style"
       preset="card"
-      :style="{width: '70vw',maxWidth: '1408px',background: '#15141B', 'border-radius': '10px', 'min-height': '200px'}"
+      :style="{width: '70vw',maxWidth: '1408px', 'border-radius': '10px', 'min-height': '200px'}"
       title="View Source Code"
     >
       <n-spin :show="showLoading">

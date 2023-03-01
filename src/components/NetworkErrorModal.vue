@@ -2,9 +2,9 @@
   <n-modal
     v-model:show="showModal"
     :mask-closable="false"
-    class="custom-card"
+    class="custom-card modal-style"
     preset="card"
-    :style="{width: '564px',background: '#15141B', 'border-radius': '10px', padding: '8px'}"
+    :style="{width: '564px', padding: '8px'}"
     title="Current Network Error"
   >
     <div class="modal-content">

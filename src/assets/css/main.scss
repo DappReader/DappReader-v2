@@ -102,7 +102,6 @@ $mainColor: #1C42FF;
 }
 
 .n-modal-mask {
-  background: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(5px) !important;
 }
 .n-dialog.n-modal {
@@ -120,8 +119,8 @@ $mainColor: #1C42FF;
 .form-input {
   margin-top: 2px;
   height: 40px;
-  background: #0A0A0C;
-  border: 1px solid rgba(133, 141, 153, 0.2);
+  background: #17171A;
+  border: 1px solid rgba(133, 141, 153, 0.1);
   border-radius: 10px;
   --n-border-hover: none !important;
   --n-border-active: 1px solid #375CFF !important;
@@ -142,19 +141,19 @@ $mainColor: #1C42FF;
 
 .form-select {
   .n-base-selection {
+    background: #17171A;
+    border: 1px solid rgba(133, 141, 153, 0.1);
+    border-radius: 10px;
     margin-top: 2px;
     height: 40px;
-    background: #0A0A0C;
-    border: 1px solid rgba(133, 141, 153, 0.2);
-    border-radius: 10px;
     --n-border-hover: none !important;
     --n-border-active: 1px solid #375CFF !important;
     --n-border-focus: 1px solid #375CFF !important;
     --n-box-shadow-active: none !important;
     --n-box-shadow-focus: none !important;
     --n-color-focus: none !important;
-    --n-height: 38px !important;
-    --n-color: #0A0A0C !important;
+    --n-height: 40px !important;
+    --n-color: #17171A !important;
   }
 }
 
@@ -373,5 +372,17 @@ $mainColor: #1C42FF;
 }
 
 .n-spin-content {
+  border: none !important;
+}
+
+.modal-style {
+  background: #23242A !important;
+  border-radius: 10px;
+  width: 564px;
+  border: 1px solid rgba(133, 141, 153, 0.1);
+}
+
+.n-base-select-menu .n-base-select-menu__action {
+  padding: 5px !important;
   border: none !important;
 }
