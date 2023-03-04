@@ -31,9 +31,9 @@
       <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
       <div class="wallet flex-center" v-if="userInfo.nickname">
         <div class="avatar flex-center">
-          <Avatar :width="14" :avatar="userInfo.avatar" :address="userInfo.address[0]" />
+          <Avatar :width="14" :avatar="userInfo.avatar" :address="userInfo.address" />
         </div>
-        <div class="address">{{formatAddress(userInfo.address[0])}}</div>
+        <div class="address">{{formatAddress(userInfo.address)}}</div>
         <div class="nickname">{{userInfo.nickname}}</div>
       </div>
     </div>
@@ -228,7 +228,7 @@ export default {
       }
     }
 
-    const getNftListFun = (address = '0xbbA51F0b09d5852eFfa609E9223ba7F5d7407945') => {
+    const getNftListFun = (address) => {
       getNftList({address}).then(res => {
         console.log(res)
         registModal.value.nftList = res
@@ -242,7 +242,7 @@ export default {
           if (res.is_registed) {
             loginFun()
           } else {
-            getNftListFun()
+            getNftListFun(val)
             registModal.value.show(val)
           }
         }

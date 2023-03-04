@@ -354,15 +354,9 @@ export default {
         })
         return
       }
-      let msg = "Sign"
-      const time = new Date().getTime()
-      const sign_msg = `${msg}_${time}`
-      let signature = await toRaw(provider.value).getSigner().signMessage(sign_msg)
+      
       updateContract({
         token: contract.token,
-        message: sign_msg,
-        signature,
-        address: address.value,
         contract_info: {
           contract_address: contract.address,
           contract_abi: JSON.stringify(contract.abi),

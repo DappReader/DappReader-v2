@@ -23,11 +23,11 @@
         <div class="item flex-center-sb" v-for="item in list" :key="item.nickname">
           <div class="flex-center">
             <div class="avatar">
-              <Avatar :avatar="item.avatar" :address="item.address[0]" :width="32" />
+              <Avatar :avatar="item.avatar" :address="item.address" :width="32" />
             </div>
             <div class="info">
               <div class="name">{{item.nickname}}</div>
-              <div class="address">{{item.address[0]}}</div>
+              <div class="address">{{item.address}}</div>
             </div>
           </div>
           <div class="btn flex-center-center" @click="add(item)">

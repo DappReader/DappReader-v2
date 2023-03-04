@@ -42,6 +42,7 @@ export default {
       let token = route.params.token
       getContract({token, password}).then(res => {
         if (res.code == 1) {
+          router.replace('/')
           message.error(res.msg)
         } else {
           let contract = res.contract.contract_info

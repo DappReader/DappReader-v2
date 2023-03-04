@@ -27,7 +27,7 @@ export default {
   props: ['width', 'avatar', 'address'],
   setup(props) {
     const getBlockie = () => {
-      return makeBlockie(props.address[0])
+      return makeBlockie(props.address)
     }
     const designImg = (avatar) => {
       let index = avatar.split('-')[1]
