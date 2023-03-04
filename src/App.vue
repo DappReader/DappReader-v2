@@ -15,6 +15,7 @@ import { darkTheme } from 'naive-ui'
 import { getLs, setLs } from '@/service/service'
 import { demo } from './libs/demo'
 import { chains } from './libs/chains'
+
 export default {
   setup() {
     const store = useStore()
@@ -85,6 +86,7 @@ export default {
       fn()
       getData()
     })
+
     return {
       provider,
       network,

@@ -11,17 +11,6 @@
     <div v-if="!token" class="modal-content">
       <n-spin :show="loading">
         <div class="hint">Permission selection</div>
-        <div :class="['item', itemIndex == 0 ? 'item-activate' : '', 'flex-center']" @click="() => itemIndex = 0">
-          <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
-            <path d="M16.833 35.5002C16.833 30.9898 20.4893 27.3335 24.9997 27.3335C29.51 27.3335 33.1663 30.9898 33.1663 35.5002" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M24.9997 23.8333C27.577 23.8333 29.6663 21.744 29.6663 19.1667C29.6663 16.5893 27.577 14.5 24.9997 14.5C22.4223 14.5 20.333 16.5893 20.333 19.1667C20.333 21.744 22.4223 23.8333 24.9997 23.8333Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="item-info">
-            <p class="item-title">Private</p>
-            <p class="item-desc">Only you can view the current contract</p>
-          </div>
-        </div>
         <div :class="['item', itemIndex == 1 ? 'item-activate' : '', 'flex-center']" @click="() => itemIndex = 1">
           <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
@@ -55,21 +44,55 @@
             <input type="text" v-model="password" placeholder="Please enter your password">
           </div>
         </div>
-        
+        <div :class="['item', itemIndex == 0 ? 'item-activate' : '']" @click="() => itemIndex = 0">
+          <div class="flex-center">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
+              <path d="M19.1667 34.3335C19.1667 32.4005 21.7784 30.8335 25 30.8335C28.2217 30.8335 30.8334 32.4005 30.8334 34.3335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M32 27.6245C34.0602 28.1646 35.5 29.3981 35.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 27.6245C15.9398 28.1646 14.5 29.3981 14.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M25 27.3335C26.933 27.3335 28.5 25.7665 28.5 23.8335C28.5 21.9005 26.933 20.3335 25 20.3335C23.067 20.3335 21.5 21.9005 21.5 23.8335C21.5 25.7665 23.067 27.3335 25 27.3335Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M32 22.9423C32.716 22.3014 33.1666 21.3701 33.1666 20.3335C33.1666 18.4005 31.5996 16.8335 29.6666 16.8335C28.7702 16.8335 27.9525 17.1705 27.3333 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 22.9423C17.2839 22.3014 16.8333 21.3701 16.8333 20.3335C16.8333 18.4005 18.4003 16.8335 20.3333 16.8335C21.2297 16.8335 22.0474 17.1705 22.6666 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="item-info">
+              <p class="item-title">Team</p>
+              <p class="item-desc">Select the team members who can see this contract</p>
+            </div>
+          </div>
+          <div v-if="itemIndex == 0" class="team">
+            <p v-if="!teamList.length" class="item-desc">There are no team members yet. Please add.</p>
+            <div v-else class="team-list">
+              <div class="team-item flex-center-sb" v-for="item in teamList" :key="item.nickname">
+                <div class="flex-center">
+                  <div class="avatar">
+                    <Avatar :avatar="item.avatar" :address="item.address[0]" :width="32" />
+                  </div>
+                  <div class="info">
+                    <div class="name">{{item.nickname}}</div>
+                    <div class="address">{{item.address[0]}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="add-team-btn flex-center-center" @click="showAddTeam">
+              <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.5 10H15.5" stroke="#375CFF" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.5 15L10.5 5" stroke="#375CFF" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Add team members</div>
+          </div>
+        </div>
         <div class="btn-w">
-          <div :class="['share-btn', 'flex-center-center', (itemIndex == 0 || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']" @click="share">
-            <svg v-if="itemIndex != 0" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div :class="['share-btn', 'flex-center-center', ((itemIndex == 0 && teamList.length) || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']" @click="share">
+            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 16.75C16.2426 16.75 17.25 15.7426 17.25 14.5C17.25 13.2574 16.2426 12.25 15 12.25C13.7574 12.25 12.75 13.2574 12.75 14.5C12.75 15.7426 13.7574 16.75 15 16.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M8.25 11.125L12.75 13.375" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M6 12.25C7.24264 12.25 8.25 11.2426 8.25 10C8.25 8.75736 7.24264 7.75 6 7.75C4.75736 7.75 3.75 8.75736 3.75 10C3.75 11.2426 4.75736 12.25 6 12.25Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M12.75 6.625L8.25 8.875" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M15 7.75C16.2426 7.75 17.25 6.74264 17.25 5.5C17.25 4.25736 16.2426 3.25 15 3.25C13.7574 3.25 12.75 4.25736 12.75 5.5C12.75 6.74264 13.7574 7.75 15 7.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <svg v-else width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.14258 7.61881H15.8569L11.6902 3.45215" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M15.8569 12.3809H5.14258L9.30924 16.5475" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p>{{itemIndex == 0 ? 'Synchronized' : 'Share'}}</p>
+            <p>Share</p>
           </div>
         </div>
       </n-spin>
@@ -86,20 +109,24 @@
         <div class="copy-btn flex-center-center">Copy link</div>
       </div>
     </div>
+    <AddTeamModal ref="addTeamModal" @add="addTeamFun" />
   </n-modal>
 </template>
 
 <script>
-import { ref, watch, computed, toRaw } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useIsActivating } from '../hooks/useIsActivating'
 import { useUtils } from '../hooks/useUtils'
 import { publishContract } from '../http/abi'
 import { useMessage } from 'naive-ui'
+import AddTeamModal from '@/components/AddTeamModal.vue'
+import Avatar from "@/components/Avatar.vue"
 
 export default {  
   name: 'ShareModal',
   props: ['contract'],
+  components: {AddTeamModal, Avatar},
   setup(props) {
     const store = useStore()
     const { setData, copy } = useUtils()
@@ -108,8 +135,10 @@ export default {
     const showModal = ref(false)
     const loading = ref(false)
     const input = ref(null)
+    const addTeamModal = ref(null)
     const itemIndex = ref(-1)
     const password = ref('')
+    const teamList= ref([])
     const token = ref(props.contract && props.contract.token || '')
     const title = ref(`Contract ${props.contract && props.contract.name || ''} sharing`)
     const link = ref('')
@@ -119,26 +148,25 @@ export default {
     const address = computed(() => {
       return store.state.address
     })
+    const userInfo = computed(() => {
+      return store.state.userInfo
+    })
     const share = async () => {
       if (!provider.value) {
         getProvider()
         return
       }
-      if (itemIndex.value == 0 || itemIndex.value == 1 || (itemIndex.value == 2 && password.value)) {
+      if (!userInfo.value.nickname) {
+        store.commit('login')
+        return
+      }
+      if ((itemIndex.value == 0 && teamList.value.length) || itemIndex.value == 1 || (itemIndex.value == 2 && password.value)) {
         try {
           loading.value = true
-          let msg = "Sign"
-          const time = new Date().getTime()
-          const sign_msg = `${msg}_${time}`
-          let signature = await toRaw(provider.value).getSigner().signMessage(sign_msg)
           let contract = props.contract
-          console.log(contract)
-          let openSourceType = itemIndex.value == 0 ? 'Private' : itemIndex.value == 1 ? 'Global' : itemIndex.value == 2 ? 'Limited' : ''
-          publishContract({
+          let openSourceType = itemIndex.value == 0 ? 'Team' : itemIndex.value == 1 ? 'Global' : itemIndex.value == 2 ? 'Limited' : ''
+          let data = {
             password: password.value,
-            message: sign_msg,
-            signature,
-            address: address.value,
             openSourceType: openSourceType,
             contract_info: {
               contract_address: contract.address,
@@ -150,7 +178,12 @@ export default {
               },
               description: contract.remark
             }
-          }).then(res => {
+          }
+          if (itemIndex.value == 0) {
+            let addressList = teamList.value.map(e => e.address[0])
+            data.address_list = addressList
+          }
+          publishContract(data).then(res => {
             loading.value = false
             if (res.code == 0) {
               token.value = `${res.token}`
@@ -161,6 +194,9 @@ export default {
             } else {
               message.error(res.msg)
             }
+          }).catch(() => {
+            loading.value = false
+            store.commit('login')
           })
         } catch (error) {
           console.log(error)
@@ -171,6 +207,13 @@ export default {
         return
       }
     }
+    const addTeamFun = (e) => {
+      teamList.value.push(e)
+      teamList.value = [...new Set(teamList.value)]
+    }
+    const showAddTeam = () => {
+      addTeamModal.value.show()
+    }
     const afterLeave = () => {
       itemIndex.value = -1
       password.value = ''
@@ -179,7 +222,7 @@ export default {
       let origin = window.location.origin
       link.value = `${origin}/${token.value}`
     }, {immediate: true})
-    watch(props.contract, () => {
+    watch(() => props.contract, () => {
       let t = props.contract && props.contract.token || ''
       if (t && t.indexOf('dappreader.com')) {
         let tArr = t.split('/')
@@ -191,16 +234,20 @@ export default {
     }, {immediate: true})
     return {
       link,
+      teamList,
       password,
       showModal,
       itemIndex,
       loading,
+      addTeamModal,
       title,
       token,
       input,
       share,
       copy,
-      afterLeave
+      afterLeave,
+      showAddTeam,
+      addTeamFun
     }
   }
 }
@@ -330,6 +377,63 @@ export default {
       outline: none;
       &:focus {
         border: 1px solid #375CFF;
+      }
+    }
+  }
+  .team {
+    margin-top: 16px;
+    .item-desc {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+      text-transform: capitalize;
+      color: #858D99;
+    }
+    .team-list {
+      border: 1px solid rgba(133, 141, 153, 0.15);
+      border-radius: 10px;
+      padding: 8px 16px;
+      box-sizing: border-box;
+      max-height: 150px;
+      overflow-y: auto;
+      .team-item {
+        height: 44px;
+        .avatar {
+          flex: 0 0 32px;
+          height: 32px;
+          margin-right: 12px;
+        }
+        .info {
+          .name {
+            font-family: Montserrat-Medium;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 16px;
+            text-transform: capitalize;
+            color: #15141B;
+            margin-bottom: 4px;
+          }
+          .address {
+            font-size: 10px;
+            line-height: 12px;
+            text-transform: capitalize;
+            color: #15141B;
+          }
+        }
+      }
+    }
+    .add-team-btn {
+      height: 50px;
+      margin-top: 16px;
+      border: 1px solid #375CFF;
+      border-radius: 10px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 20px;
+      text-transform: capitalize;
+      color: #375CFF;
+      svg {
+        margin-right: 4px;        
       }
     }
   }

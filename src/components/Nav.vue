@@ -27,19 +27,20 @@
         </div>
         <div class="line"></div>
         <div class="balance">{{fixed(balance)}}</div>
-        <div class="line"></div>
-        <div class="address">{{formatAddress(address)}}</div>
-        <div class="avatar flex-center">
-          <Avatar 
-            :size="14"
-            :name="address" 
-          />
-        </div>
       </div>
       <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
+      <div class="wallet flex-center" v-if="userInfo.nickname">
+        <div class="avatar flex-center">
+          <Avatar :width="14" :avatar="userInfo.avatar" :address="userInfo.address[0]" />
+        </div>
+        <div class="address">{{formatAddress(userInfo.address[0])}}</div>
+        <div class="nickname">{{userInfo.nickname}}</div>
+      </div>
     </div>
     <CreateContract ref="createContract" />
     <AddFolder ref="addFolder" />
+    <RegistModal ref="registModal" @regist="registFun" />
+    <LoginModal ref="loginModal" @login="loginFun" @regist="showRegistFun" />
   </div>
 </template>
 <script>
@@ -51,14 +52,19 @@ import { useNetwork } from '../hooks/useNetwork'
 import { useMessage } from 'naive-ui'
 import { ethers } from 'ethers'
 import { chainsOptions } from '../libs/chainsOptions'
-import Avatar from "vue-boring-avatars"
+import Avatar from "@/components/Avatar.vue"
 import AddFolder from '@/components/AddFolder.vue'
 import CreateContract from '@/components/CreateContract.vue'
+import RegistModal from '@/components/RegistModal.vue'
+import LoginModal from '@/components/LoginModal.vue'
+import { checkUserRegist, login, regist, getNftList, getUserInfo } from '../http/abi'
 export default {
   components: {
     Avatar,
     AddFolder,
-    CreateContract
+    CreateContract,
+    RegistModal,
+    LoginModal
   },
   setup() {
     let interval = null
@@ -70,6 +76,8 @@ export default {
     const searchLoading = ref(false)
     const addFolder = ref(null)
     const createContract = ref(null)
+    const loginModal = ref(null)
+    const registModal = ref(null)
     const contractAddress = ref('')
     const gasPrice = ref('')
     const selectOptions = ref(chainsOptions)
@@ -94,6 +102,12 @@ export default {
     })
     const balance = computed(() => {
       return store.state.balance
+    })
+    const userInfo = computed(() => {
+      return store.state.userInfo
+    })
+    const isShowLogin = computed(() => {
+      return store.state.isShowLogin
     })
     const handleUpdateValue = (e) => {
       switchChain(e)
@@ -158,6 +172,84 @@ export default {
       }
     }
 
+    const showRegistFun = () => {
+      registModal.value.show(address.value)
+    }
+
+    const getUserInfoFun = () => {
+      getUserInfo({q: address.value}).then(res => {
+        if (res.code == 0) {
+          store.commit('setUserInfo', res.user_list[0])
+        }
+      })
+    }
+
+    const loginFun = async () => {
+      try {
+        let msg = "Login"
+        const time = new Date().getTime()
+        const messageData = `${msg}_${time}`
+        let signature = await toRaw(provider.value).getSigner().signMessage(messageData)
+        login({message: messageData, signature, address: address.value}).then(res => {
+          console.log(res)
+          if (res.code == 0) {
+            localStorage.setItem('token', res.access_token)
+            loginModal.value.hide()
+            getUserInfoFun()
+          } else {
+            message.error(res.msg)
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const registFun = async ({avatar, nickname}) => {
+      try {
+        let msg = "Regist"
+        const time = new Date().getTime()
+        const messageData = `${msg}_${time}`
+        let signature = await toRaw(provider.value).getSigner().signMessage(messageData)
+        regist({message: messageData, signature, avatar, nickname, address: address.value}).then(res => {
+          console.log(res)
+          if (res.code == 0) {
+            localStorage.setItem('token', res.token)
+            loginModal.value.hide()
+            registModal.value.closeModal()
+            getUserInfoFun()
+          } else {
+            message.error(res.msg)
+            registModal.value.syncing = false
+          }
+        })
+      } catch (error) {
+        registModal.value.syncing = false
+      }
+    }
+
+    const getNftListFun = (address = '0xbbA51F0b09d5852eFfa609E9223ba7F5d7407945') => {
+      getNftList({address}).then(res => {
+        console.log(res)
+        registModal.value.nftList = res
+      })
+    }
+
+    watch(address, (val) => {
+      checkUserRegist({address: val}).then(res => {
+        console.log(res)
+        if (res.code == 0) {
+          if (res.is_registed) {
+            loginFun()
+          } else {
+            getNftListFun()
+            registModal.value.show(val)
+          }
+        }
+      })
+    }, {immediate: true})
+
+
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
       if (interval) clearInterval(interval)
@@ -170,7 +262,15 @@ export default {
         }
       }, 5000)
     }, {immediate: true})
+    watch(isShowLogin, (val) => {
+      if (val) {
+        loginModal.value.show()
+      }
+    }, {immediate: true})
     return {
+      userInfo,
+      loginModal,
+      registModal,
       addFolder,
       createContract,
       searchLoading,
@@ -189,7 +289,10 @@ export default {
       copy,
       getGas,
       handleClickSearch,
-      inputFun
+      inputFun,
+      registFun,
+      showRegistFun,
+      loginFun
     }
   }
 }
@@ -267,6 +370,11 @@ export default {
         background: #FFFFFF;
       }
       .avatar {
+        margin-right: 6px;
+        width: 14px;
+        height: 14px;
+      }
+      .nickname {
         margin-left: 12px;
       }
     }

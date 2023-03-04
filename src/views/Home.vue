@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
@@ -24,12 +25,16 @@ export default {
     GetContractModal
   },
   setup() {
+    const store = useStore()
     const route = useRoute()
     const router = useRouter()
     const { setData } = useUtils()
     const message = useMessage()
     const menuDom = ref(null)
     const getContractModal = ref(null)
+    const userInfo = computed(() => {
+      return store.state.userInfo
+    })
     const hiddenRightMenu = () => {
       menuDom.value.hiddenRightMenu()
     }
@@ -80,12 +85,12 @@ export default {
     const confirm = (e) => {
       getContractFun(e)
     }
-    onMounted(() => {
+    watch(userInfo, (val) => {
       let token = route.params.token
-      if (token) {
+      if (val.nickname && token) {
         checkContractInfoFun(token)
       }
-    })
+    }, {immediate: true})
     return {
       menuDom,
       hiddenRightMenu,

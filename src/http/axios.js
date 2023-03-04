@@ -1,10 +1,18 @@
 import axios from 'axios';
+
 let baseURL = 'https://api.dappreader.com'
 axios.defaults.timeout = 90000;
 
 //http request 拦截器
 axios.interceptors.request.use(
   config => {
+    let token = localStorage.getItem('token') || '';
+    config.headers = {
+      'content-type': 'application/json;charset=UTF-8'
+    }
+    if (token && (config.method == 'post' || config.url.indexOf('/v1/get_contract') > -1 || config.url.indexOf('/v1/get_team_friend_list') > -1)) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
     return config;
   },
   error => {
@@ -14,7 +22,7 @@ axios.interceptors.request.use(
 
 //响应拦截器即异常处理
 axios.interceptors.response.use(response => {
-    return response
+  return response
 }, err => {
     if (err && err.response) {
       switch (err.response.status) {
@@ -36,6 +44,9 @@ axios.interceptors.response.use(response => {
         case 408:
           console.log('请求超时')
           break;
+        case 422:
+          console.log('请求超时')
+        break;
         case 500:
           console.log('服务器端出错')
           break;
@@ -60,7 +71,7 @@ axios.interceptors.response.use(response => {
     } else {
       console.log('连接到服务器失败')
     }
-    return Promise.resolve(err.response)
+    return Promise.reject(err.response)
 })
 
 
@@ -75,7 +86,7 @@ export const post = (url, data = {}) => {
   url = `${baseURL}${url}`
   return new Promise((resolve,reject) => {
     axios.post(url, data).then(response => {
-      resolve(response.data);
+      resolve(response.data)
     }, err => {
       reject(err)
     })
@@ -83,8 +94,8 @@ export const post = (url, data = {}) => {
  }
 
 
-export const get = (url, params = {}) => {
-  url = `${baseURL}${url}`
+export const get = (url, params = {}, host) => {
+  url = host ? `${host}${url}` : `${baseURL}${url}`
   return new Promise((resolve,reject) => {
     axios.get(url, {params}).then(response => {
       resolve(response.data)

@@ -8,7 +8,9 @@ export default createStore({
     activeId: '',
     menuList: [],
     contractList: [],
-    openSols: []
+    openSols: [],
+    isShowLogin: false,
+    userInfo: {}
   },
   mutations: {
     setAddress(state, value) {
@@ -35,10 +37,20 @@ export default createStore({
     setActiveId(state, value) {
       state.activeId = value
     },
+    setUserInfo(state, value) {
+      state.userInfo = value
+    },
     init(state) {
       state.provider = null
       state.wallet = null
       state.network = null
+      state.isShowLogin = false
+    },
+    hiddenLogin(state) {
+      state.isShowLogin = false
+    },
+    login(state) {
+      state.isShowLogin = true
     }
   },
   actions: {
