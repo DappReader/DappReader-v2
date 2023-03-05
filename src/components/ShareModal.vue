@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, toRaw } from 'vue'
 import { useStore } from 'vuex'
 import { useIsActivating } from '../hooks/useIsActivating'
 import { useUtils } from '../hooks/useUtils'
@@ -183,6 +183,13 @@ export default {
             let addressList = teamList.value.map(e => e.address)
             data.address_list = addressList
           }
+          let userList = JSON.parse(JSON.stringify(toRaw(teamList.value)))
+          userList.forEach((e, index) => {
+            if (e.address == userInfo.value.address && e.nickname == userInfo.value.nickname) {
+              userList.splice(index, 1)
+            }
+          })
+          userList.unshift(userInfo.value)
           publishContract(data).then(res => {
             loading.value = false
             if (res.code == 0) {
@@ -190,13 +197,13 @@ export default {
               title.value = 'Share Contract'
               contract.token = res.token
               contract.authorAddress = address.value
+              contract.userList = userList
               setData(contract)
             } else {
               message.error(res.msg)
             }
           }).catch(() => {
             loading.value = false
-            store.commit('login')
           })
         } catch (error) {
           console.log(error)

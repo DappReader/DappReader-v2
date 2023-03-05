@@ -10,7 +10,8 @@ export default createStore({
     contractList: [],
     openSols: [],
     isShowLogin: false,
-    userInfo: {}
+    userInfo: {},
+    defaultChains: []
   },
   mutations: {
     setAddress(state, value) {
@@ -39,6 +40,9 @@ export default createStore({
     },
     setUserInfo(state, value) {
       state.userInfo = value
+    },
+    setDefaultChains(state, value) {
+      state.defaultChains = value
     },
     init(state) {
       state.provider = null

@@ -296,7 +296,6 @@ export default {
       defaultChains.value.push(e)
       addChainModal.value.afterLeave()
       formData.value.chainId = e.chainId
-      await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChains.value)))
     }
     onBeforeMount(async () => {
       let dc = await getLs('defaultChain') || []

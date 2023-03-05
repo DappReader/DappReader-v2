@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import store from '../store'
 let baseURL = 'https://api.dappreader.com'
 axios.defaults.timeout = 90000;
 
@@ -71,6 +71,7 @@ axios.interceptors.response.use(response => {
     } else {
       console.log('连接到服务器失败')
     }
+    store.commit('login')
     return Promise.reject(err.response)
 })
 

@@ -8,16 +8,18 @@
           <path d="M20 4L4 20" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <div class="sub-title">if you have an account, please select Login.</div>
-      <div class="btn-list flex-center-sb">
-        <div :class="['btn', 'flex-center-center']" @click="loginFun">Sign To Login</div>
-        <div :class="['btn', 'flex-center-center']" @click="registFun">regist</div>
+      <div v-if="!userInfo.address" class="sub-title">if you have an account, please select Login.</div>
+      <div v-if="userInfo.address && userInfo.address.toLocaleLowerCase() != address.toLocaleLowerCase()" class="sub-title">we found that your last sign with address {{userInfo.address}}, if you want to sign in please change your wallet to {{userInfo.address}}</div>
+      <div class="btn-list flex-center-center">
+        <div v-if="!userInfo.address" :class="['btn', 'flex-center-center']" @click="loginFun" style="margin-right: 16px">Sign to login</div>
+        <div v-if="userInfo.address && userInfo.address.toLocaleLowerCase() != address.toLocaleLowerCase()" :class="['btn', 'flex-center-center']" @click="loginFun" style="margin-right: 16px">Change Wallet Address</div>
+        <div :class="['btn', 'flex-center-center']" @click="registFun">Regist A New Account</div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'SelectNft',
@@ -25,6 +27,10 @@ export default {
   setup(props, {emit}) {
     const store = useStore()
     const showModal = ref(false)
+    const userInfo = ref({})
+    const address = computed(() => {
+      return store.state.address
+    })
     const loginFun = () => {
       emit('login')
     }
@@ -37,8 +43,16 @@ export default {
     }
     const show = () => {
       showModal.value = true
+      let user = localStorage.getItem('userInfo') || null
+      if (user) userInfo.value = JSON.parse(user)
+      if (userInfo.value.address.toLocaleLowerCase() == address.value.toLocaleLowerCase()) {
+        emit('login')
+        hide()
+      }
     }
     return {
+      address,
+      userInfo,
       showModal,
       hide,
       show,

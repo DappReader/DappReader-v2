@@ -79,23 +79,55 @@
       </div>
     </div>
     <div class="desc">{{contract.remark}}</div>
-    <div class="info flex-center">
-      <div class="info-item flex-center" @click="copy(contract.address)">
-        <div class="info-key">Contract Address</div>
-        <div class="info-value">{{getAddress(contract.address)}}</div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="flex-center-sb info">
+      <div class="flex-center">
+        <div class="info-item flex-center" @click="copy(contract.address)">
+          <div class="info-key">Contract Address</div>
+          <div class="info-value">{{getAddress(contract.address)}}</div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item flex-center" >
+          <div class="info-key">Contract Balance</div>
+          <div class="info-value">{{balance}}</div>
+        </div>
       </div>
-      <div class="info-line"></div>
-      <div class="info-item flex-center" >
-        <div class="info-key">Contract Balance</div>
-        <div class="info-value">{{balance}}</div>
+      <div v-if="contract.userList && contract.userList.length" class="team flex-center">
+        <p>Team Members</p>
+        <div class="user-list flex-center">
+          <div v-for="(item, index) in contract.userList" :key="item.nickname">
+            <div class="user-avatar" v-if="index < 5">
+              <n-popover trigger="hover">
+                <template #trigger>
+                  <Avatar :width="32" :avatar="item.avatar" :address="item.address" />
+                </template>
+                <span>{{item.nickname}}</span>
+              </n-popover>
+            </div>
+          </div>
+          <div v-if="contract.userList.length > 5" class="user-avatar">
+            <div class="more flex-center-center">+{{contract.userList.length - 5}}
+              <div class="more-list">
+              <div v-for="(item, index) in contract.userList" :key="item.nickname">
+                <div v-if="index > 4" class="user-item flex-center">
+                  <div class="item-avatar">
+                    <Avatar :width="18" :avatar="item.avatar" :address="item.address" />
+                  </div>
+                  <span>{{item.nickname}}</span>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    
     <CreateContract ref="createContract" />
     <ShareModal ref="shareModal" :contract="contractData" />
     <DecodeModal ref="decodeModal" :contract="contractData" />
@@ -172,6 +204,7 @@ import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
 import GetContractModal from '@/components/GetContractModal.vue'
 import DecodeModal from '@/components/DecodeModal.vue'
+import Avatar from "@/components/Avatar.vue"
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { getLs, setLs } from "@/service/service";
@@ -185,7 +218,8 @@ export default {
     CreateContract,
     ShareModal,
     GetContractModal,
-    DecodeModal
+    DecodeModal,
+    Avatar
   },
   setup(props) {
     const store = useStore()
@@ -690,6 +724,77 @@ export default {
         &:hover {
           path {
             stroke: #FFFFFF
+          }
+        }
+      }
+    }
+    .team {
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 16px;
+      text-transform: capitalize;
+      color: #858D99;
+      .user-list {
+        margin-left: 18px;
+        .user-avatar {
+          border: 1.5px solid #FFFFFF;
+          cursor: pointer;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          margin-left: -8px;
+          position: relative;
+          box-sizing: border-box;
+          .more {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #2C2D34;
+            font-family: 'Montserrat-Medium';
+            font-size: 12px;
+            line-height: 12px;
+            color: #FFFFFF;
+            position: relative;
+            &:hover {
+              .more-list {
+                display: block;
+              }
+            }
+            .more-list {
+              display: none;
+              position: absolute;
+              right: 0;
+              top: 44px;
+              width: 160px;
+              max-height: 200px;
+              overflow-y: auto;
+              background: #2C2D34;
+              border: 1px solid rgba(133, 141, 153, 0.1);
+              box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
+              backdrop-filter: blur(10px);
+              border-radius: 6px;
+              padding: 10px 12px;
+              .user-item {
+                width: 100%;
+                height: 30px;
+                .item-avatar {
+                  width: 18px;
+                  height: 18px;
+                  border-radius: 50%;
+                }
+                span {
+                  font-size: 13px;
+                  line-height: 16px;
+                  text-transform: capitalize;
+                  color: #FFFFFF;
+                  flex: 1;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  margin-left: 6px;
+                }
+              }
+            }
           }
         }
       }

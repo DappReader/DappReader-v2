@@ -3,8 +3,60 @@
     <div class="hd-section">
       <div class="title-w">
         <div class="title">{{contract.name}}</div>
-        <div class="desc">{{contract.remark}}</div>
+        <div class="desc">dsfdfd{{contract.remark}}</div>
       </div>
+      <div class="info">
+        <div class="info-item flex-center">
+          <div class="info-item-key">Chain</div>
+          <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item flex-center">
+          <div class="info-item-key">creation time</div>
+          <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item flex-center info-copy" @click="copy(contract.address)">
+          <div class="info-item-key">contract address</div>
+          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+        </div>
+        <div class="info-line"></div>
+        <div class="info-item flex-center">
+          <div class="info-item-key">contract balance</div>
+          <div class="info-item-value flex-center"><span>{{balance}}</span></div>
+        </div>
+      </div>
+
+      <div v-if="contract.userList && contract.userList.length" class="team">
+        <p>Team Members</p>
+        <div class="user-list flex-center">
+          <div v-for="(item, index) in contract.userList" :key="item.nickname">
+            <div class="user-avatar" v-if="index < 5">
+              <n-popover trigger="hover">
+                <template #trigger>
+                  <Avatar :width="32" :avatar="item.avatar" :address="item.address" />
+                </template>
+                <span>{{item.nickname}}</span>
+              </n-popover>
+            </div>
+          </div>
+          <div v-if="contract.userList.length > 5" class="user-avatar">
+            <div class="more flex-center-center">+{{contract.userList.length - 5}}
+              <div class="more-list">
+              <div v-for="(item, index) in contract.userList" :key="item.nickname">
+                <div v-if="index > 4" class="user-item flex-center">
+                  <div class="item-avatar">
+                    <Avatar :width="18" :avatar="item.avatar" :address="item.address" />
+                  </div>
+                  <span>{{item.nickname}}</span>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="hd-btns">
         <div v-if="contract.token">
           <div v-if="!contract.isImport && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
@@ -83,27 +135,6 @@
           </div>
         </div>
         
-      </div>
-      <div class="info">
-        <div class="info-item">
-          <div class="info-item-key">Chain</div>
-          <div v-if="contract.chain" class="info-item-value">{{contract.chain.name || contract.chain.chainName}}</div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item">
-          <div class="info-item-key">creation time</div>
-          <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item info-copy" @click="copy(contract.address)">
-          <div class="info-item-key">contract address</div>
-          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
-        </div>
-        <div class="info-line"></div>
-        <div class="info-item">
-          <div class="info-item-key">contract balance</div>
-          <div class="info-item-value flex-center"><span>{{balance}}</span></div>
-        </div>
       </div>
     </div>
     <CreateContract ref="createContract" />
@@ -186,6 +217,7 @@ import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { getLs, setLs } from "@/service/service";
 import { useDialog, useMessage } from "naive-ui"
+import Avatar from "@/components/Avatar.vue"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
 import { formatDate, formatAddress } from '../libs/utils'
@@ -195,7 +227,8 @@ export default {
     CreateContract,
     ShareModal,
     GetContractModal,
-    DecodeModal
+    DecodeModal,
+    Avatar
   },
   setup(props) {
     const store = useStore()
@@ -361,15 +394,8 @@ export default {
     }
     const updateShare = async () => {
       let contract = props.contract
-      let msg = "Sign"
-      const time = new Date().getTime()
-      const sign_msg = `${msg}_${time}`
-      let signature = await toRaw(provider.value).getSigner().signMessage(sign_msg)
       updateContract({
         token: contract.token,
-        message: sign_msg,
-        signature,
-        address: address.value,
         contract_info: {
           contract_address: contract.address,
           contract_abi: JSON.stringify(contract.abi),
@@ -577,6 +603,79 @@ export default {
       color: #858D99;
     }
 
+    .team {
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 16px;
+      margin-top: 24px;
+      text-transform: capitalize;
+      color: #858D99;
+      .user-list {
+        margin-top: 12px;
+        .user-avatar {
+          border: 1.5px solid #FFFFFF;
+          cursor: pointer;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          margin-right: -8px;
+          position: relative;
+          box-sizing: border-box;
+          .more {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #2C2D34;
+            font-family: 'Montserrat-Medium';
+            font-size: 12px;
+            line-height: 12px;
+            color: #FFFFFF;
+            position: relative;
+            &:hover {
+              .more-list {
+                display: block;
+              }
+            }
+            .more-list {
+              display: none;
+              position: absolute;
+              right: 0;
+              top: 44px;
+              width: 160px;
+              max-height: 200px;
+              overflow-y: auto;
+              background: #2C2D34;
+              border: 1px solid rgba(133, 141, 153, 0.1);
+              box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
+              backdrop-filter: blur(10px);
+              border-radius: 6px;
+              padding: 10px 12px;
+              .user-item {
+                width: 100%;
+                height: 30px;
+                .item-avatar {
+                  width: 18px;
+                  height: 18px;
+                  border-radius: 50%;
+                }
+                span {
+                  font-size: 13px;
+                  line-height: 16px;
+                  text-transform: capitalize;
+                  color: #FFFFFF;
+                  flex: 1;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  margin-left: 6px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     .info {
       margin-top: 24px;
       .info-item {
@@ -588,13 +687,13 @@ export default {
           color: #858D99;
         }
         .info-item-value {
-          margin-top: 10px;
-          font-size: 16px;
-          line-height: 20px;
+          font-size: 13px;
+          margin-left: 10px;
           text-transform: capitalize;
           color: #FFFFFF;
           font-family: 'Montserrat-Medium';
           img {
+            width: 16px;
             margin-left: 12px;
             cursor: pointer;
           }

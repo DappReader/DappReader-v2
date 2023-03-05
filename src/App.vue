@@ -14,7 +14,7 @@ import { useIsActivating } from './hooks/useIsActivating'
 import { darkTheme } from 'naive-ui'
 import { getLs, setLs } from '@/service/service'
 import { demo } from './libs/demo'
-import { chains } from './libs/chains'
+import { chains, defaultChain } from './libs/chains'
 
 export default {
   setup() {
@@ -47,7 +47,9 @@ export default {
       let contractList = await getLs('contractList') || []
       let openSols = await getLs('openSols') || []
       let activeId = await getLs('activeId') || ''
-      
+      let defaultChains = await getLs('defaultChain') || defaultChain
+      let userInfo = localStorage.getItem('userInfo') || null
+      if (userInfo) userInfo = JSON.parse(userInfo)
       if (!inited) {
         let { abi, address, chainId, name, remark} = demo
         let chain = chains.filter(e => e.chainId == chainId)[0]
@@ -75,10 +77,13 @@ export default {
         await setLs('activeId', activeId)
         localStorage.setItem('inited', 'inited')
       }
+
       store.commit("setActiveId", activeId)
       store.commit("setOpenSols", openSols)
       store.commit("setMenuList", menuList)
       store.commit("setContractList", contractList)
+      store.commit("setDefaultChains", defaultChains)
+      store.commit("setUserInfo", userInfo || {})
     }
     
     onMounted(() => {

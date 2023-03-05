@@ -10,43 +10,64 @@
       </div>
     </div>
     <div class="nav-r flex-center">
-      <n-select
-        v-if="address"
-        class="select"
-        v-model:value="chainId"
-        filterable
-        :options="chains"
-        @update:value="handleUpdateValue"
-        label-field="name"
-        value-field="chainId"
-      />
-      <div v-if="address" class="wallet flex-center" @click="copy">
+      <div v-if="address" class="wallet flex-center-sb chain-w">
+        <div class="flex-center">
+          <img :src="chain && icons[chain.chainId] ? `https://icons.llamao.fi/icons/chains/rsz_${icons[chain.chainId]}.jpg` : 'https://chainlist.org/unknown-logo.png'" alt="" class="icon">
+          <div class="address">{{chain && chain.name}}</div>
+        </div>
+        
         <div class="flex-center-center gas-price">
           <img src="@/assets/images/gas.gif" alt="">
           <p>{{gasPrice}}</p>
         </div>
-        <div class="line"></div>
-        <div class="balance">{{fixed(balance)}}</div>
+        <div class="block"></div>
+        <div class="chain-list" v-if="defaultChains && defaultChains.length">
+          <div v-for="item in defaultChains" :key="item.chainId" @click="switchChain(item.chainId)" :class="['chain-item', 'flex-center-sb', chainId == item.chainId ? 'chain-item-active' : '']">
+            <div class="flex-center" style="width: 100%">
+              <img :src="icons[item.chainId] ? `https://icons.llamao.fi/icons/chains/rsz_${icons[item.chainId]}.jpg` : 'https://chainlist.org/unknown-logo.png'" alt="" class="icon">
+              <div class="chain-name">{{item.name}}</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M13.7491 5.65717C14.042 5.95006 14.042 6.42494 13.7491 6.71783L8.12408 12.3428C7.83119 12.6357 7.35631 12.6357 7.06342 12.3428L4.25092 9.53033C3.95803 9.23744 3.95803 8.76256 4.25092 8.46967C4.54381 8.17678 5.01869 8.17678 5.31158 8.46967L7.59375 10.7518L12.6884 5.65717C12.9813 5.36428 13.4562 5.36428 13.7491 5.65717Z" fill="#375CFF"/>
+            </svg>
+          </div>
+          <div class="add-btn flex-center-center" @click="showAdd">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>添加新常用链</span>
+          </div>
+        </div>
+      </div>
+      <div class="wallet flex-center" v-if="address" @click="copy">
+        <div class="address">{{formatAddress(address)}}</div>
+        <div class="nickname">{{fixed(balance)}}</div>
       </div>
       <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
-      <div class="wallet flex-center" v-if="userInfo.nickname">
-        <div class="avatar flex-center">
-          <Avatar :width="14" :avatar="userInfo.avatar" :address="userInfo.address" />
+      <div v-if="userInfo.address" class="user-info" @click="editUser">
+        <div class="user-avatar">
+          <Avatar :width="34" :avatar="userInfo.avatar" :address="userInfo.address" />
         </div>
-        <div class="address">{{formatAddress(userInfo.address)}}</div>
-        <div class="nickname">{{userInfo.nickname}}</div>
+      </div>
+      <div v-else class="user-info" @click="checkUserRegistFun">
+        <div class="user-avatar">
+          <img src="@/assets/images/user.svg" alt="">
+        </div>
       </div>
     </div>
     <CreateContract ref="createContract" />
     <AddFolder ref="addFolder" />
     <RegistModal ref="registModal" @regist="registFun" />
     <LoginModal ref="loginModal" @login="loginFun" @regist="showRegistFun" />
+    <AddChainModal ref="addChainModal" @add="addChain" />
+    <EditModal ref="editModal" @edit="editUserInfo" />
   </div>
 </template>
 <script>
 import { useStore } from 'vuex'
 import { computed, watch, ref, toRaw } from 'vue'
-import { chains } from '../libs/chains'
+import { chains, icons } from '../libs/chains'
 import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
 import { useMessage } from 'naive-ui'
@@ -57,14 +78,18 @@ import AddFolder from '@/components/AddFolder.vue'
 import CreateContract from '@/components/CreateContract.vue'
 import RegistModal from '@/components/RegistModal.vue'
 import LoginModal from '@/components/LoginModal.vue'
-import { checkUserRegist, login, regist, getNftList, getUserInfo } from '../http/abi'
+import AddChainModal from '@/components/AddChainModal'
+import EditModal from '@/components/EditModal'
+import { checkUserRegist, login, regist, getNftList, getUserInfo, updateUserInfo } from '../http/abi'
 export default {
   components: {
     Avatar,
     AddFolder,
     CreateContract,
     RegistModal,
-    LoginModal
+    LoginModal,
+    AddChainModal,
+    EditModal
   },
   setup() {
     let interval = null
@@ -73,6 +98,9 @@ export default {
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
     const chainId = ref(null)
+    const addChainModal = ref(null)
+    const editModal = ref(null)
+    const chain = ref({})
     const searchLoading = ref(false)
     const addFolder = ref(null)
     const createContract = ref(null)
@@ -90,6 +118,9 @@ export default {
       return (value) => {
         return value ? (+value).toFixed(2) : ''
       }
+    })
+    const defaultChains = computed(() => {
+      return store.state.defaultChains
     })
     const provider = computed(() => {
       return store.state.provider
@@ -179,6 +210,7 @@ export default {
     const getUserInfoFun = () => {
       getUserInfo({q: address.value}).then(res => {
         if (res.code == 0) {
+          localStorage.setItem('userInfo', JSON.stringify(res.user_list[0]))
           store.commit('setUserInfo', res.user_list[0])
         }
       })
@@ -235,23 +267,54 @@ export default {
       })
     }
 
-    watch(address, (val) => {
-      checkUserRegist({address: val}).then(res => {
+    const checkUserRegistFun = () => {
+      if (!address.value) {
+        connectWallet()
+        return
+      }
+      checkUserRegist({address: address.value}).then(res => {
         console.log(res)
         if (res.code == 0) {
           if (res.is_registed) {
             loginFun()
           } else {
-            getNftListFun(val)
-            registModal.value.show(val)
+            getNftListFun(address.value)
+            registModal.value.show(address.value)
           }
         }
       })
-    }, {immediate: true})
+    }
 
+    const showAdd = () => {
+      addChainModal.value.showModal = true
+    }
+
+    const addChain = (e) => {
+      addChainModal.value.afterLeave()
+      switchChain(e.chainId)
+    }
+
+    const editUser = () => {
+      console.log(userInfo.value)
+      let user = JSON.parse(JSON.stringify(toRaw(userInfo.value)))
+      editModal.value.show(user)
+    }
+
+    const editUserInfo = ({avatar, nickname, addr}) => {
+      updateUserInfo({nickname, avatar}).then(res => {
+        console.log(res)
+        if (res.code == 0) {
+          getUserInfoFun(addr)
+        } else {
+          message.error(res.msg)
+        }
+        editModal.value.closeModal()
+      })
+    }
 
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
+      chain.value = chains.filter(e => e.chainId == chainId.value)[0]
       if (interval) clearInterval(interval)
       if (provider.value) {
         getGas()
@@ -268,7 +331,11 @@ export default {
       }
     }, {immediate: true})
     return {
+      chain,
       userInfo,
+      editModal,
+      defaultChains,
+      addChainModal,
       loginModal,
       registModal,
       addFolder,
@@ -278,6 +345,7 @@ export default {
       selectOptions,
       gasPrice,
       chains,
+      icons,
       network,
       chainId,
       address,
@@ -292,7 +360,13 @@ export default {
       inputFun,
       registFun,
       showRegistFun,
-      loginFun
+      loginFun,
+      checkUserRegistFun,
+      showAdd,
+      addChain,
+      switchChain,
+      editUser,
+      editUserInfo
     }
   }
 }
@@ -309,7 +383,7 @@ export default {
     flex: 1;
     .input-group {
       margin-left: 24px;
-      width: 480px;
+      max-width: 480px;
       overflow: hidden;
       padding-right: 1px;
       background: #1C1C20;
@@ -353,7 +427,7 @@ export default {
       border: 1px solid rgba(133, 141, 153, 0.15);
       border-radius: 10px;
       font-family: 'Montserrat-Medium';
-      font-size: 12px;
+      font-size: 13px;
       line-height: 18px;
       color: #FFFFFF;
       height: 34px;
@@ -374,8 +448,120 @@ export default {
         width: 14px;
         height: 14px;
       }
-      .nickname {
-        margin-left: 12px;
+      .address {
+        margin-right: 12px;
+      }
+      .icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        margin-right: 6px;
+      }
+      .gas-price {
+        img {
+          width: 18px;
+          height: 18px;
+        }
+        p {
+          font-weight: 400;
+          font-size: 13px;
+          line-height: 17px;
+          color: #FFFFFF;
+          margin-left: 8px;
+        }
+      }
+      &.chain-w {
+        position: relative;
+        min-width: 200px;
+        &:hover {
+          .chain-list {
+            display: block;
+          }
+        }
+        .block {
+          position: absolute;
+          top: 34px;
+          left: 0;
+          right: 0;
+          height: 10px;
+          font-size: 0;
+        }
+        .chain-list {
+          display: none;
+          position: absolute;
+          top: 42px;
+          left: 0;
+          right: 0;
+          max-height: 350px;
+          overflow-y: auto;
+          background: rgba(21, 20, 27, 0.9);
+          border: 1px solid rgba(133, 141, 153, 0.15);
+          box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
+          backdrop-filter: blur(10px);
+          border-radius: 10px;
+          padding: 5px;
+          box-sizing: border-box;
+          .chain-item {
+            padding: 0 12px;
+            height: 34px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 13px;
+            line-height: 18px;
+            text-transform: capitalize;
+            color: #FFFFFF;
+            .chain-name {
+              flex: 1;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            &:hover {
+              background: rgba(133, 141, 153, 0.15);
+            }
+            &.chain-item-active {
+              background: rgba(55, 92, 255, 0.15);
+              color: #375CFF;
+              svg {
+                display: inline-block;
+              }
+            }
+            img {
+              width: 18px;
+              height: 18px;
+              border-radius: 10px;
+              margin-right: 6px;
+            }
+            svg {
+              display: none;
+            }
+          }
+          .add-btn {
+            background: rgba(133, 141, 153, 0.3);
+            border-radius: 6px;
+            height: 34px;
+            cursor: pointer;
+            &:hover {
+              background: #375CFF;
+            }
+            span {
+              font-weight: 400;
+              font-size: 15px;
+              line-height: 18px;
+              text-transform: capitalize;
+              color: #FFFFFF;
+            }
+          }
+        }
+      }
+    }
+    .user-info {
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        margin-left: 16px;
+        cursor: pointer;
       }
     }
   }
@@ -396,19 +582,6 @@ export default {
     }
     .n-base-selection-label {
       background-color: rgba(0, 0, 0, 0);
-    }
-  }
-  .gas-price {
-    img {
-      width: 20px;
-      height: 20px;
-    }
-    p {
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 17px;
-      color: #FFFFFF;
-      margin-left: 8px;
     }
   }
 }

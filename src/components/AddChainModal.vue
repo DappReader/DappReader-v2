@@ -31,17 +31,22 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 import { chains } from '../libs/chains'
-import { getLs } from "@/service/service";
+import { getLs, setLs } from "@/service/service";
+import { useStore } from 'vuex'
 // import { useMessage } from 'naive-ui'
 export default {
   name: 'CreateContract',
   setup(props, {emit}) {
+    const store = useStore()
     let chain = []
     const keyword = ref('')
     const list = ref([])
     const showModal = ref(false)
+    const defaultChains = computed(() => {
+      return store.state.defaultChains
+    })
     const afterLeave = () => {
       showModal.value = false
       keyword.value = ''
@@ -49,7 +54,12 @@ export default {
     const input = (e) => {
       list.value = chain.filter(el => el.name.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) > -1)
     }
-    const addChain = (item) => {
+    const addChain = async (item) => {
+      defaultChains.value.push(item)
+      await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChains.value))).then(res => {
+        console.log(res)
+        store.commit('setDefaultChains', defaultChains.value)
+      })
       emit('add', item)
     }
     onBeforeMount(async () => {
@@ -59,6 +69,7 @@ export default {
       list.value = chain
     })
     return {
+      defaultChains,
       keyword,
       showModal,
       list,

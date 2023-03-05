@@ -59,7 +59,8 @@ export default {
             remark: contract.description,
             token: res.contract.token,
             versionNumber: res.contract.version_number || 1,
-            password
+            password,
+            userList: res.contract.user_list || []
           }
           setData(sol)
           getContractModal.value.showModal = false
