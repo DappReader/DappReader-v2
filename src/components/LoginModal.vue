@@ -11,7 +11,7 @@
       <div v-if="!userInfo.address" class="sub-title">if you have an account, please select Login.</div>
       <div v-if="userInfo.address && userInfo.address.toLocaleLowerCase() != address.toLocaleLowerCase()" class="sub-title">we found that your last sign with address {{userInfo.address}}, if you want to sign in please change your wallet to {{userInfo.address}}</div>
       <div class="btn-list flex-center-center">
-        <div v-if="!userInfo.address" :class="['btn', 'flex-center-center']" @click="loginFun" style="margin-right: 16px">Sign to login</div>
+        <div v-if="!userInfo.address || userInfo.address.toLocaleLowerCase() == address.toLocaleLowerCase()" :class="['btn', 'flex-center-center']" @click="loginFun" style="margin-right: 16px">Sign to login</div>
         <div v-if="userInfo.address && userInfo.address.toLocaleLowerCase() != address.toLocaleLowerCase()" :class="['btn', 'flex-center-center']" @click="loginFun" style="margin-right: 16px">Change Wallet Address</div>
         <div :class="['btn', 'flex-center-center']" @click="registFun">Regist A New Account</div>
       </div>
@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'SelectNft',
@@ -50,6 +50,12 @@ export default {
         hide()
       }
     }
+    watch(address, (val) => {
+      if (userInfo.value.address.toLocaleLowerCase() == val.toLocaleLowerCase()) {
+        emit('login')
+        // hide()
+      }
+    })
     return {
       address,
       userInfo,
