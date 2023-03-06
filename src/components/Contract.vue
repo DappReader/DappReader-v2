@@ -233,7 +233,15 @@
                           <div class="result-param-name">GasUsedPercent</div>
                           <div v-if="!item.isFormatGasUsed" class="result-param-value">{{((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1)}}%</div>
                           <div v-else class="result-param-value">{{item.content.gasUsed}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)">
+                          <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1) + '%')">
+                        </div>
+                        <div class="result-param flex-center" v-if="item.content && item.content.effectiveGasPrice">
+                          <div class="result-param-name">GasCost</div>
+                          <div v-if="formatUnits(item.content.value, 18) == 0" class="result-param-value">{{formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18)}}</div>
+                          <div v-else class="result-param-value">{{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH + {{(formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH = {{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH</div>
+                          <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1) + '%')">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.maxFeePerGas">
                           <div class="result-param-name">MaxFeePerGas</div>
