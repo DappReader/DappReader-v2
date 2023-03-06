@@ -51,7 +51,8 @@ export default {
       }
     }
     watch(address, (val) => {
-      if (userInfo.value.address.toLocaleLowerCase() == val.toLocaleLowerCase()) {
+      if (userInfo.value.address?.toLocaleLowerCase() == val.toLocaleLowerCase()) {
+        console.log(2)
         emit('login')
         // hide()
       }
