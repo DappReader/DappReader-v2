@@ -89,6 +89,9 @@ export default {
         border-radius: 6px;
         box-sizing: border-box;
         overflow: hidden;
+        background: url(../assets/images/nft_bg.svg) no-repeat;
+        background-size: 100% 100%;
+        background-position: 0 0;
         &.img-item-active {
           border: 2px solid #375CFF;
         }

@@ -444,6 +444,9 @@ export default {
       console.log(data)
       parameData.value = data
       sendInfo.value = {}
+      if (type == 'read' && !abiItem.value.inputs.length) {
+        runFunction(abiItem.value)
+      }
     }
 
     const switchChainFun = () => {

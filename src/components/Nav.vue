@@ -36,7 +36,7 @@
               <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>添加新常用链</span>
+            <span>Add New Chain</span>
           </div>
         </div>
       </div>
@@ -101,6 +101,7 @@ export default {
     const addChainModal = ref(null)
     const editModal = ref(null)
     const chain = ref({})
+    const nftList = ref([])
     const searchLoading = ref(false)
     const addFolder = ref(null)
     const createContract = ref(null)
@@ -261,9 +262,12 @@ export default {
     }
 
     const getNftListFun = (address) => {
-      getNftList({address}).then(res => {
+      console.log(address)
+      getNftList({address: '0xbbA51F0b09d5852eFfa609E9223ba7F5d7407945'}).then(res => {
         console.log(res)
         registModal.value.nftList = res
+        editModal.value.nftList = res
+        nftList.value = res
       })
     }
 
@@ -298,6 +302,11 @@ export default {
       console.log(userInfo.value)
       let user = JSON.parse(JSON.stringify(toRaw(userInfo.value)))
       editModal.value.show(user)
+      if (nftList.value.length == 0) {
+        getNftListFun(user.address)
+      } else {
+        editModal.value.nftList = nftList.value
+      }
     }
 
     const editUserInfo = ({avatar, nickname, addr}) => {

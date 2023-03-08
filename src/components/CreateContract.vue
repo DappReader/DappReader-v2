@@ -29,7 +29,7 @@
                 <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>添加新常用链</span>
+              <span>Add New Chain</span>
             </div>
           </template>
         </n-select>

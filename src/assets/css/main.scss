@@ -386,3 +386,28 @@ $mainColor: #1C42FF;
   padding: 5px !important;
   border: none !important;
 }
+
+.search-modal {
+  position: relative;
+  .n-card-header {
+    position: relative;
+    z-index: 2;
+  }
+  .form {
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: -69px;
+      left: 0;
+      width: 100%;
+      height: 119px;
+      background: #2D2E35;
+      display: block;
+      border-radius: 10px 10px 0 0;
+    }
+  }
+}

@@ -59,7 +59,7 @@
               </div>
             </div>
           </div>
-          <div class="btn flex-center-center" @click="edit">Sign and Regist</div>
+          <div class="btn flex-center-center" @click="edit">Save</div>
         </div>
       </div>
     </n-spin>
@@ -169,6 +169,7 @@ export default {
       width: 100%;
       height: auto;
       object-fit: cover;
+      border-radius: 10px;
     }
     .main {
       position: relative;

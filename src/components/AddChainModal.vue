@@ -2,7 +2,7 @@
   <n-modal
     v-model:show="showModal"
     :mask-closable="false"
-    class="custom-card modal-style"
+    class="custom-card modal-style search-modal"
     preset="card"
     title="Add New Chain"
     :on-after-leave="afterLeave"
@@ -82,8 +82,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 .form {
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -69px;
+    left: 0;
+    width: 100%;
+    height: 119px;
+    background: #2D2E35;
+    display: block;
+    border-radius: 10px 10px 0 0;
+  }
   .input {
     padding: 0 20px;
     box-sizing: border-box;
@@ -116,7 +131,6 @@ export default {
         margin-top: 6px;
         font-size: 12px;
         line-height: 16px;
-        text-transform: capitalize;
         color: rgba(255, 255, 255, 0.8);
       }
     }
