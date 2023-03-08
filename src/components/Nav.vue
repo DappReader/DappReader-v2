@@ -263,7 +263,7 @@ export default {
 
     const getNftListFun = (address) => {
       console.log(address)
-      getNftList({address: '0xbbA51F0b09d5852eFfa609E9223ba7F5d7407945'}).then(res => {
+      getNftList({address}).then(res => {
         console.log(res)
         registModal.value.nftList = res
         editModal.value.nftList = res

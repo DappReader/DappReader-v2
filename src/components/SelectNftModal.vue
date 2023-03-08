@@ -15,7 +15,7 @@
         <div class="img-item-blok"></div>
         <div class="img-item-blok"></div>
       </div>
-      <div :class="['btn', nftIndex > -1 ? 'btn-activated' : '', 'flex-center-center']" @click="selectNft">Select</div>
+      <div :class="['select-btn', nftIndex > -1 ? 'btn-activated' : '', 'flex-center-center']" @click="selectNft">Select</div>
     </div>
   </div>
 </template>
@@ -28,6 +28,7 @@ export default {
     const list = ref(props.nftList)
     const nftIndex = ref(-1)
     const selectNft = () => {
+      if (nftIndex.value < 0) return
       let item = list.value[nftIndex.value]
       emit('selectNft', item)
     }
@@ -113,7 +114,7 @@ export default {
         visibility: hidden;
       }
     }
-    .btn {
+    .select-btn {
       width: 100%;
       height: 50px;
       background: rgba(133, 141, 153, 0.1);
@@ -122,11 +123,12 @@ export default {
       font-size: 16px;
       line-height: 22px;
       text-transform: capitalize;
-      cursor: pointer;
       color: #858D99;
+      cursor: no-drop;
       &.btn-activated {
         background: #375CFF;
         color: #FFFFFF;
+        cursor: pointer;
       }
     }
   }
