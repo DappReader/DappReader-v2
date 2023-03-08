@@ -3,7 +3,7 @@
     <div class="hd-section">
       <div class="title-w">
         <div class="title">{{contract.name}}</div>
-        <div class="desc">dsfdfd{{contract.remark}}</div>
+        <div class="desc">{{contract.remark}}</div>
       </div>
       <div class="info">
         <div class="info-item flex-center">
@@ -599,7 +599,7 @@ export default {
       margin-top: 16px;
       font-size: 13px;
       line-height: 16px;
-      text-transform: capitalize;
+      // text-transform: capitalize;
       color: #858D99;
     }
 
@@ -780,7 +780,7 @@ export default {
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
-    text-transform: capitalize;
+    // text-transform: capitalize;
     color: #858D99;
     margin-top: 16px;
   }
