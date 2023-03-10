@@ -85,6 +85,13 @@ export default {
         console.log(res)
         if (res.code == 0) {
           list.value = res.user_list
+          if (res.user_list == 0 &&  keyword.value.indexOf('0x') > -1 && keyword.value.length == 42) {
+            list.value = [{
+              address: keyword.value,
+              nickname: 'notRegistedUser',
+              avatar: 'blockie'
+            }]
+          }
         }
       })
     }
@@ -173,14 +180,12 @@ export default {
             font-weight: 500;
             font-size: 14px;
             line-height: 16px;
-            text-transform: capitalize;
             color: #FFFFFF;
             margin-bottom: 4px;
           }
           .address {
             font-size: 10px;
             line-height: 12px;
-            text-transform: capitalize;
             color: rgba(255, 255, 255, 0.8);
           }
         }

@@ -393,7 +393,6 @@ export default {
       font-weight: 400;
       font-size: 12px;
       line-height: 20px;
-      text-transform: capitalize;
       color: #858D99;
     }
     .team-list {
@@ -416,14 +415,12 @@ export default {
             font-weight: 500;
             font-size: 14px;
             line-height: 16px;
-            text-transform: capitalize;
             color: #15141B;
             margin-bottom: 4px;
           }
           .address {
             font-size: 10px;
             line-height: 12px;
-            text-transform: capitalize;
             color: #15141B;
           }
         }
