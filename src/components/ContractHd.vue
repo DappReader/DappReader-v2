@@ -99,30 +99,38 @@
       </div>
       <div v-if="contract.userList && contract.userList.length" class="team flex-center">
         <p>Team Members</p>
-        <div class="user-list flex-center">
-          <div v-for="(item, index) in contract.userList" :key="item.nickname">
-            <div class="user-avatar" v-if="index < 5">
-              <n-popover trigger="hover">
-                <template #trigger>
-                  <Avatar :width="32" :avatar="item.avatar" :address="item.address" />
-                </template>
-                <span>{{item.nickname}}</span>
-              </n-popover>
-            </div>
-          </div>
-          <div v-if="contract.userList.length > 5" class="user-avatar">
-            <div class="more flex-center-center">+{{contract.userList.length - 5}}
-              <div class="more-list">
-              <div v-for="(item, index) in contract.userList" :key="item.nickname">
-                <div v-if="index > 4" class="user-item flex-center">
-                  <div class="item-avatar">
-                    <Avatar :width="18" :avatar="item.avatar" :address="item.address" />
-                  </div>
+        <div class="flex-center">
+          <div class="user-list flex-center">
+            <div v-for="(item, index) in contract.userList" :key="item.nickname">
+              <div class="user-avatar" v-if="index < 5">
+                <n-popover trigger="hover">
+                  <template #trigger>
+                    <Avatar :width="32" :avatar="item.avatar" :address="item.address" />
+                  </template>
                   <span>{{item.nickname}}</span>
-                </div>
+                </n-popover>
               </div>
             </div>
+            <div v-if="contract.userList.length > 5" class="user-avatar">
+              <div class="more flex-center-center">+{{contract.userList.length - 5}}
+                <div class="more-list">
+                <div v-for="(item, index) in contract.userList" :key="item.nickname">
+                  <div v-if="index > 4" class="user-item flex-center">
+                    <div class="item-avatar">
+                      <Avatar :width="18" :avatar="item.avatar" :address="item.address" />
+                    </div>
+                    <span>{{item.nickname}}</span>
+                  </div>
+                </div>
+              </div>
+              </div>
             </div>
+          </div>
+          <div class="team-edit" @click="showTeamModal">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.6665 13.3334H5.33317L12.8618 5.8048C13.1221 5.54445 13.1221 5.12234 12.8618 4.86199L11.1379 3.13813C10.8776 2.87778 10.4554 2.87778 10.1951 3.13813L2.6665 10.6667V13.3334Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 5.3335L10.6667 8.00016" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -132,6 +140,7 @@
     <ShareModal ref="shareModal" :contract="contractData" />
     <DecodeModal ref="decodeModal" :contract="contractData" />
     <GetContractModal ref="getContractModal" @confirm="getContractFun" />
+    <TeamModal ref="teamModal" />
     <n-modal
       v-model:show="showHint"
       :mask-closable="false"
@@ -204,6 +213,7 @@ import CreateContract from '@/components/CreateContract.vue'
 import ShareModal from '@/components/ShareModal.vue'
 import GetContractModal from '@/components/GetContractModal.vue'
 import DecodeModal from '@/components/DecodeModal.vue'
+import TeamModal from '@/components/TeamModal.vue'
 import Avatar from "@/components/Avatar.vue"
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
@@ -219,7 +229,8 @@ export default {
     ShareModal,
     GetContractModal,
     DecodeModal,
-    Avatar
+    Avatar,
+    TeamModal
   },
   setup(props) {
     const store = useStore()
@@ -233,6 +244,7 @@ export default {
     const showSourceCode = ref(false)
     const showLoading = ref(false)
     const getContractModal = ref(null)
+    const teamModal= ref(null)
     const syncing = ref(false)
     const activeName = ref('')
     const activeIndex = ref(-1)
@@ -253,6 +265,10 @@ export default {
         return formatAddress(value)
       }
     })
+
+    const showTeamModal = () => {
+      teamModal.value.show(props.contract || {})
+    }
 
     const getSourceCode = async (address, chain, sources) => {
       console.log('sources', sources)
@@ -533,6 +549,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      teamModal,
       balance,
       decodeModal,
       syncing,
@@ -559,7 +576,8 @@ export default {
       sync,
       getContractFun,
       decode,
-      getAddress
+      getAddress,
+      showTeamModal
     }
   }
 }
@@ -797,6 +815,10 @@ export default {
             }
           }
         }
+      }
+      .team-edit {
+        margin-left: 12px;
+        cursor: pointer;
       }
     }
   }

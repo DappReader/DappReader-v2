@@ -10,4 +10,5 @@ export const getTeamFriendList = (data = {}) => get('/v1/get_team_friend_list', 
 export const login = (data = {}) => post('/v1/login', data)
 export const regist = (data = {}) => post('/v1/regist', data)
 export const updateUserInfo = (data = {}) => post('/v1/update_user_info', data)
+export const updateTeamInfo = (data = {}) => post('/v1/update_team_info', data)
 export const getNftList = (data = {}) => get('/get_nft_list', data, 'https://worker.dappreader.com')
