@@ -87,7 +87,7 @@ export default {
     }
     
     onMounted(() => {
-      getProvider(true)
+      getProvider()
       fn()
       getData()
     })

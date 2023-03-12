@@ -44,8 +44,12 @@ export default {
     const show = () => {
       showModal.value = true
       let user = localStorage.getItem('userInfo') || null
-      if (user) userInfo.value = JSON.parse(user)
-      if (userInfo.value.address.toLocaleLowerCase() == address.value.toLocaleLowerCase()) {
+      if (user) {
+        userInfo.value = JSON.parse(user)
+      } else {
+        userInfo.value = {}
+      }
+      if (userInfo.value.address?.toLocaleLowerCase() == address.value.toLocaleLowerCase()) {
         emit('login')
         hide()
       }

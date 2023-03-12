@@ -8,10 +8,11 @@
 
 <script>
 import { useStore } from 'vuex'
-import { ref, watch, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
+import { useIsActivating } from '../hooks/useIsActivating'
 import Menu from '../components/Menu.vue'
 import Main from '../components/Main.vue'
 import GetContractModal from '../components/GetContractModal.vue'
@@ -25,15 +26,20 @@ export default {
     GetContractModal
   },
   setup() {
+    let check = false
     const store = useStore()
     const route = useRoute()
     const router = useRouter()
     const { setData } = useUtils()
+    const { getProvider } = useIsActivating()
     const message = useMessage()
     const menuDom = ref(null)
     const getContractModal = ref(null)
     const userInfo = computed(() => {
       return store.state.userInfo
+    })
+    const address = computed(() => {
+      return store.state.address
     })
     const hiddenRightMenu = () => {
       menuDom.value.hiddenRightMenu()
@@ -77,9 +83,14 @@ export default {
         console.log(res)
         if (res.code == 0) {
           if (res.openSourceType == 'Limited') {
+            console.log(1)
             getContractModal.value.showModal = true
-          } else {
-            getContractFun()
+          } else if (res.openSourceType == 'Team') {
+            if (userInfo.value && userInfo.value.nickname) {
+              getContractFun()
+            } else {
+              store.commit('login')
+            }
           }
         }
       })
@@ -87,12 +98,30 @@ export default {
     const confirm = (e) => {
       getContractFun(e)
     }
+    onMounted(() => {
+      let token = route.params.token
+      if (token) {
+        if (!address.value) {
+          getProvider()
+          check = true
+        } else {
+          checkContractInfoFun(token)
+        }
+      }
+    })
     watch(userInfo, (val) => {
       let token = route.params.token
       if (val.nickname && token) {
         checkContractInfoFun(token)
       }
-    }, {immediate: true})
+    })
+    watch(address, () => {
+      let token = route.params.token
+      if (token && check) {
+        check = false
+        checkContractInfoFun(token)
+      }
+    })
     return {
       menuDom,
       hiddenRightMenu,
