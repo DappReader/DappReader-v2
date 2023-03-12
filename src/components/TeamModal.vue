@@ -13,7 +13,7 @@
       <div class="modal-content">
         <div style="padding: 0 20px">
           <p class="sub-title">Add team members</p>
-          <SelectSearch :list="searchList" @add="add" @search="search" @click.stop />
+          <SelectSearch ref="selectSearch" :list="searchList" @add="add" @search="search" @click.stop />
           <p class="sub-title" style="margin-top: 20px">Team members can be managed here（{{userList.length}}）</p>
           <div class="list" v-if="userList && userList.length">
             <Item v-for="item in userList" :key="item.address" :item="item" @del="del" />
@@ -36,6 +36,7 @@ export default {
     const { setData } = useUtils()
     const showModal = ref(false)
     const loading = ref(false)
+    const selectSearch = ref(null)
     const userList = ref([])
     const contract = ref({})
     const searchList = ref([])
@@ -73,6 +74,7 @@ export default {
         }
       })
       userList.value = JSON.parse(JSON.stringify(arr))
+      selectSearch.value.clear()
     }
     const del = ({address}) => {
       userList.value = userList.value.filter(e => e.address != address)
@@ -100,6 +102,7 @@ export default {
       contract.value = {}
     }
     return {
+      selectSearch,
       searchList,
       showModal,
       userList,

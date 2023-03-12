@@ -8,7 +8,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
@@ -89,8 +89,15 @@ export default {
             if (userInfo.value && userInfo.value.nickname) {
               getContractFun()
             } else {
-              store.commit('login')
+              if (!address.value) {
+                getProvider()
+                check = true
+              } else {
+                store.commit('login')
+              }
             }
+          } else {
+            getContractFun()
           }
         }
       })
@@ -98,20 +105,9 @@ export default {
     const confirm = (e) => {
       getContractFun(e)
     }
-    onMounted(() => {
+    watch(userInfo, () => {
       let token = route.params.token
       if (token) {
-        if (!address.value) {
-          getProvider()
-          check = true
-        } else {
-          checkContractInfoFun(token)
-        }
-      }
-    })
-    watch(userInfo, (val) => {
-      let token = route.params.token
-      if (val.nickname && token) {
         checkContractInfoFun(token)
       }
     })

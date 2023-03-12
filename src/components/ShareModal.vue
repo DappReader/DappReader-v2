@@ -71,7 +71,7 @@
             </div>
             <div class="team">
               <p class="sub-title">Add team members</p>
-              <SelectSearch :list="searchList" @add="add" @search="search" @click.stop />
+              <SelectSearch ref="selectSearch" :list="searchList" @add="add" @search="search" @click.stop />
               <p v-if="teamList.length" class="sub-title">Team members ({{teamList.length}})</p>
               <div v-if="teamList.length" class="team-list">
                 <Item v-for="item in teamList" :key="item.address" :item="item" @del="del" />
@@ -123,6 +123,7 @@ export default {
     const message = useMessage()
     const { setData, copy } = useUtils()
     const showModal = ref(false)
+    const selectSearch = ref(null)
     const itemIndex = ref(1)
     const password = ref('')
     const token = ref(props.contract && props.contract.token || '')
@@ -150,6 +151,7 @@ export default {
         }
       })
       teamList.value = JSON.parse(JSON.stringify(arr))
+      selectSearch.value.clear()
     }
     const search = (keyword) => {
       if (!keyword) {
@@ -253,6 +255,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      selectSearch,
       link,
       showModal,
       token,
