@@ -13,7 +13,7 @@
       <div class="modal-content">
         <div style="padding: 0 20px">
           <p class="sub-title">Add team members</p>
-          <SelectSearch ref="selectSearch" :list="searchList" @add="add" @search="search" @click.stop />
+          <SelectSearch ref="selectSearch" :isSearching="isSearching" :list="searchList" @add="add" @search="search" @click.stop />
           <p class="sub-title" style="margin-top: 20px">Team members can be managed here（{{userList.length}}）</p>
           <div class="list" v-if="userList && userList.length">
             <Item v-for="item in userList" :key="item.address" :item="item" @del="del" />
@@ -37,6 +37,7 @@ export default {
     const showModal = ref(false)
     const loading = ref(false)
     const selectSearch = ref(null)
+    const isSearching = ref(false)
     const userList = ref([])
     const contract = ref({})
     const searchList = ref([])
@@ -52,6 +53,7 @@ export default {
         searchList.value = []
         return
       }
+      isSearching.value = true
       getUserInfo({q: keyword}).then(res => {
         if (res.code == 0) {
           searchList.value = res.user_list
@@ -63,6 +65,10 @@ export default {
             }]
           }
         }
+        isSearching.value = false
+      }).catch((err) => {
+        console.log(err)
+        isSearching.value = false
       })
     }
     const add = (item) => {
@@ -102,6 +108,7 @@ export default {
       contract.value = {}
     }
     return {
+      isSearching,
       selectSearch,
       searchList,
       showModal,

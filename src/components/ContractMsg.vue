@@ -57,10 +57,11 @@
             </div>
           </div>
           <div class="team-edit" @click="showTeamModal">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2.6665 13.3334H5.33317L12.8618 5.8048C13.1221 5.54445 13.1221 5.12234 12.8618 4.86199L11.1379 3.13813C10.8776 2.87778 10.4554 2.87778 10.1951 3.13813L2.6665 10.6667V13.3334Z" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M8 5.3335L10.6667 8.00016" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            </svg> -->
+            <span>Edit</span>
           </div>
         </div>
       </div>
@@ -696,6 +697,11 @@ export default {
         margin-top: 12px;
         margin-left: 20px;
         cursor: pointer;
+        &:hover {
+          span {
+            color: #FFFFFF;
+          }
+        }
       }
     }
 

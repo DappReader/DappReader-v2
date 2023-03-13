@@ -1,110 +1,112 @@
 <template>
   <div v-if="showModal" class="modal flex-center-center share-modal" @click="searchList = []">
-    <div class="modal-content">
-      <div class="close" @click="showModal = false">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 20L4 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M20 4L4 20" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="hd flex-center-center">
-        <div class="tabs flex-center-center">
-          <div :class="['tab-item', 'flex-center-center', itemIndex == 1 ? 'tab-item-activated' : '']" @click="changeTab(1)">Global</div>
-          <div :class="['tab-item', 'flex-center-center', itemIndex == 2 ? 'tab-item-activated' : '']" @click="changeTab(2)">Use Password</div>
-          <div :class="['tab-item', 'flex-center-center', itemIndex == 0 ? 'tab-item-activated' : '']" @click="changeTab(0)">Team</div>
+    <n-spin :show="loading">
+      <div class="modal-content">
+        <div class="close" @click="showModal = false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 20L4 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 4L4 20" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-      </div>
-      <div v-if="!token" class="bd">
-        <div v-if="itemIndex == 1" class="section">
-          <div class="item flex-center">
-            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
-              <path d="M19.167 34.333C19.167 32.4 21.7787 30.833 25.0003 30.833C28.222 30.833 30.8337 32.4 30.8337 34.333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M32 27.6245C34.0602 28.1646 35.5 29.3981 35.5 30.8333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M18 27.6245C15.9398 28.1646 14.5 29.3981 14.5 30.8333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M25 27.333C26.933 27.333 28.5 25.766 28.5 23.833C28.5 21.9 26.933 20.333 25 20.333C23.067 20.333 21.5 21.9 21.5 23.833C21.5 25.766 23.067 27.333 25 27.333Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M31.9997 22.9418C32.7157 22.3009 33.1663 21.3696 33.1663 20.333C33.1663 18.4 31.5993 16.833 29.6663 16.833C28.7699 16.833 27.9522 17.17 27.333 17.7242" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M17.9997 22.9418C17.2836 22.3009 16.833 21.3696 16.833 20.333C16.833 18.4 18.4 16.833 20.333 16.833C21.2294 16.833 22.0471 17.17 22.6663 17.7242" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="item-info">
-              <p class="item-title">Global</p>
-              <p class="item-desc">Everyone can view the current contract</p>
-            </div>
+        <div class="hd flex-center-center">
+          <div class="tabs flex-center-center">
+            <div :class="['tab-item', 'flex-center-center', itemIndex == 1 ? 'tab-item-activated' : '']" @click="changeTab(1)">Global</div>
+            <div :class="['tab-item', 'flex-center-center', itemIndex == 2 ? 'tab-item-activated' : '']" @click="changeTab(2)">Use Password</div>
+            <div :class="['tab-item', 'flex-center-center', itemIndex == 0 ? 'tab-item-activated' : '']" @click="changeTab(0)">Team</div>
           </div>
         </div>
-        <div v-if="itemIndex == 2" class="section">
-          <div class="item">
-            <div class="flex-center">
+        <div v-if="!token" class="bd">
+          <div v-if="itemIndex == 1" class="section">
+            <div class="item flex-center">
               <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
-                <rect x="16.833" y="21.5" width="16.3333" height="14" rx="2.33333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M20.333 19.1667C20.333 16.5893 22.4223 14.5 24.9997 14.5V14.5C27.577 14.5 29.6663 16.5893 29.6663 19.1667V21.5H20.333V19.1667Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="25.0003" cy="27.3333" r="2.33333" fill="#858D99"/>
-                <path d="M25 27.3335V30.8335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19.167 34.333C19.167 32.4 21.7787 30.833 25.0003 30.833C28.222 30.833 30.8337 32.4 30.8337 34.333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M32 27.6245C34.0602 28.1646 35.5 29.3981 35.5 30.8333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 27.6245C15.9398 28.1646 14.5 29.3981 14.5 30.8333" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M25 27.333C26.933 27.333 28.5 25.766 28.5 23.833C28.5 21.9 26.933 20.333 25 20.333C23.067 20.333 21.5 21.9 21.5 23.833C21.5 25.766 23.067 27.333 25 27.333Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M31.9997 22.9418C32.7157 22.3009 33.1663 21.3696 33.1663 20.333C33.1663 18.4 31.5993 16.833 29.6663 16.833C28.7699 16.833 27.9522 17.17 27.333 17.7242" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.9997 22.9418C17.2836 22.3009 16.833 21.3696 16.833 20.333C16.833 18.4 18.4 16.833 20.333 16.833C21.2294 16.833 22.0471 17.17 22.6663 17.7242" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <div class="item-info">
-                <p class="item-title">Use Password</p>
-                <p class="item-desc">Anyone with the password can view the current contract</p>
-              </div>
-            </div>
-            <div class="input">
-              <input type="text" v-model="password" placeholder="Please enter your password">
-            </div>
-          </div>
-        </div>
-        <div v-if="itemIndex == 0" class="section">
-          <div class="item">
-            <div class="flex-center">
-              <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
-                <path d="M19.1667 34.3335C19.1667 32.4005 21.7784 30.8335 25 30.8335C28.2217 30.8335 30.8334 32.4005 30.8334 34.3335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M32 27.6245C34.0602 28.1646 35.5 29.3981 35.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18 27.6245C15.9398 28.1646 14.5 29.3981 14.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M25 27.3335C26.933 27.3335 28.5 25.7665 28.5 23.8335C28.5 21.9005 26.933 20.3335 25 20.3335C23.067 20.3335 21.5 21.9005 21.5 23.8335C21.5 25.7665 23.067 27.3335 25 27.3335Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M32 22.9423C32.716 22.3014 33.1666 21.3701 33.1666 20.3335C33.1666 18.4005 31.5996 16.8335 29.6666 16.8335C28.7702 16.8335 27.9525 17.1705 27.3333 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18 22.9423C17.2839 22.3014 16.8333 21.3701 16.8333 20.3335C16.8333 18.4005 18.4003 16.8335 20.3333 16.8335C21.2297 16.8335 22.0474 17.1705 22.6666 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <div class="item-info">
-                <p class="item-title">Team</p>
-                <p class="item-desc">Select the team members who can see this contract</p>
-              </div>
-            </div>
-            <div class="team">
-              <p class="sub-title">Add team members</p>
-              <SelectSearch ref="selectSearch" :list="searchList" @add="add" @search="search" @click.stop />
-              <p v-if="teamList.length" class="sub-title">Team members ({{teamList.length}})</p>
-              <div v-if="teamList.length" class="team-list">
-                <Item v-for="item in teamList" :key="item.address" :item="item" @del="del" />
+                <p class="item-title">Global</p>
+                <p class="item-desc">Everyone can view the current contract</p>
               </div>
             </div>
           </div>
+          <div v-if="itemIndex == 2" class="section">
+            <div class="item">
+              <div class="flex-center">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
+                  <rect x="16.833" y="21.5" width="16.3333" height="14" rx="2.33333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M20.333 19.1667C20.333 16.5893 22.4223 14.5 24.9997 14.5V14.5C27.577 14.5 29.6663 16.5893 29.6663 19.1667V21.5H20.333V19.1667Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="25.0003" cy="27.3333" r="2.33333" fill="#858D99"/>
+                  <path d="M25 27.3335V30.8335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="item-info">
+                  <p class="item-title">Use Password</p>
+                  <p class="item-desc">Anyone with the password can view the current contract</p>
+                </div>
+              </div>
+              <div class="input">
+                <input type="text" v-model="password" placeholder="Please enter your password">
+              </div>
+            </div>
+          </div>
+          <div v-if="itemIndex == 0" class="section">
+            <div class="item">
+              <div class="flex-center">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="25" cy="25" r="25" fill="#858D99" fill-opacity="0.15"/>
+                  <path d="M19.1667 34.3335C19.1667 32.4005 21.7784 30.8335 25 30.8335C28.2217 30.8335 30.8334 32.4005 30.8334 34.3335" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M32 27.6245C34.0602 28.1646 35.5 29.3981 35.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 27.6245C15.9398 28.1646 14.5 29.3981 14.5 30.8333" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M25 27.3335C26.933 27.3335 28.5 25.7665 28.5 23.8335C28.5 21.9005 26.933 20.3335 25 20.3335C23.067 20.3335 21.5 21.9005 21.5 23.8335C21.5 25.7665 23.067 27.3335 25 27.3335Z" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M32 22.9423C32.716 22.3014 33.1666 21.3701 33.1666 20.3335C33.1666 18.4005 31.5996 16.8335 29.6666 16.8335C28.7702 16.8335 27.9525 17.1705 27.3333 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 22.9423C17.2839 22.3014 16.8333 21.3701 16.8333 20.3335C16.8333 18.4005 18.4003 16.8335 20.3333 16.8335C21.2297 16.8335 22.0474 17.1705 22.6666 17.7247" stroke="#858D99" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="item-info">
+                  <p class="item-title">Team</p>
+                  <p class="item-desc">Select the team members who can see this contract</p>
+                </div>
+              </div>
+              <div class="team">
+                <p class="sub-title">Add team members</p>
+                <SelectSearch ref="selectSearch" :isSearching="isSearching" :list="searchList" @add="add" @search="search" @click.stop />
+                <p v-if="teamList.length" class="sub-title">Team members ({{teamList.length}})</p>
+                <div v-if="teamList.length" class="team-list">
+                  <Item v-for="item in teamList" :key="item.address" :item="item" @del="del" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-w" @click="share">
+            <div :class="['share-btn', 'flex-center-center', ((itemIndex == 0 && teamList.length) || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']">
+              <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 16.75C16.2426 16.75 17.25 15.7426 17.25 14.5C17.25 13.2574 16.2426 12.25 15 12.25C13.7574 12.25 12.75 13.2574 12.75 14.5C12.75 15.7426 13.7574 16.75 15 16.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.25 11.125L12.75 13.375" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 12.25C7.24264 12.25 8.25 11.2426 8.25 10C8.25 8.75736 7.24264 7.75 6 7.75C4.75736 7.75 3.75 8.75736 3.75 10C3.75 11.2426 4.75736 12.25 6 12.25Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.75 6.625L8.25 8.875" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15 7.75C16.2426 7.75 17.25 6.74264 17.25 5.5C17.25 4.25736 16.2426 3.25 15 3.25C13.7574 3.25 12.75 4.25736 12.75 5.5C12.75 6.74264 13.7574 7.75 15 7.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p>Share</p>
+            </div>
+          </div>
         </div>
-        <div class="btn-w" @click="share">
-          <div :class="['share-btn', 'flex-center-center', ((itemIndex == 0 && teamList.length) || itemIndex == 1 || (itemIndex == 2 && password)) ? 'btn-activate' : '']">
-            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 16.75C16.2426 16.75 17.25 15.7426 17.25 14.5C17.25 13.2574 16.2426 12.25 15 12.25C13.7574 12.25 12.75 13.2574 12.75 14.5C12.75 15.7426 13.7574 16.75 15 16.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8.25 11.125L12.75 13.375" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M6 12.25C7.24264 12.25 8.25 11.2426 8.25 10C8.25 8.75736 7.24264 7.75 6 7.75C4.75736 7.75 3.75 8.75736 3.75 10C3.75 11.2426 4.75736 12.25 6 12.25Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12.75 6.625L8.25 8.875" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M15 7.75C16.2426 7.75 17.25 6.74264 17.25 5.5C17.25 4.25736 16.2426 3.25 15 3.25C13.7574 3.25 12.75 4.25736 12.75 5.5C12.75 6.74264 13.7574 7.75 15 7.75Z" stroke="white" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p>Share</p>
+        <div v-else class="modal-success">
+          <div class="status flex-end-center">
+            <img src="@/assets/images/flower.svg" alt="" class="flower">
+            <img src="@/assets/images/success.svg" alt="" class="success">
+          </div>
+          <div class="success-status">Share success</div>
+          <div class="success-sub-status">Share your contract link</div>
+          <div class="input flex-center" @click="copy(link)">
+            <input class="link flex-center" v-model="link" disabled ref="input">
+            <div class="copy-btn flex-center-center">Copy link</div>
           </div>
         </div>
       </div>
-      <div v-else class="modal-success">
-        <div class="status flex-end-center">
-          <img src="@/assets/images/flower.svg" alt="" class="flower">
-          <img src="@/assets/images/success.svg" alt="" class="success">
-        </div>
-        <div class="success-status">Share success</div>
-        <div class="success-sub-status">Share your contract link</div>
-        <div class="input flex-center" @click="copy(link)">
-          <input class="link flex-center" v-model="link" disabled ref="input">
-          <div class="copy-btn flex-center-center">Copy link</div>
-        </div>
-      </div>
-    </div>
+    </n-spin>
   </div>
 </template>
 <script>
@@ -124,6 +126,7 @@ export default {
     const { setData, copy } = useUtils()
     const showModal = ref(false)
     const selectSearch = ref(null)
+    const isSearching = ref(false)
     const itemIndex = ref(1)
     const password = ref('')
     const token = ref(props.contract && props.contract.token || '')
@@ -158,6 +161,7 @@ export default {
         searchList.value = []
         return
       }
+      isSearching.value = true
       getUserInfo({q: keyword}).then(res => {
         if (res.code == 0) {
           searchList.value = res.user_list
@@ -169,6 +173,9 @@ export default {
             }]
           }
         }
+        isSearching.value = false
+      }).catch(() => {
+        isSearching.value = false
       })
     }
     const share = async () => {
@@ -255,6 +262,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      isSearching,
       selectSearch,
       link,
       showModal,

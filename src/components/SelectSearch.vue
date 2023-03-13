@@ -6,13 +6,13 @@
         <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <input class="form-input" v-model="keyword" placeholder="Input Wallet Address of Team Member" @input="inputFun" @keyup.enter="handleClickSearch"  />
-      <svg v-show="keyword" @click="clear" class="clear" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg v-show="keyword && !isSearching" @click="clear" class="clear" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.1421 13.1421 16.5 9 16.5C4.85786 16.5 1.5 13.1421 1.5 9C1.5 4.85786 4.85786 1.5 9 1.5C13.1421 1.5 16.5 4.85786 16.5 9ZM5.46967 5.46967C5.76256 5.17678 6.23744 5.17678 6.53033 5.46967L9.00001 7.93935L11.4697 5.46967C11.7626 5.17678 12.2375 5.17678 12.5303 5.46967C12.8232 5.76256 12.8232 6.23744 12.5303 6.53033L10.0607 9.00001L12.5303 11.4697C12.8232 11.7625 12.8232 12.2374 12.5303 12.5303C12.2374 12.8232 11.7625 12.8232 11.4697 12.5303L9.00001 10.0607L6.53033 12.5303C6.23744 12.8232 5.76256 12.8232 5.46967 12.5303C5.17678 12.2375 5.17678 11.7626 5.46967 11.4697L7.93935 9.00001L5.46967 6.53033C5.17678 6.23744 5.17678 5.76256 5.46967 5.46967Z" fill="#858D99"/>
       </svg>
-
+      <svg v-if="isSearching" t="1678691045922" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2839" width="18" height="18"><path d="M192 512a32 32 0 0 1 64 0 256 256 0 1 0 256-256 32 32 0 0 1 0-64c176.736 0 320 143.264 320 320s-143.264 320-320 320S192 688.736 192 512z" fill="#858D99" p-id="2840"></path></svg>
     </div>
     <div v-if="list && list.length" class="list">
-      <div class="item flex-center-sb" v-for="item in list" :key="item.nickname">
+      <div class="item flex-center-sb" v-for="item in list" :key="item.nickname" @click="add(item)">
         <div class="flex-center" style="width: 100%">
           <div class="avatar">
             <Avatar :avatar="item.avatar" :address="item.address" :width="32" />
@@ -21,13 +21,6 @@
             <div class="name">{{item.nickname}}</div>
             <div class="address">{{item.address}}</div>
           </div>
-        </div>
-        <div class="btn flex-center-center" @click="add(item)">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Add
         </div>
       </div>
     </div>
@@ -38,7 +31,7 @@
 import Avatar from "@/components/Avatar.vue"
 import {ref} from 'vue'
 export default {
-  props: ['list'],
+  props: ['list', 'isSearching'],
   components: {Avatar},
   setup(props, {emit}) {
     const keyword = ref('')
@@ -94,6 +87,9 @@ export default {
   margin-right: 16px;
   svg {
     flex: 0 0 18px;
+  }
+  .icon {
+    animation: animation 1s linear infinite;
   }
   .form-input {
     box-sizing: border-box;
@@ -182,6 +178,14 @@ export default {
         border-radius: 4px;
       }
     }
+  }
+}
+@keyframes animation{
+  0%{
+    transform: rotate(0deg)
+  }
+  100%{
+    transform: rotate(360deg)
   }
 }
 </style>
