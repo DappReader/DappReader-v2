@@ -83,7 +83,7 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, .4);
   backdrop-filter: blur(5px);
-  z-index: 3000;
+  z-index: 7000;
   .content {
     width: 540px;
     background: #23242A;
