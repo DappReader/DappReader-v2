@@ -144,7 +144,7 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, .4);
   backdrop-filter: blur(5px);
-  z-index: 7001;
+  z-index: 3101;
   .regist-content {
     width: 540px;
     background: #23242A;
