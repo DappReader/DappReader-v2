@@ -76,4 +76,8 @@ export default {
 .content {
   padding: 0;
 }
+.form {
+  padding: 0 20px;
+  box-sizing: border-box;
+}
 </style>
