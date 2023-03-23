@@ -132,14 +132,14 @@ export default {
     }
     const create = async () => {
       if (!formData.value.name || !formData.value.chainId || !formData.value.address || !formData.value.abi) return
-      let {abi, address, chainId, name, remark, id = '', createAt = '', token='', authorAddress='', versionNumber = 1} = formData.value
+      let {abi, address, chainId, name, remark, id = '', createAt = '', token='', authorAddress='', versionNumber = 1, userList = []} = formData.value
       let chain = chains.filter(e => e.chainId == chainId)[0]
       abi = JSON.parse(abi)
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
       let openSols = await getLs('openSols') || []
       if (formData.value.id) {
-        let info = {name, address, abi, chain, id, remark, createAt, token, authorAddress, versionNumber}
+        let info = {name, address, abi, chain, id, remark, createAt, token, authorAddress, versionNumber, userList}
         for (let i = 0; i < menuList.length; i++) {
           let son = menuList[i].son
           son.forEach((e, index) => {
