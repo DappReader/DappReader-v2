@@ -123,10 +123,10 @@
                     </div>
                   </div>
                   <n-input class="form-input" v-model:value="sendInfo.gasPrice" />
-                  <div v-if="sendInfo.gasPrice && (sendInfo.gasPrice % 1 != 0)" class="wei-btns flex-center">
-                    <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'gasPrice', 18)">ToWei(10^18)</div>
+                  <div class="wei-btns flex-center">
+                    <!-- <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'gasPrice', 18)">ToWei(10^18)</div> -->
                     <div class="wei-btn flex-center-center" @click="toWei('sendInfo', 'gasPrice', 9)">ToGwei(10^9)</div>
-                    <p>invalid number, please use digital conversion </p>
+                    <p v-if="sendInfo.gasPrice && (sendInfo.gasPrice % 1 != 0)">invalid number, please use digital conversion </p>
                   </div>
                 </div>
               </div>

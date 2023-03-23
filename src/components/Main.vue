@@ -2,54 +2,10 @@
   <div class="content">
     <Nav />
     <div v-if="openSols && openSols.length" class="main">
-      <!-- <div class="tabs-b">
-        <div class="tabs-right flex-center-sb">
-          <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="tabs-w">
-          <div class="tbas flex-center">
-            <div v-for="(item, index) in openSols" :key="item.name" :class="['tab-item', activeId == item.name ? 'tab-item-activated' : '', index == activeIndex - 1 ? 'tab-item-activated-prev' : '']" @click="update(item.name)">
-              <div class="tab-item-content flex-center-sb">
-                <span>{{item.title}}</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="handleClose(item.name)">
-                  <path d="M10 10L2 2" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 2L2 10" stroke="#858D99" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      
       <div class="pane" v-for="item in openSols" :key="item.name">
         <Contract v-if="activeId == item.name" :contract="item" />
       </div>
     </div>
-    
-    <!-- <n-tabs
-      v-if="openSols && openSols.length"
-      v-model:value="activeId"
-      type="card"
-      tab-style="width: 140px;border: none;height: 40px;"
-      @close="handleClose"
-      style="height: calc(100vh - 30px);margin-top: -40px;width: 100%"
-      @update:value="update"
-    >
-      <n-tab-pane
-        v-for="item in openSols"
-        :closable="item.name == activeId"
-        :key="item.name"
-        :name="item.name"
-        :tab="item.title"
-      >
-        <Contract :contract="item" />
-      </n-tab-pane>
-    </n-tabs> -->
     <div v-else class="not-sol flex-center-center"><img src="@/assets/images/left.png" alt=""> Please select the contract on the left and execute</div>
   </div>
 </template>
