@@ -395,7 +395,7 @@ export default {
     }
     const updateShare = async () => {
       let contract = props.contract
-      if (contract.authorAddress && contract.authorAddress != address.value) {
+      if (contract.authorAddress && contract.authorAddress.toLocaleLowerCase() != address.value.toLocaleLowerCase()) {
         dialog.warning({
           title: "Notice",
           content: `To update this contract, Please switch the wallet address to "${contract.authorAddress}"`,
