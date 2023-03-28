@@ -595,7 +595,12 @@ export default {
       })
       results.value[contractData.value.content.id] = JSON.parse(JSON.stringify(resultData))
       contractData.value.result = JSON.parse(JSON.stringify(resultData))
-      setLs('results', JSON.parse(JSON.stringify(results.value))).then(res => {
+      console.log(results.value, JSON.parse(JSON.stringify(toRaw(results.value))))
+      let R = {}
+      for (let key in results.value) {
+        R[key] = JSON.parse(JSON.stringify(toRaw(results.value[key])))
+      }
+      setLs('results', R).then(res => {
         console.log(res)
         store.commit("setResults", res)
       }).catch(err => {
@@ -628,7 +633,6 @@ export default {
       contract.token = token
       if (contract) {
         let resultData = results.value[contract.id] || []
-        console.log(resultData)
         if (resultData && resultData.length) {
           resultData.forEach(e => {
             let params = []

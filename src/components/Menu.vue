@@ -236,6 +236,7 @@ export default {
     }
     const delFile = async (index, folderIndex) => {
       let id
+      let results = await getLs('results') || {}
       if (folderIndex >= 0) {
         let menuList = await getLs('menuList') || []
         let folderTtem = menuList[folderIndex]
@@ -256,9 +257,17 @@ export default {
           store.commit('setActiveId', '')
         })
       }
+      if (results[id]) {
+        delete results[id]
+        setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
+          console.log(res)
+          store.commit("setResults", res)
+        })
+      }
     }
     const delFolder = async (index) => {
       let menuList = await getLs('menuList') || []
+      let results = await getLs('results') || {}
       let folderTtem = menuList[index]
       folderTtem.son.forEach(e => {
         if (e.id == activeId.value) {
@@ -266,6 +275,13 @@ export default {
             store.commit('setActiveId', '')
           })
         }
+        if (results[e.id]) {
+          delete results[e.id]
+        }
+      })
+      setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
+        console.log(res)
+        store.commit("setResults", res)
       })
       menuList.splice(index, 1)
       setMenuList(menuList)

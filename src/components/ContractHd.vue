@@ -260,7 +260,6 @@ export default {
     const address = computed(() => {
       return store.state.address
     })
-
     const getAddress = computed(() => {
       return (value) => {
         return formatAddress(value)
@@ -483,6 +482,7 @@ export default {
         onPositiveClick: async () => {
           let menuList = await getLs('menuList') || []
           let contractList = await getLs('contractList') || []
+          let results = await getLs('results') || {}
           let id = props.contract.id
           for (let i = 0; i < menuList.length; i++) {
             let son = menuList[i].son
@@ -498,6 +498,9 @@ export default {
               contractList.splice(index, 1)
             }
           })
+          if (results[id]) {
+            delete results[id]
+          }
           setLs('activeId', '').then(() => {
             store.commit('setActiveId', '')
           })
@@ -508,6 +511,10 @@ export default {
           setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
             console.log(res)
             store.commit("setMenuList", res)
+          })
+          setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
+            console.log(res)
+            store.commit("setResults", res)
           })
         }
       })
