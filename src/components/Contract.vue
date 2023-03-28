@@ -320,7 +320,7 @@ import ConversionModal from '@/components/ConversionModal.vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
-import { getLs, setLs } from '@/service/service'
+import { setLs } from '@/service/service'
 import { formatDate, formatAddress } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
 import "vue3-json-viewer/dist/index.css"
@@ -336,7 +336,7 @@ export default {
     let toWeiType = ''
     let running = false
     const message = useMessage()
-    const { toEtherscanAddress, copy, setData, setOpenSols } = useUtils()
+    const { toEtherscanAddress, copy, setData } = useUtils()
     const { getProvider } = useIsActivating()
     const { switchChain } = useNetwork()
     const store = useStore()
@@ -360,6 +360,12 @@ export default {
     const provider = computed(() => {
       return store.state.provider
     })
+    const results = computed(() => {
+      return store.state.results
+    })
+    const menuList = computed(() => {
+      return store.state.menuList
+    })
     const network = computed(() => {
       return store.state.network
     })
@@ -369,8 +375,8 @@ export default {
     const address = computed(() => {
       return store.state.address
     })
-    const openSols = computed(() => {
-      return store.state.openSols
+    const contractList = computed(() => {
+      return store.state.contractList
     })
     const createAt = computed(() => {
       return (value) => {
@@ -566,30 +572,48 @@ export default {
     }
 
     const setResult = async (result) => {
-      let openSols = await getLs('openSols') || []
-      openSols.forEach(e => {
-        if (e.content.id == activeId.value) {
-          if (!e.result) e.result = [] 
-          if (e.result.some(e => e.content.hash == result.content.hash) && result.content.hash) {
-            e.result.forEach((el, index) => {
-              if (el.content.hash == result.content.hash) {
-                e.result[index] = result
-              }
-            })
-          } else {
-            e.result.unshift(result)
+      let resultData = results.value[contractData.value.content.id] || []
+      if (result.content.hash && resultData.some(e => e.content.hash == result.content.hash)) {
+        resultData.forEach((el, index) => {
+          if (el.content.hash == result.content.hash) {
+            resultData[index] = result
           }
+        })
+      } else {
+        resultData.unshift(result)
+      }
+      resultData.forEach(e => {
+        let params = []
+        let formData = e.formData
+        for (let key in formData) {
+          let item = {
+            key,
+            value: formData[key]
+          }
+          params.push(item)
         }
+        e.params = params
       })
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        store.commit("setOpenSols", res)
+      results.value[contractData.value.content.id] = JSON.parse(JSON.stringify(resultData))
+      contractData.value.result = JSON.parse(JSON.stringify(resultData))
+      setLs('results', JSON.parse(JSON.stringify(results.value))).then(res => {
+        store.commit("setResults", res)
       })
     }
 
     const getContarctData = async () => {
-      let openSols = await getLs('openSols') || []
-      let contract = openSols.filter(e => e.name == activeId.value)[0]
-      let token = toRaw(contract.content.token)
+      let contract = contractList.value.filter(e => e.id == activeId.value)[0]
+      for (let i = 0; i < menuList.value.length; i++) {
+        let son = menuList.value[i].son
+        son.forEach((e, index) => {
+          if (e.id == activeId.value) {
+            contract = son[index]
+          }
+        })
+      }
+      console.log(contract)
+      if (!contract) return
+      let token = toRaw(contract.token)
       if (token && token != 'undefined') token = `https://dappreader.com/${token}`
       if (token) {
         if (token == 'undefined') {
@@ -599,12 +623,12 @@ export default {
           token = tArr[tArr.length - 1]
         }
       }
-      
-      contract.content.token = token
-      console.log(contract)
+      contract.token = token
       if (contract) {
-        if (contract.result && contract.result.length) {
-          contract.result.forEach(e => {
+        let resultData = results.value[contract.id] || []
+        console.log(resultData)
+        if (resultData && resultData.length) {
+          resultData.forEach(e => {
             let params = []
             let formData = e.formData
             for (let key in formData) {
@@ -617,8 +641,11 @@ export default {
             e.params = params
           })
         }
-        contractData.value = toRaw(contract)
-        let abi = contract.content.abi || []
+        contractData.value = {
+          content: toRaw(contract),
+          result: resultData
+        }
+        let abi = contract.abi || []
         let list = abi.filter((e) => e.type == "function")
         let readAbi = list.filter((e) => e.stateMutability == "view")
         let writeAbi = list.filter((e) => e.stateMutability != "view")
@@ -689,7 +716,6 @@ export default {
       result[index] = item
       contract.result = result
       contractData.value = JSON.parse(JSON.stringify(contract))
-      setOpenSols(contract)
     }
 
     const getFunHeight = (type) => {
@@ -718,18 +744,29 @@ export default {
     }
 
     watch(activeId, async () => {
-      getContarctData()
+      console.log(activeId.value)
+      if (activeId.value) {
+        getContarctData()
+      }
     }, {immediate: true})
+
+    watch(menuList, async () => {
+      if (activeId.value) {
+        getContarctData()
+      }
+    }, {immediate: true, deep: true})
+
+    watch(contractList, async () => {
+      if (activeId.value) {
+        getContarctData()
+      }
+    }, {immediate: true, deep: true})
 
     watch(network, async () => {
       if (running && abiItem.value) {
         runFunction(abiItem.value)
       }
     }, {immediate: true})
-
-    watch(openSols, async () => {
-      getContarctData()
-    }, {deep: true})
 
     onMounted(() => {
       let screenwidth = document.body.clientWidth

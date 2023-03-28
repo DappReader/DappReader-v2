@@ -8,10 +8,10 @@ export default createStore({
     activeId: '',
     menuList: [],
     contractList: [],
-    openSols: [],
     isShowLogin: false,
     userInfo: {},
-    defaultChains: []
+    defaultChains: [],
+    results: {}
   },
   mutations: {
     setAddress(state, value) {
@@ -32,9 +32,6 @@ export default createStore({
     setContractList(state, value) {
       state.contractList = value
     },
-    setOpenSols(state, value) {
-      state.openSols = value
-    },
     setActiveId(state, value) {
       state.activeId = value
     },
@@ -43,6 +40,9 @@ export default createStore({
     },
     setDefaultChains(state, value) {
       state.defaultChains = value
+    },
+    setResults(state, value) {
+      state.results = value
     },
     init(state) {
       state.provider = null

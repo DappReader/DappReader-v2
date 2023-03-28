@@ -137,7 +137,6 @@ export default {
       abi = JSON.parse(abi)
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
-      let openSols = await getLs('openSols') || []
       if (formData.value.id) {
         let info = {name, address, abi, chain, id, remark, createAt, token, authorAddress, versionNumber, userList}
         for (let i = 0; i < menuList.length; i++) {
@@ -164,16 +163,6 @@ export default {
             contractList[index] = info
           }
         })
-        openSols.forEach((e, index) => {
-          if (e.name == id) {
-            openSols[index].content = info
-            openSols[index].title = name
-          }
-        })
-        setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-          console.log(res)
-          store.commit("setOpenSols", res)
-        })
         setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
           console.log(res)
           store.commit("setContractList", res)
@@ -198,29 +187,17 @@ export default {
           let son = folderItem.son || []
           son.push(data)
           menuList[folderIndex.value].son = son
-          setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
-            store.commit("setMenuList", res)
-            showModal.value = false
-          })
+          let res = await setLs('menuList', JSON.parse(JSON.stringify(menuList)))
+          store.commit("setMenuList", res)
+          showModal.value = false
         } else {
           contractList.push(data)
-          setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
-            store.commit("setContractList", res)
-            showModal.value = false
-          })
+          let res = await setLs('contractList', JSON.parse(JSON.stringify(contractList)))
+          store.commit("setContractList", res)
+          showModal.value = false
         }
-        let item = {
-          name: data.id,
-          title: data.name,
-          content: data,
-          result: []
-        }
-        openSols.push(item)
-        setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-          store.commit("setOpenSols", res)
-          setLs('activeId', data.id).then(rep => {
-            store.commit('setActiveId', rep)
-          })
+        setLs('activeId', data.id).then(rep => {
+          store.commit('setActiveId', rep)
         })
       }
     }

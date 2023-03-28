@@ -64,7 +64,7 @@
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-                <div class="right-menu-item flex-center" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
+                <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
                 <n-popconfirm :show-icon="false"
                   class="right-menu-popconfirm"
                   negative-text="Cancel"
@@ -93,7 +93,7 @@
             </div>
             <div class="right-menu" v-if="file.id == fileContextmenuId">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-              <div class="right-menu-item flex-center" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
+              <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
               <n-popconfirm :show-icon="false"
                 class="right-menu-popconfirm"
                 negative-text="Cancel"
@@ -223,10 +223,11 @@ export default {
       }
     }
     const edit = (contract, index, folderIndex) => {
-      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1 } = contract
+      console.log(contract)
+      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1, userList } = contract
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
-      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber}
+      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber, userList}
       createContract.value.formData = formData
       if (folderIndex >= 0) {
         createContract.value.setFolderIndex(folderIndex)
@@ -234,61 +235,46 @@ export default {
       createContract.value.show()
     }
     const delFile = async (index, folderIndex) => {
-      let openSols = await getLs('openSols') || []
+      let id
       if (folderIndex >= 0) {
         let menuList = await getLs('menuList') || []
         let folderTtem = menuList[folderIndex]
-        let id = folderTtem.son[index].id
-        openSols = openSols.filter(e => e.name != id)
+        id = folderTtem.son[index].id
         folderTtem.son.splice(index, 1)
         menuList[folderIndex] = folderTtem
         openFolderIndex.value = folderIndex
         setMenuList(menuList)
       } else {
         let contractList = await getLs('contractList') || []
-        let id = contractList[index].id
-        openSols = openSols.filter(e => e.name != id)
+        id = contractList[index].id
         contractList.splice(index, 1)
         setContractList(contractList)
         hiddenRightMenu()
       }
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        store.commit("setOpenSols", res)
-        if (res.length) {
-          setLs('activeId', res[0].name).then(rep => {
-            store.commit('setActiveId', rep)
-          })
-        }
-      })
+      if (id == activeId.value) {
+        setLs('activeId', '').then(() => {
+          store.commit('setActiveId', '')
+        })
+      }
     }
     const delFolder = async (index) => {
       let menuList = await getLs('menuList') || []
+      let folderTtem = menuList[index]
+      folderTtem.son.forEach(e => {
+        if (e.id == activeId.value) {
+          setLs('activeId', '').then(() => {
+            store.commit('setActiveId', '')
+          })
+        }
+      })
       menuList.splice(index, 1)
       setMenuList(menuList)
       hiddenRightMenu()
     }
     const openFile = async (file) => {
-      let openSols = await getLs('openSols') || []
-      if (openSols.some(e => e.name == file.id)) {
-        setLs('activeId', file.id).then(rep => {
-          store.commit('setActiveId', rep)
-        })
-      } else {
-        let item = {
-          name: file.id,
-          title: file.name,
-          content: file,
-          result: []
-        }
-        openSols.push(item)
-        console.log(openSols)
-        setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-          store.commit("setOpenSols", res)
-          setLs('activeId', file.id).then(rep => {
-            store.commit('setActiveId', rep)
-          })
-        })
-      }
+      setLs('activeId', file.id).then(rep => {
+        store.commit('setActiveId', rep)
+      })
     }
     const onDrop = (index, dragResult) => {
       console.log(index, dragResult)

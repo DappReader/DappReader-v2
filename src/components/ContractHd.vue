@@ -483,7 +483,6 @@ export default {
         onPositiveClick: async () => {
           let menuList = await getLs('menuList') || []
           let contractList = await getLs('contractList') || []
-          let openSols = await getLs('openSols') || []
           let id = props.contract.id
           for (let i = 0; i < menuList.length; i++) {
             let son = menuList[i].son
@@ -499,19 +498,8 @@ export default {
               contractList.splice(index, 1)
             }
           })
-          openSols.forEach((e, index) => {
-            if (e.name == id) {
-              openSols.splice(index, 1)
-            }
-          })
-          setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-            console.log(res)
-            store.commit("setOpenSols", res)
-            if (res.length) {
-              setLs('activeId', res[0].name).then(res => {
-                store.commit('setActiveId', res)
-              })
-            }
+          setLs('activeId', '').then(() => {
+            store.commit('setActiveId', '')
           })
           setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
             console.log(res)

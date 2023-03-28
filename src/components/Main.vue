@@ -1,11 +1,7 @@
 <template>
   <div class="content">
     <Nav />
-    <div v-if="openSols && openSols.length" class="main">
-      <div class="pane" v-for="item in openSols" :key="item.name">
-        <Contract v-if="activeId == item.name" :contract="item" />
-      </div>
-    </div>
+    <Contract v-if="activeId" />
     <div v-else class="not-sol flex-center-center"><img src="@/assets/images/left.png" alt=""> Please select the contract on the left and execute</div>
   </div>
 </template>
@@ -13,79 +9,20 @@
 <script>
 import Nav from '@/components/Nav.vue'
 import Contract from '@/components/Contract.vue'
-import { computed, ref, watch } from "vue"
+import { computed } from "vue"
 import { useStore } from 'vuex'
-import { setLs, getLs } from '@/service/service'
 // import { useMessage } from "naive-ui"
 export default {
   name: '',
   components: { Nav, Contract },
   setup() {
     const store = useStore()
-    const activeIndex = ref(-1)
-    // const message = useMessage()
-    const openSols = computed(() => {
-      console.log(store.state.openSols)
-      return store.state.openSols
-    })
     const activeId = computed(() => {
       return store.state.activeId
     })
-    const handleClose = async (id) => {
-      console.log(id)
-      let openSols = await getLs('openSols') || []
-      let index = openSols.findIndex(e => e.name == id)
-      openSols.splice(index, 1)
-      if (openSols.length) {
-        update(openSols[0].name)
-      }
-      setLs('openSols', openSols).then(res => {
-        store.commit("setOpenSols", res)
-      })
-    }
-    const update = (id) => {
-      console.log(id)
-      let index = openSols.value.findIndex(e => e.name == id)
-      let el = document.querySelector('.tabs-w')
-      let el1 = el.querySelectorAll('.tab-item')[index]
-      let scrollLeft = el1.offsetLeft
-      const containWidth = el.offsetWidth
-      console.log(scrollLeft, containWidth)
-      let resultSpot = scrollLeft - 248 + 70 - containWidth / 2 
-      activeIndex.value = index
-      el.scrollTo((resultSpot + 50), 100)
-      setLs('activeId', id).then(res => {
-        store.commit('setActiveId', res)
-      })
-    }
-    const domMove = (i) => {
-      let el = document.querySelector('.tabs-w')
-      let scrollLeft = el.scrollLeft
-      if (i == 1) {
-        if (scrollLeft > 140) {
-          el.scrollLeft = scrollLeft - 140
-        } else {
-          el.scrollLeft = 0
-        }
-      } else if (i == 2) {
-        el.scrollLeft = scrollLeft + 140
-      }
-    }
-    watch(activeId, async () => {
-      let openSols = await getLs('openSols') || []
-      for (let i = 0; i < openSols.length; i++) {
-        if (openSols[i].name == activeId.value) {
-          activeIndex.value = i
-        }
-      }
-    }, {immediate: true})
+
     return {
-      activeIndex,
-      openSols,
-      activeId,
-      handleClose,
-      update,
-      domMove
+      activeId
     }
   }
 }

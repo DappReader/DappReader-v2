@@ -68,39 +68,16 @@ export const useUtils = () => {
     return contrace
   }
 
-  const open = (data, openSols) => {
-    let item = null
-    openSols.forEach((e) => {
-      if (e.content.address == data.address) {
-        item = e
-      }
+  const open = (data) => {
+    setLs('activeId', data.id).then(rep => {
+      store.commit('setActiveId', rep)
     })
-    if (item) {
-      setLs('activeId', item.name).then(rep => {
-        store.commit('setActiveId', rep)
-      })
-    } else {
-      item = {
-        name: data.id,
-        title: data.name,
-        content: data,
-        result: []
-      }
-      openSols.push(item)
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        store.commit("setOpenSols", res)
-        setLs('activeId', data.id).then(rep => {
-          store.commit('setActiveId', rep)
-        })
-      })
-    }
   }
 
   const setData = async (info, folderIndex) => {
-    let { id, name} = info
+    let {id} = info
     let menuList = await getLs('menuList') || []
     let contractList = await getLs('contractList') || []
-    let openSols = await getLs('openSols') || []
     if (id) {
       for (let i = 0; i < menuList.length; i++) {
         let son = menuList[i].son
@@ -116,16 +93,6 @@ export const useUtils = () => {
           contractList[index] = info
         }
       })
-      openSols.forEach((e, index) => {
-        if (e.name == id) {
-          openSols[index].content = info
-          openSols[index].title = name
-        }
-      })
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        console.log(res)
-        store.commit("setOpenSols", res)
-      })
       setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
         console.log(res)
         store.commit("setContractList", res)
@@ -136,12 +103,10 @@ export const useUtils = () => {
       })
     } else {
       let data = info
-      console.log(data, data.address)
       let has = await hasContrace(data.address, menuList, contractList)
-      console.log(has)
       if (has) {
         message.info('Contract already exists')
-        await open(has, openSols)
+        await open(has)
         return
       }
       data.id = crypto.randomUUID()
@@ -151,51 +116,20 @@ export const useUtils = () => {
         let son = folderItem.son || []
         son.push(data)
         menuList[folderIndex].son = son
-        setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
-          store.commit("setMenuList", res)
-        })
+        let res = await setLs('menuList', JSON.parse(JSON.stringify(menuList)))
+        store.commit("setMenuList", res)
       } else {
         contractList.push(data)
-        setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
-          store.commit("setContractList", res)
-        })
+        let res = await setLs('contractList', JSON.parse(JSON.stringify(contractList)))
+        store.commit("setContractList", res)
       }
-      let item = {
-        name: data.id,
-        title: data.name,
-        content: data,
-        result: []
-      }
-      openSols.push(item)
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        store.commit("setOpenSols", res)
-        setLs('activeId', data.id).then(rep => {
-          store.commit('setActiveId', rep)
-        })
-      })
-    }
-  }
-
-  const setOpenSols = async (contractData) => {
-    let { name } = contractData
-    let openSols = await getLs('openSols') || []
-    if (name) {
-      openSols.forEach((e, index) => {
-        if (e.name == name) {
-          openSols[index] = contractData
-        }
-      })
-      setLs('openSols', JSON.parse(JSON.stringify(openSols))).then(res => {
-        console.log(res)
-        store.commit("setOpenSols", res)
-      })
+      await open(data)
     }
   }
 
   return {
     toEtherscanAddress,
     copy,
-    setData,
-    setOpenSols
+    setData
   }
 }

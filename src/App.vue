@@ -45,7 +45,7 @@ export default {
       let inited = localStorage.inited || false
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
-      let openSols = await getLs('openSols') || []
+      let results = await getLs('results') || []
       let activeId = await getLs('activeId') || ''
       let defaultChains = await getLs('defaultChain') || defaultChain
       let userInfo = localStorage.getItem('userInfo') || null
@@ -65,21 +65,13 @@ export default {
         console.log(contractList)
         contractList.push(demoData)
         activeId = demoData.id
-        let item = {
-          name: demoData.id,
-          title: demoData.name,
-          content: demoData,
-          result: []
-        }
-        openSols.push(item)
         await setLs('contractList', JSON.parse(JSON.stringify(contractList)))
-        await setLs('openSols', JSON.parse(JSON.stringify(openSols)))
         await setLs('activeId', activeId)
         localStorage.setItem('inited', 'inited')
       }
 
       store.commit("setActiveId", activeId)
-      store.commit("setOpenSols", openSols)
+      store.commit("setResults", results)
       store.commit("setMenuList", menuList)
       store.commit("setContractList", contractList)
       store.commit("setDefaultChains", defaultChains)
