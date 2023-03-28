@@ -45,7 +45,7 @@ export default {
       let inited = localStorage.inited || false
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
-      let results = await getLs('results') || []
+      let results = await getLs('results') || {}
       let activeId = await getLs('activeId') || ''
       let defaultChains = await getLs('defaultChain') || defaultChain
       let userInfo = localStorage.getItem('userInfo') || null

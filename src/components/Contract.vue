@@ -462,7 +462,6 @@ export default {
     }
 
     const init = () => {
-      console.log(1)
       abiItem.value = null
       abiType.value = ''
       parameData.value = {}
@@ -597,7 +596,10 @@ export default {
       results.value[contractData.value.content.id] = JSON.parse(JSON.stringify(resultData))
       contractData.value.result = JSON.parse(JSON.stringify(resultData))
       setLs('results', JSON.parse(JSON.stringify(results.value))).then(res => {
+        console.log(res)
         store.commit("setResults", res)
+      }).catch(err => {
+        console.log(err)
       })
     }
 
