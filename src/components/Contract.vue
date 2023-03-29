@@ -409,26 +409,6 @@ export default {
       }
     })
 
-    window.onresize = () =>{
-      try {
-        return (() => {
-          window.screenwidth = document.body.clientWidth
-          let screenwidth = window.screenwidth
-          console.log(screenwidth)
-          if (screenwidth < 1680) {
-            isShowHd.value = true
-            contractRef.value.style.height = 'calc(100% - 180px)'
-          } else {
-            isShowHd.value = false
-            contractRef.value.style.height = 'calc(100% - 2px)'
-          }
-        })()
-      } catch (error) {
-        console.error(error) 
-      }
-      
-    }
-
     const hiddenPopover = () => {
       showPopover.value = false
     }
