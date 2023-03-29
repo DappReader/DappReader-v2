@@ -236,13 +236,14 @@
                           <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
                           <img src="@/assets/images/copy.svg" alt="" @click="copy(((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1) + '%')">
                         </div>
-                        <!-- <div class="result-param flex-center" v-if="item.content && item.content.effectiveGasPrice">
+                        <div class="result-param flex-center" v-if="item.content && item.content.effectiveGasPrice">
                           <div class="result-param-name">GasCost</div>
                           <div v-if="formatUnits(item.content.value, 18) == 0" class="result-param-value">{{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH</div>
                           <div v-else class="result-param-value">{{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH + {{(formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH = {{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH</div>
+                          <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
                           <img v-if="formatUnits(item.content.value, 18) == 0" src="@/assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9))">
                           <img v-else src="@/assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9))">
-                        </div> -->
+                        </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.maxFeePerGas">
                           <div class="result-param-name">MaxFeePerGas</div>
                           <div v-if="!item.isFormatMaxFee" class="result-param-value">{{(formatUnits(item.content.maxFeePerGas, 9) * 1).toFixed(4)}} Gwei</div>
@@ -391,6 +392,7 @@ export default {
     })
     const formatUnits = computed(() => {
       return (val, d = 0) => {
+        if (val.type != 'BigNumber') val += ''
         return ethers.utils.formatUnits(val, d);
       }
     })
@@ -407,6 +409,21 @@ export default {
         
       }
     })
+
+    window.onresize = () =>{
+      return (() => {
+        window.screenwidth = document.body.clientWidth
+        let screenwidth = window.screenwidth
+        console.log(screenwidth)
+        if (screenwidth < 1680) {
+          isShowHd.value = true
+          contractRef.value.style.height = 'calc(100% - 180px)'
+        } else {
+          isShowHd.value = false
+          contractRef.value.style.height = 'calc(100% - 2px)'
+        }
+      })()
+    }
 
     const hiddenPopover = () => {
       showPopover.value = false
