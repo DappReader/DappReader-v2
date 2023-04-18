@@ -110,7 +110,7 @@
         </Container>
       </div>
     </div>
-    <div class="group">
+    <div class="group flex-center-center">
       <n-image
         width="200"
         object-fit="cover"
@@ -490,7 +490,7 @@ export default {
     overflow-y: auto;
     position: relative;
     overflow-x: hidden;
-    padding-bottom: 101px;
+    padding-bottom: 24px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -644,14 +644,10 @@ export default {
   line-height: 1.6;
 }
 .group {
-  position: absolute;
+  width: 100%;
   padding-top: 12px;
   border-top: 1px solid rgba(133, 141, 153, 0.15);
-  bottom: 0;
-  left: 24px;
-  right: 24px;
   z-index: 99;
-  // background: #15141B;
   img {
     width: 200px;
     height: auto;
