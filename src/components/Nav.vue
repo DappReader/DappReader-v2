@@ -92,6 +92,7 @@ export default {
     EditModal
   },
   setup() {
+    let mounted = ''
     let interval = null
     const store = useStore()
     const message = useMessage()
@@ -229,11 +230,19 @@ export default {
             localStorage.setItem('token', res.access_token)
             loginModal.value.hide()
             getUserInfoFun()
+            if (mounted == 'update') {
+              let user = editModal.value.user
+              editUserInfo(user)
+            }
           } else {
             message.error(res.msg)
           }
+        }).catch(err => {
+          console.log(err)
+          mounted == ''
         })
       } catch (error) {
+        mounted == ''
         console.log(error)
       }
     }
@@ -319,6 +328,10 @@ export default {
           message.error(res.msg)
         }
         editModal.value.closeModal()
+        mounted = ''
+      }).catch(err => {
+        console.log(err)
+        mounted = 'update'
       })
     }
 
