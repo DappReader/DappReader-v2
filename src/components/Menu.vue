@@ -60,7 +60,7 @@
                   <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>{{file.name}}</span>
+                <p class="file-name">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name}}</span></p>
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -89,7 +89,7 @@
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>{{file.name}}</span>
+              <p class="file-name">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name}}</span></p>
             </div>
             <div class="right-menu" v-if="file.id == fileContextmenuId">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -132,6 +132,7 @@ import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
 import { Container, Draggable } from "vue3-smooth-dnd"
+import { chains } from '../libs/chains'
 export default {
   name: '',
   components: {
@@ -357,6 +358,14 @@ export default {
     const mouseout = () => {
       clearTimeout(timeout)
     }
+    const getColor = (chainId) => {
+      let color = '#2C2D34'
+      let chain = chains.find(e => e.chainId == chainId)
+      if (chain && chain.explorers && chain.explorers[0]?.color) {
+        color = chain.explorers[0]?.color
+      }
+      return color
+    }
     watch(menuList, (val) => {
       if (val && openFolderIndex.value >= 0) {
         menuList.value[openFolderIndex.value].open = true
@@ -389,7 +398,8 @@ export default {
       mousedown,
       mouseup,
       mouseover,
-      mouseout
+      mouseout,
+      getColor
     }
   }
 }
@@ -573,7 +583,7 @@ export default {
           stroke: #FFFFFF;
         }
       }
-      span {
+      .file-name {
         font-weight: 400;
         font-size: 12px;
         line-height: 18px;
@@ -583,6 +593,20 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        span {
+          margin-left: 4px;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 16px;
+          color: #FFFFFF;
+          padding: 4px 5px;
+          box-sizing: border-box;
+          background: #2C2D34;
+          border-radius: 6px;
+          transform: scale(0.5);
+          display: inline-block;
+          transform-origin: 0 50% 0;
+        }
       }
       &.file-item-activated {
         .file-arrow {
@@ -596,7 +620,7 @@ export default {
             stroke: #4063FF;
           }
         }
-        span {
+        .file-name {
           color: #4063FF;
           font-family: 'Montserrat-Medium';
         }

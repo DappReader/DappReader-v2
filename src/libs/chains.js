@@ -118,7 +118,8 @@ export const defaultChain = [{
 		{
 			"name": "etherscan",
 			"url": "https://etherscan.io",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#0784c3"
 		}
 	]
 }, {
@@ -152,7 +153,8 @@ export const defaultChain = [{
 		{
 			"name": "etherscan-goerli",
 			"url": "https://goerli.etherscan.io",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#0784c3"
 		}
 	]
 }, {
@@ -190,7 +192,8 @@ export const defaultChain = [{
 		{
 			"name": "bscscan",
 			"url": "https://bscscan.com",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#FBDA3C"
 		}
 	]
 }, {
@@ -219,7 +222,8 @@ export const defaultChain = [{
 		{
 			"name": "polygonscan",
 			"url": "https://polygonscan.com",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#8247e5"
 		}
 	]
 }, {
@@ -247,7 +251,8 @@ export const defaultChain = [{
 		{
 			"name": "polygonscan",
 			"url": "https://mumbai.polygonscan.com",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#8247e5"
 		}
 	]
 }, {
@@ -272,7 +277,8 @@ export const defaultChain = [{
 		{
 			"name": "otterscan-sepolia",
 			"url": "https://sepolia.otterscan.io",
-			"standard": "EIP3091"
+			"standard": "EIP3091",
+			"color": "#3498db"
 		}
 	]
 }]
@@ -323,7 +329,8 @@ export const chains = [
 			{
 				"name": "etherscan",
 				"url": "https://etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -374,7 +381,8 @@ export const chains = [
 			{
 				"name": "etherscan",
 				"url": "https://ropsten.etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -409,7 +417,8 @@ export const chains = [
 			{
 				"name": "etherscan-goerli",
 				"url": "https://goerli.etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -469,7 +478,8 @@ export const chains = [
 			{
 				"name": "ubiqscan",
 				"url": "https://ubiqscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#6fceb7"
 			}
 		]
 	},
@@ -508,7 +518,8 @@ export const chains = [
 			{
 				"name": "etherscan",
 				"url": "https://optimistic.etherscan.io",
-				"standard": "none"
+				"standard": "none",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -1078,7 +1089,8 @@ export const chains = [
 			{
 				"name": "teloscan",
 				"url": "https://teloscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#646fd3"
 			}
 		]
 	},
@@ -1127,7 +1139,8 @@ export const chains = [
 			{
 				"name": "etherscan",
 				"url": "https://kovan.etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		],
 		"infoURL": "https://kovan-testnet.github.io/website",
@@ -1157,7 +1170,8 @@ export const chains = [
 			{
 				"name": "subscan",
 				"url": "https://pangolin.subscan.io",
-				"standard": "none"
+				"standard": "none",
+				"color": "#512dbc"
 			}
 		]
 	},
@@ -1181,7 +1195,8 @@ export const chains = [
 			{
 				"name": "subscan",
 				"url": "https://crab.subscan.io",
-				"standard": "none"
+				"standard": "none",
+				"color": "#512dbc"
 			}
 		]
 	},
@@ -1205,7 +1220,8 @@ export const chains = [
 			{
 				"name": "subscan",
 				"url": "https://pangoro.subscan.io",
-				"standard": "none"
+				"standard": "none",
+				"color": "#512dbc"
 			}
 		]
 	},
@@ -1230,7 +1246,8 @@ export const chains = [
 			{
 				"name": "subscan",
 				"url": "https://darwinia.subscan.io",
-				"standard": "none"
+				"standard": "none",
+				"color": "#ea3382"
 			}
 		]
 	},
@@ -1288,7 +1305,8 @@ export const chains = [
 			{
 				"name": "coinexscan",
 				"url": "https://www.coinex.net",
-				"standard": "none"
+				"standard": "none",
+				"color": "#5f5fff"
 			}
 		]
 	},
@@ -1312,7 +1330,8 @@ export const chains = [
 			{
 				"name": "coinexscan",
 				"url": "https://testnet.coinex.net",
-				"standard": "none"
+				"standard": "none",
+				"color": "#5f5fff"
 			}
 		]
 	},
@@ -1367,7 +1386,8 @@ export const chains = [
 			{
 				"name": "zyxscan",
 				"url": "https://zyxscan.com",
-				"standard": "none"
+				"standard": "none",
+				"color": "#5c34a2"
 			}
 		]
 	},
@@ -1406,7 +1426,8 @@ export const chains = [
 			{
 				"name": "bscscan",
 				"url": "https://bscscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#FBDA3C"
 			}
 		]
 	},
@@ -1702,7 +1723,8 @@ export const chains = [
 			{
 				"name": "etherscan",
 				"url": "https://kovan-optimistic.etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		],
 		"infoURL": "https://optimism.io",
@@ -1734,7 +1756,8 @@ export const chains = [
 			{
 				"name": "hooscan",
 				"url": "https://www.hooscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -1762,7 +1785,8 @@ export const chains = [
 			{
 				"name": "Conflux Scan",
 				"url": "https://evmtestnet.confluxscan.net",
-				"standard": "none"
+				"standard": "none",
+				"color": "#0784c3"
 			}
 		]
 	},
@@ -1790,7 +1814,8 @@ export const chains = [
 				"name": "explorer",
 				"url": "https://explorer.idchain.one",
 				"icon": "etherscan",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#5c34a2"
 			}
 		]
 	},
@@ -1883,7 +1908,8 @@ export const chains = [
 			{
 				"name": "zenith scan",
 				"url": "https://scan.zenithchain.co",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#47a9f2"
 			}
 		]
 	},
@@ -1959,7 +1985,8 @@ export const chains = [
 			{
 				"name": "Meter Mainnet Scan",
 				"url": "https://scan.meter.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#003cb2"
 			}
 		]
 	},
@@ -1985,7 +2012,8 @@ export const chains = [
 			{
 				"name": "Meter Testnet Scan",
 				"url": "https://scan-warringstakes.meter.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#003cb2"
 			}
 		]
 	},
@@ -2010,7 +2038,8 @@ export const chains = [
 			{
 				"name": "GateScan",
 				"url": "https://www.gatescan.org/testnet",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#3498DB"
 			}
 		],
 		"infoURL": "https://www.gatechain.io"
@@ -2036,7 +2065,8 @@ export const chains = [
 			{
 				"name": "GateScan",
 				"url": "https://www.gatescan.org",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#3498DB"
 			}
 		],
 		"infoURL": "https://www.gatechain.io"
@@ -2301,7 +2331,8 @@ export const chains = [
 			{
 				"name": "bscscan-testnet",
 				"url": "https://testnet.bscscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#FBDA3C"
 			}
 		]
 	},
@@ -2722,7 +2753,8 @@ export const chains = [
 			{
 				"name": "polygonscan",
 				"url": "https://polygonscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#8247e5"
 			}
 		]
 	},
@@ -2891,7 +2923,8 @@ export const chains = [
 			{
 				"name": "AME Scan",
 				"url": "https://amescan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#9b0401",
 			}
 		]
 	},
@@ -2987,7 +3020,8 @@ export const chains = [
 			{
 				"name": "cemscan",
 				"url": "https://cemscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#5c34a2",
 			}
 		]
 	},
@@ -3229,7 +3263,8 @@ export const chains = [
 				"name": "ftmscan",
 				"url": "https://ftmscan.com",
 				"icon": "ftmscan",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#001f68"
 			}
 		]
 	},
@@ -3318,7 +3353,8 @@ export const chains = [
 			{
 				"name": "hscan",
 				"url": "https://hscan.org",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#3498db"
 			}
 		]
 	},
@@ -3431,7 +3467,8 @@ export const chains = [
 			{
 				"name": "kcc-scan",
 				"url": "https://scan-testnet.kcc.network",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#28a745"
 			}
 		]
 	},
@@ -3509,7 +3546,8 @@ export const chains = [
 				"name": "subscan",
 				"url": "https://shiden.subscan.io",
 				"standard": "none",
-				"icon": "subscan"
+				"icon": "subscan",
+				"color": "#5928b1"
 			}
 		]
 	},
@@ -3810,7 +3848,8 @@ export const chains = [
 			{
 				"name": "xscscan",
 				"url": "https://xscscan.pub",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#ffbe40"
 			}
 		]
 	},
@@ -3939,7 +3978,8 @@ export const chains = [
 				"name": "subscan",
 				"url": "https://astar.subscan.io",
 				"standard": "none",
-				"icon": "subscan"
+				"icon": "subscan",
+				"color": "#694ea4"
 			}
 		]
 	},
@@ -5353,7 +5393,8 @@ export const chains = [
 			{
 				"name": "cube-scan",
 				"url": "https://cubescan.network",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#428f8f",
 			}
 		]
 	},
@@ -5388,7 +5429,8 @@ export const chains = [
 			{
 				"name": "cubetest-scan",
 				"url": "https://testnet.cubescan.network",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#428f8f",
 			}
 		]
 	},
@@ -5861,7 +5903,8 @@ export const chains = [
 			{
 				"name": "VChain Scan",
 				"url": "https://scan.vcex.xyz",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+
 			}
 		]
 	},
@@ -6130,7 +6173,8 @@ export const chains = [
 				"name": "Paribu Net Testnet Explorer",
 				"url": "https://testnet.paribuscan.com",
 				"icon": "explorer",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#96a724"
 			}
 		]
 	},
@@ -6291,7 +6335,8 @@ export const chains = [
 				"name": "ftmscan",
 				"url": "https://testnet.ftmscan.com",
 				"icon": "ftmscan",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#001f68"
 			}
 		]
 	},
@@ -6370,7 +6415,8 @@ export const chains = [
 			{
 				"name": "iotexscan",
 				"url": "https://iotexscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#44FFB2"
 			}
 		]
 	},
@@ -6396,7 +6442,8 @@ export const chains = [
 			{
 				"name": "testnet iotexscan",
 				"url": "https://testnet.iotexscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#44FFB2"
 			}
 		]
 	},
@@ -7103,7 +7150,8 @@ export const chains = [
 				"name": "mmtscan",
 				"url": "https://mmtscan.io",
 				"standard": "EIP3091",
-				"icon": "mmt"
+				"icon": "mmt",
+				"color": "#5c34a2"
 			}
 		]
 	},
@@ -7828,7 +7876,8 @@ export const chains = [
 				"name": "Brise Scan",
 				"url": "https://brisescan.com",
 				"icon": "brise",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#5d12f1"
 			}
 		]
 	},
@@ -7904,7 +7953,8 @@ export const chains = [
 			{
 				"name": "Arbiscan",
 				"url": "https://arbiscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#28a0f0"
 			},
 			{
 				"name": "Arbitrum Explorer",
@@ -8737,7 +8787,8 @@ export const chains = [
 			{
 				"name": "polygonscan",
 				"url": "https://mumbai.polygonscan.com",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#8247e5"
 			}
 		]
 	},
@@ -9778,7 +9829,8 @@ export const chains = [
 			{
 				"name": "Visionscan",
 				"url": "https://www.visionscan.org",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#1384f8"
 			}
 		],
 		"shortName": "vision",
@@ -10017,7 +10069,8 @@ export const chains = [
 			{
 				"name": "otterscan-sepolia",
 				"url": "https://sepolia.otterscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#3498db"
 			}
 		]
 	},
@@ -10836,7 +10889,8 @@ export const chains = [
 			{
 				"name": "etherscan-rinkeby",
 				"url": "https://rinkeby.etherscan.io",
-				"standard": "EIP3091"
+				"standard": "EIP3091",
+				"color": "#0784c3"
 			}
 		]
 	},
