@@ -99,6 +99,7 @@ export default {
         designIndex.value = userInfo.avatar.split('-')[1]
         designImg.value = require(`@/assets/images/avatar/${designIndex.value}.png`)
       } else if (userInfo.avatar.indexOf('https://') > -1) {
+        if (!nftAvatar.value) nftAvatar.value = {}
         nftAvatar.value.image = userInfo.avatar
       }
       user.value = userInfo

@@ -1,6 +1,7 @@
 import { useMessage } from 'naive-ui'
 import { getLs, setLs } from "@/service/service"
 import { useStore } from 'vuex'
+import { chains } from '../libs/chains'
 
 export const useUtils = () => {
   const store = useStore()
@@ -27,24 +28,16 @@ export const useUtils = () => {
   }
 
   const toEtherscanAddress = (address, chain, type) => {
-    let network = chain
-    if (!network.chainName) network.chainName = network.name
-    console.log(network)
-    let name = ''
-    if (network.chainName.toLowerCase() == 'ropsten') {
-      name = 'ropsten.'
-    } else if (network.chainName.toLowerCase() == 'kovan') {
-      name = 'kovan.'
-    } else if (network.chainId == 5) {
-      name = 'goerli.'
-    } else if (network.chainName.toLowerCase() == 'sepolia') {
-      name = 'sepolia.'
+    let network = chains.filter(e => e.chainId == chain.chainId)[0]
+    let host = network.explorers[0]?.url
+    console.log(network, host)
+    if (host) {
+      let url = `${host}/address/${address}`
+      if (type == 'tx') {
+        url = `${host}/tx/${address}`
+      }
+      window.open(url)
     }
-    let url = `https://${name}etherscan.io/address/${address}`
-    if (type == 'tx') {
-      url = `https://${name}etherscan.io/tx/${address}`
-    }
-    window.open(url)
   }
 
   const hasContrace = (address, menuList, contractList) => {
