@@ -3,10 +3,6 @@
     <div class="logo">
       <img src="@/assets/images/logo.svg" alt="">
     </div>
-    <!-- <div class="switch flex-center-center">
-      <div class="switch-item switch-item-activated flex-center-center">My Contract</div>
-      <div class="switch-item flex-center-center">Contract Hub</div>
-    </div> -->
     <div class="add flex-center-sb">
       <div class="add-contract flex-center" @click="showCreateContract">
         <img src="@/assets/images/add_file.svg" alt="">
@@ -16,19 +12,28 @@
         <img src="@/assets/images/add_folder.svg" alt="">
       </div>
     </div>
-    <div class="contract-title">contract</div>
+    <div class="contract-title flex-center-sb">contract
+      <n-popover trigger="hover">
+        <template #trigger>
+          <div>
+            <svg @click="setIsFilter" t="1681896782615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2813" width="18" height="18"><path d="M428.194 453.735V730.85h-60V473.591L232.996 291.696c-18.687-29.315-10.337-67.025 18.071-85.134a61 61 0 0 1 32.79-9.562h390.689c33.689 0 61 27.31 61 61a61 61 0 0 1-7.727 29.714l-121.618 185.26v354.83h-60V455.027l129.33-196.853c0.01-0.484-130.549-0.876-391.675-1.174-0.605 0.262 47.508 65.84 144.338 196.735zM660.333 478h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 115h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 105h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z" :fill="isFilter == 'filter' ? '#4063FF' : '#858D99'" p-id="2814"></path></svg>
+          </div>
+        </template>
+        <span>Filter by chain.</span>
+      </n-popover>
+    </div>
     <div 
       class="contract" 
       group-name="cols"
     >
       <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
-        <div v-for="(item, index) in menuList" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <div class="flex-center folder-item-main" style="height: 30px" @click="() => {item.open = !item.open;openFolderIndex = -1}">
+        <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)" @mouseover="mouseover(index)" @mouseout="mouseout">
+          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)">
             <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
             <img v-else src="@/assets/images/folder.svg" alt="">
             <span>{{item.name}}<span>({{item.son.length}})</span></span>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
-            <div v-if="folderContextmenuIndex == index" class="right-menu">
+            <div v-if="folderContextmenuIndex == index && isFilter == 'none'" class="right-menu">
               <div class="right-menu-item flex-center" @click="folderStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
               <div class="right-menu-item flex-center" @click.stop="showCreateContract(index)"><img src="@/assets/images/add.svg" alt="">Add Contract</div>
               <div class="right-menu-item flex-center" @click.stop="showRename(index, item.name)"><img src="@/assets/images/edit.svg" alt="">Rename</div>
@@ -62,7 +67,7 @@
                 </svg>
                 <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name || contract.chain.chainName}}</span></p>
               </div>
-              <div class="right-menu" v-if="file.id == fileContextmenuId">
+              <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none'">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
                 <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
                 <n-popconfirm :show-icon="false"
@@ -83,7 +88,7 @@
       </div>
       <div class="file-list" @mousedown="mousedown" @mouseup="mouseup">
         <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
-          <Draggable v-for="(file, index) in contractList" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent.stop="fileContextmenu(file.id)">
+          <Draggable v-for="(file, index) in getContractList()" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent.stop="fileContextmenu(file.id)">
             <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)">
               <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -148,9 +153,11 @@ export default {
     let dropIndex = -2
     let dropAddIndex = -2
     const store = useStore()
+    const isFilter = ref(localStorage.getItem('isFilter') || 'none')
     const addFolder = ref(null)
     const createContract = ref(null)
     const fileContextmenuId = ref('')
+    const openName = ref('')
     const folderContextmenuIndex = ref(-1)
     const openFolderIndex = ref(-1)
     const activeId = computed(() => {
@@ -162,6 +169,18 @@ export default {
     const contractList = computed(() => {
       return store.state.contractList || []
     })
+    const openFolder = (item) => {
+      if (item.name == openName.value) {
+        openName.value = ''
+      } else {
+        openName.value = item.name
+      }
+      openFolderIndex.value = -1
+    }
+    const setIsFilter = () => {
+      isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
+      localStorage.setItem('isFilter', isFilter.value)
+    }
     const showAddFolder = () => {
       addFolder.value.show()
     }
@@ -358,6 +377,49 @@ export default {
     const mouseout = () => {
       clearTimeout(timeout)
     }
+    const getMenuList = () => {
+      if (!contractList.value.length && !menuList.value.length) {
+        return []
+      }
+      let list = menuList.value
+      console.log(list)
+      if (isFilter.value == 'filter') {
+        let arr = []
+        list.forEach(e => {
+          let son = e.son
+          if (son.length > 0) {
+            arr.push(...son)
+          }
+        })
+        arr.push(...contractList.value)
+        // 根据arr的chain[chainId]属性创建一个新的数组, {name: xx, son: []}
+        let newArr = []
+        console.log(arr)
+        arr.forEach(e => {
+          let chain = e.chain
+          let name = chain?.name || chain?.chainName || '未知'
+          let index = newArr.findIndex(e => e.name == name)
+          if (index > -1) {
+            newArr[index].son.push(e)
+          } else {
+            newArr.push({
+              name,
+              open: openName.value == name ? true : false,
+              son: [e]
+            })
+          }
+        })
+        list = newArr
+      }
+      return JSON.parse(JSON.stringify(list))
+    }
+    const getContractList = () => {
+      let list = contractList.value
+      if (isFilter.value == 'filter') {
+        list = []
+      }
+      return list
+    }
     const getColor = (chainId) => {
       let color = '#2C2D34'
       let chain = chains.find(e => e.chainId == chainId)
@@ -372,6 +434,8 @@ export default {
       }
     })
     return {
+      openName,
+      isFilter,
       activeId,
       openFolderIndex,
       menuList,
@@ -399,7 +463,11 @@ export default {
       mouseup,
       mouseover,
       mouseout,
-      getColor
+      getColor,
+      getMenuList,
+      getContractList,
+      setIsFilter,
+      openFolder
     }
   }
 }
@@ -491,6 +559,10 @@ export default {
     color: #858D99;
     padding: 0 20px;
     box-sizing: border-box;
+    svg {
+      user-select: none;
+      cursor: pointer;
+    }
   }
   .contract {
     flex: 1;
@@ -606,6 +678,7 @@ export default {
           transform: scale(0.5);
           display: inline-block;
           transform-origin: 0 50% 0;
+          flex: 0;
         }
       }
       &.file-item-activated {
