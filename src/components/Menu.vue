@@ -12,6 +12,13 @@
         <img src="@/assets/images/add_folder.svg" alt="">
       </div>
     </div>
+    <div class="input-group flex-center">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input class="form-input" v-model="searchValue" placeholder="search contract" />
+    </div>
     <div class="contract-title flex-center-sb">contract
       <n-popover trigger="hover">
         <template #trigger>
@@ -33,7 +40,7 @@
             <img v-else src="@/assets/images/folder.svg" alt="">
             <span>{{item.name}}<span>({{item.son.length}})</span></span>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
-            <div v-if="folderContextmenuIndex == index && isFilter == 'none'" class="right-menu">
+            <div v-if="folderContextmenuIndex == index && isFilter == 'none' && !searchValue" class="right-menu">
               <div class="right-menu-item flex-center" @click="folderStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
               <div class="right-menu-item flex-center" @click.stop="showCreateContract(index)"><img src="@/assets/images/add.svg" alt="">Add Contract</div>
               <div class="right-menu-item flex-center" @click.stop="showRename(index, item.name)"><img src="@/assets/images/edit.svg" alt="">Rename</div>
@@ -67,7 +74,7 @@
                 </svg>
                 <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name || file.chain.chainName}}</span></p>
               </div>
-              <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none'">
+              <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
                 <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
                 <n-popconfirm :show-icon="false"
@@ -96,7 +103,7 @@
               </svg>
               <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name || file.chain.chainName}}</span></p>
             </div>
-            <div class="right-menu" v-if="file.id == fileContextmenuId">
+            <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
               <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
               <n-popconfirm :show-icon="false"
@@ -157,6 +164,7 @@ export default {
     const addFolder = ref(null)
     const createContract = ref(null)
     const fileContextmenuId = ref('')
+    const searchValue = ref('')
     const openName = ref('')
     const folderContextmenuIndex = ref(-1)
     const openFolderIndex = ref(-1)
@@ -380,7 +388,7 @@ export default {
       clearTimeout(timeout)
     }
     const getMenuList = () => {
-      if (!contractList.value.length && !menuList.value.length) {
+      if ((!contractList.value.length && !menuList.value.length) || searchValue.value) {
         return []
       }
       let list = menuList.value
@@ -420,6 +428,26 @@ export default {
       if (isFilter.value == 'filter') {
         list = []
       }
+      if (searchValue.value) {
+        console.log(searchValue.value)
+        let arr = []
+        menuList.value.forEach(e => {
+          let son = e.son
+          if (son.length > 0) {
+            arr.push(...son)
+          }
+        })
+        arr.push(...contractList.value)
+        // filter name 包含 searchValue.value
+        let newArr = []
+        arr.forEach(e => {
+          let name = e.name
+          if (name.indexOf(searchValue.value) > -1) {
+            newArr.push(e)
+          }
+        })
+        list = newArr
+      }
       return list
     }
     const getColor = (chainId) => {
@@ -436,6 +464,7 @@ export default {
       }
     })
     return {
+      searchValue,
       openName,
       isFilter,
       activeId,
@@ -751,6 +780,36 @@ export default {
     width: 200px;
     height: auto;
     border-radius: 6px;
+  }
+}
+.input-group {
+  overflow: hidden;
+  padding-right: 1px;
+  background: #1C1C20;
+  border: 1px solid rgba(133, 141, 153, 0.15);
+  border-radius: 10px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  margin: auto;
+  margin-top: 16px;
+  width: 200px;
+  height: 38px;
+  svg {
+    flex: 0 0 18px;
+  }
+  .form-input {
+    margin-top: 0;
+    height: 34px;
+    flex: 1;
+    border-radius: 0;
+    outline: none;
+    font-size: 14px;
+    padding: 0 0 0 12px;
+    color: #FFFFFF;
+    width: 158px;
+    box-sizing: border-box;
+    background: none !important;
+    border: none !important;
   }
 }
 </style>
