@@ -170,6 +170,7 @@ export default {
       return store.state.contractList || []
     })
     const openFolder = (item) => {
+      item.open = !item.open
       if (item.name == openName.value) {
         openName.value = ''
       } else {
@@ -178,6 +179,7 @@ export default {
       openFolderIndex.value = -1
     }
     const setIsFilter = () => {
+      openName.value = ''
       isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
       localStorage.setItem('isFilter', isFilter.value)
     }
@@ -411,7 +413,7 @@ export default {
         })
         list = newArr
       }
-      return JSON.parse(JSON.stringify(list))
+      return list
     }
     const getContractList = () => {
       let list = contractList.value

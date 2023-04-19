@@ -23,10 +23,12 @@
 import { ref } from "vue";
 import { useStore } from 'vuex'
 import { getLs, setLs } from "@/service/service";
+import { useMessage } from "naive-ui";
 export default {
   name: 'AddFolder',
   setup() {
     const store = useStore()
+    const message = useMessage()
     const floderName = ref('')
     const showModal = ref(false)
     const title = ref('New Folder')
@@ -47,6 +49,12 @@ export default {
     const create = async () => {
       if (!floderName.value || floderName.value.length > 12) return
       let menuList = await getLs('menuList') || []
+      // 判断是否已存在
+      let isExist = menuList.some(item => item.name == floderName.value)
+      if (isExist) {
+        message.error('Folder name already exists')
+        return
+      }
       if (folderIndex.value >= 0) {
         menuList[folderIndex.value].name = floderName.value
         setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
