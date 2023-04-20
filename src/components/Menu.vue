@@ -31,7 +31,7 @@
     >
       <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
         <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)">
+          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop>
             <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
             <img v-else src="@/assets/images/folder.svg" alt="">
             <span>{{item.name}}<span>({{item.son.length}})</span></span>
@@ -58,7 +58,7 @@
               </div> -->
             </div>
           </div>
-          <Container class="folder-file" v-show="item.open" group-name="col-items" @drop="(e) => onDrop(index, e)">
+          <Container class="folder-file" :style="{zIndex: isMousedown ? '9' : '1', maxHeight: item.open ? '': '0'}" group-name="col-items" @drop="(e) => onDrop(index, e)">
             <Draggable class="file-item-w" v-for="(file, i) in item.son" :key="file.id" @contextmenu.prevent.stop="fileContextmenu(file.id)">
               <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)">
                 <svg width="16" height="18" class="file-arrow" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -164,13 +164,13 @@ export default {
   },
   setup() {
     let timeout = null
-    let isMousedown = false
     let moveData = null
     let dropIndex = -2
     let dropAddIndex = -2
     const store = useStore()
     const isFilter = ref(localStorage.getItem('isFilter') || 'none')
     const addFolder = ref(null)
+    const isMousedown = ref(false)
     const createContract = ref(null)
     const fileContextmenuId = ref('')
     const searchValue = ref('')
@@ -381,16 +381,17 @@ export default {
       }
     }
     const mousedown = () => {
-      isMousedown = true
+      console.log('mousedown')
+      isMousedown.value = true
     }
     const mouseup = () => {
-      isMousedown = false
+      isMousedown.value = false
     }
     const mouseover = (index) => {
-      if (isMousedown) {
+      if (isMousedown.value) {
         timeout = setTimeout(() => {
           menuList.value[index].open = true
-        }, 400)
+        }, 500)
       }
     }
     const mouseout = () => {
@@ -488,6 +489,7 @@ export default {
       }
     })
     return {
+      isMousedown,
       searchValue,
       openName,
       isFilter,
@@ -641,6 +643,7 @@ export default {
           padding: 0 20px;
           box-sizing: border-box;
           width: 100%;
+          z-index: 2;
           &:hover {
             background: rgba(133, 141, 153, 0.1);
             border-radius: 4px;
@@ -666,10 +669,12 @@ export default {
         }
         .folder-file {
           transition: all .3s;
-          // overflow: hidden;
+          padding-top: 30px;
+          margin-top: -30px;
           height: auto;
-          // padding: 0 12px;
           box-sizing: border-box;
+          position: relative;
+          overflow: hidden;
         }
         &.folder-item-activated {
           .arrow {
