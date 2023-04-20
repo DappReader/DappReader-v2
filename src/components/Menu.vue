@@ -467,8 +467,10 @@ export default {
         // filter name 包含 searchValue.value
         let newArr = []
         arr.forEach(e => {
-          let name = e.name
-          if (name.indexOf(searchValue.value) > -1) {
+          let name = JSON.parse(JSON.stringify(e.name))
+          name = name.toLowerCase()
+          let keyword = JSON.parse(JSON.stringify(searchValue.value)).toLowerCase()
+          if (name.indexOf(keyword) > -1) {
             newArr.push(e)
           }
         })
@@ -809,21 +811,22 @@ export default {
         }
       }
       &.file-item-activated {
-        .file-arrow {
-          path {
-            stroke: #4063FF;
-          }
-        }
-        .file-icon {
-          margin-right: 12px;
-          path {
-            stroke: #4063FF;
-          }
-        }
-        .file-name {
-          color: #4063FF;
-          font-family: 'Montserrat-Medium';
-        }
+        background: rgba(54, 92, 255, .7);
+        // .file-arrow {
+        //   path {
+        //     stroke: #4063FF;
+        //   }
+        // }
+        // .file-icon {
+        //   margin-right: 12px;
+        //   path {
+        //     stroke: #4063FF;
+        //   }
+        // }
+        // .file-name {
+        //   color: #4063FF;
+        //   font-family: 'Montserrat-Medium';
+        // }
       }
     }
     .right-menu {
