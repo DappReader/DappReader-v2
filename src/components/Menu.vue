@@ -174,7 +174,7 @@ export default {
     const createContract = ref(null)
     const fileContextmenuId = ref('')
     const searchValue = ref('')
-    const openName = ref('')
+    const openName = ref([])
     const folderContextmenuIndex = ref(-1)
     const openFolderIndex = ref(-1)
     const activeId = computed(() => {
@@ -188,15 +188,16 @@ export default {
     })
     const openFolder = (item) => {
       item.open = !item.open
-      if (item.name == openName.value) {
-        openName.value = ''
+      let index = openName.value.indexOf(item.name)
+      if (index > -1) {
+        openName.value.splice(index, 1)
       } else {
-        openName.value = item.name
+        openName.value.push(item.name)
       }
       openFolderIndex.value = -1
     }
     const setIsFilter = () => {
-      openName.value = ''
+      openName.value = []
       isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
       localStorage.setItem('isFilter', isFilter.value)
     }
@@ -428,7 +429,7 @@ export default {
           } else {
             newArr.push({
               name,
-              open: openName.value == name ? true : false,
+              open: openName.value.indexOf(name) > -1 ? true : false,
               son: [e]
             })
           }
