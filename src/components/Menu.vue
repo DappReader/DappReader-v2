@@ -20,9 +20,15 @@
       <input class="form-input" v-model="searchValue" placeholder="search contract" />
     </div>
     <div class="contract-title flex-center-sb">contract
-      <div class="flex-center" @click="setIsFilter" :style="{color: isFilter == 'filter' ? '#4063FF' : '#858D99', cursor: 'pointer'}">
-        sort by chain
-        <svg t="1681896782615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2813" width="18" height="18"><path d="M428.194 453.735V730.85h-60V473.591L232.996 291.696c-18.687-29.315-10.337-67.025 18.071-85.134a61 61 0 0 1 32.79-9.562h390.689c33.689 0 61 27.31 61 61a61 61 0 0 1-7.727 29.714l-121.618 185.26v354.83h-60V455.027l129.33-196.853c0.01-0.484-130.549-0.876-391.675-1.174-0.605 0.262 47.508 65.84 144.338 196.735zM660.333 478h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 115h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 105h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z" :fill="isFilter == 'filter' ? '#4063FF' : '#858D99'" p-id="2814"></path></svg>
+      <div class="flex-center">
+        <div class="flex-center icon-w icon-w-1" @click="setIsFilter" :style="{background: isFilter == 'filter' ? '#375CFF' : '#2c2d34'}">
+          <svg t="1681896782615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2813" width="18" height="18"><path d="M428.194 453.735V730.85h-60V473.591L232.996 291.696c-18.687-29.315-10.337-67.025 18.071-85.134a61 61 0 0 1 32.79-9.562h390.689c33.689 0 61 27.31 61 61a61 61 0 0 1-7.727 29.714l-121.618 185.26v354.83h-60V455.027l129.33-196.853c0.01-0.484-130.549-0.876-391.675-1.174-0.605 0.262 47.508 65.84 144.338 196.735zM660.333 478h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 115h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 105h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z" :fill="isFilter == 'filter' ? '#ffffff' : '#858D99'" p-id="2814"></path></svg>
+          <span>sort by chain</span>
+        </div>
+        <div class="flex-center icon-w" @click="setIsShowName" :style="{background: isShowName == 'show' ? '#375CFF' : '#2c2d34'}">
+          <svg t="1681999689846" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2166" width="18" height="18"><path d="M512 230.4c199.8848 0 373.0176 114.5344 457.344 281.5744C885.0432 679.04 711.8848 793.6 512 793.6c-199.8848 0-373.0176-114.5344-457.344-281.5744C138.9568 344.96 312.1152 230.4 512 230.4z m0 76.8a434.8928 434.8928 0 0 0-366.464 200.3456l-2.816 4.48 2.816 4.48a434.944 434.944 0 0 0 357.248 200.192L512 716.8c150.6816 0 287.488-77.2096 366.464-200.3456l2.816-4.48-2.816-4.48a434.944 434.944 0 0 0-357.248-200.192L512 307.2z m0 38.4a166.4 166.4 0 1 1 0 332.8 166.4 166.4 0 0 1 0-332.8z m0 76.8a89.6 89.6 0 1 0 0 179.2 89.6 89.6 0 0 0 0-179.2z" p-id="2167" :fill="isShowName == 'show' ? '#ffffff' : '#858D99'"></path></svg>
+          <span>show chain name</span>
+        </div>
       </div>
     </div>
     <div 
@@ -68,7 +74,7 @@
                   <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
+                <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -97,7 +103,7 @@
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
+              <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
             </div>
             <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -169,6 +175,7 @@ export default {
     let dropAddIndex = -2
     const store = useStore()
     const isFilter = ref(localStorage.getItem('isFilter') || 'none')
+    const isShowName = ref(localStorage.getItem('isShowName') || 'show')
     const addFolder = ref(null)
     const isMousedown = ref(false)
     const createContract = ref(null)
@@ -200,6 +207,10 @@ export default {
       openName.value = []
       isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
       localStorage.setItem('isFilter', isFilter.value)
+    }
+    const setIsShowName = () => {
+      isShowName.value = isShowName.value == 'none' ? 'show' : 'none'
+      localStorage.setItem('isShowName', isShowName.value)
     }
     const showAddFolder = () => {
       addFolder.value.show()
@@ -417,7 +428,7 @@ export default {
         console.log(arr)
         arr.forEach(e => {
           let chain = e.chain
-          let name = chain?.name || chain?.chainName || '未知'
+          let name = getChainName(chain)
           try {
             name = getChainName(chain)
           } catch (error) {
@@ -475,7 +486,12 @@ export default {
     }
     const getChainName = (chain) => {
       let id = chain.chainId
-      let name = chains.filter(e => e.chainId == id)[0]?.name
+      let name = 'unknow'
+      try {
+        name = chains.filter(e => e.chainId == id)[0]?.name
+      } catch (error) {
+        console.error(error)
+      }
       chainNickNames.forEach(e => {
         let arr = e.split(',')
         if (arr[0] == name) {
@@ -490,6 +506,7 @@ export default {
       }
     })
     return {
+      isShowName,
       isMousedown,
       searchValue,
       openName,
@@ -526,7 +543,8 @@ export default {
       getContractList,
       setIsFilter,
       openFolder,
-      getChainName
+      getChainName,
+      setIsShowName
     }
   }
 }
@@ -618,9 +636,56 @@ export default {
     color: #858D99;
     padding: 0 20px;
     box-sizing: border-box;
-    svg {
-      user-select: none;
+    .icon-w {
+      height: 22px;
+      overflow: hidden;
+      background: #2c2d34;
+      border-radius: 6px;
+      padding: 0 2px;
+      box-sizing: border-box;
+      transition: all .3s;
       cursor: pointer;
+      & ~ .icon-w {
+        margin-left: 6px;
+      }
+      svg {
+        user-select: none;
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+      }
+      span {
+        width: 0;
+        overflow: hidden;
+        transition: all .3s;
+        font-size: 12px;
+        transform: scale(.8);
+        white-space: nowrap;
+        transform-origin: 12px 50%;
+      }
+      &:hover {
+        color: #FFFFFF;
+        background: #375CFF;
+        svg {
+          path {
+            fill: #FFFFFF;
+          }
+        }
+        span {
+          width: 100px;
+          color: #FFFFFF;
+          overflow: visible;
+        }
+      }
+      &.icon-w-1 {
+        &:hover {
+          span {
+            width: 70px;
+            overflow: visible;
+          }
+        }
+      }
     }
   }
   .contract {
