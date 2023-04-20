@@ -421,7 +421,7 @@ export default {
           } catch (error) {
             console.error(error)
           }
-          let index = newArr.findIndex(e => e.name == name)
+          let index = newArr.findIndex(el => el.name == name)
           if (index > -1) {
             newArr[index].son.push(e)
           } else {
@@ -472,7 +472,8 @@ export default {
       return color
     }
     const getChainName = (chain) => {
-      let name = chain.name || chain.chainName || '未知'
+      let id = chain.chainId
+      let name = chains.filter(e => e.chainId == id)[0]?.name
       chainNickNames.forEach(e => {
         let arr = e.split(',')
         if (arr[0] == name) {
