@@ -73,6 +73,9 @@ export const icons = {
 	"11297108109": "palm",
 	"836542336838601": "curio"
 }
+
+export const chainNickNames = ['Ethereum Mainnet,Ethereum', 'Ethereum Classic Testnet Kotti,ETC', 'Flare Mainnet,Flare', 'Flare Testnet Coston,Flare Coston', 'ShibaChain,Shiba', 'Boba Network Rinkeby Testnet,Boba Rinkeby', 'Telos EVM Mainnet,Telos', 'Telos EVM Testnet,Telos Test', 'Binance Smart Chain Mainnet,BSC', 'EOS Mainnet,EOS Evm', 'Ethereum Classic Mainnet,ETC', 'Ethereum Classic Testnet Morden,ETC Morden', 'Ethereum Classic Testnet Mordor,ETC Mordor', 'OKExChain Testnet,OKC Test', 'OKXChain Mainnet,OKC', 'Optimism Kovan,OP Kovan', 'Hoo Smart Chain,HOO', 'Conflux eSpace (Testnet),CFX eSpace Test', 'Binance Smart Chain Testnet,BSC Test', 'Huobi ECO Chain Mainnet,HECO', 'Polygon Mainnet,Polygon', 'HOO Smart Chain Testnet,HSC Test', 'Fantom Opera,Fantom', 'Huobi ECO Chain Testnet,HEC Test', 'Boba Network,Boab', 'Tao Network,Tao', 'Lucky Network,Lucky', 'Wanchain Testnet,Wanchain', 'Klaytn Testnet Baobab,Klaytn Baobab', 'Conflux eSpace,CFX eSpace', 'Cube Chain Mainnet,Cube', 'Cube Chain Testnet,Cube Test', 'Kava EVM Testnet,Kava Test', 'DYNO Mainnet,DYNO', 'IoTeX Network Mainnet,IoTeX', 'Uzmi Network Mainnet,Uzmi', 'Nahmii Mainnet,Nahmii', 'Evmos Testnet,Evmos Test', 'Arbitrum One,Arb One', 'Celo Mainnet,Celo', 'Celo Alfajores Testnet,Celo Alfajores', 'Celo Baklava Testnet,Celo Baklava', 'Alaya Mainnet,Alaya', 'Alaya Dev Testnet,Alaya Dev', 'PlatON Mainnet,PlatON', 'Arbitrum Rinkeby,Arb Rinkeby', 'Aurora Mainnet,Aurora']
+
 export const defaultChain = [{
 	"name": "localhost:8545",
 	"chain": "ETH",

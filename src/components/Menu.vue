@@ -20,14 +20,10 @@
       <input class="form-input" v-model="searchValue" placeholder="search contract" />
     </div>
     <div class="contract-title flex-center-sb">contract
-      <n-popover trigger="hover">
-        <template #trigger>
-          <div>
-            <svg @click="setIsFilter" t="1681896782615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2813" width="18" height="18"><path d="M428.194 453.735V730.85h-60V473.591L232.996 291.696c-18.687-29.315-10.337-67.025 18.071-85.134a61 61 0 0 1 32.79-9.562h390.689c33.689 0 61 27.31 61 61a61 61 0 0 1-7.727 29.714l-121.618 185.26v354.83h-60V455.027l129.33-196.853c0.01-0.484-130.549-0.876-391.675-1.174-0.605 0.262 47.508 65.84 144.338 196.735zM660.333 478h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 115h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 105h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z" :fill="isFilter == 'filter' ? '#4063FF' : '#858D99'" p-id="2814"></path></svg>
-          </div>
-        </template>
-        <span>Filter by chain.</span>
-      </n-popover>
+      <div class="flex-center" @click="setIsFilter" :style="{color: isFilter == 'filter' ? '#4063FF' : '#858D99', cursor: 'pointer'}">
+        sort by chain
+        <svg t="1681896782615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2813" width="18" height="18"><path d="M428.194 453.735V730.85h-60V473.591L232.996 291.696c-18.687-29.315-10.337-67.025 18.071-85.134a61 61 0 0 1 32.79-9.562h390.689c33.689 0 61 27.31 61 61a61 61 0 0 1-7.727 29.714l-121.618 185.26v354.83h-60V455.027l129.33-196.853c0.01-0.484-130.549-0.876-391.675-1.174-0.605 0.262 47.508 65.84 144.338 196.735zM660.333 478h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 115h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z m0 105h110c16.568 0 30 13.431 30 30 0 16.569-13.432 30-30 30h-110c-16.569 0-30-13.431-30-30 0-16.569 13.431-30 30-30z" :fill="isFilter == 'filter' ? '#4063FF' : '#858D99'" p-id="2814"></path></svg>
+      </div>
     </div>
     <div 
       class="contract" 
@@ -72,7 +68,7 @@
                   <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name || file.chain.chainName}}</span></p>
+                <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -101,7 +97,7 @@
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{file.chain.name || file.chain.chainName}}</span></p>
+              <p class="file-name flex-center">{{file.name}} <span :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
             </div>
             <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -130,6 +126,19 @@
         :preview-src="previewSrc"
       />
     </div>
+    <div class="icon-list flex-center">
+      <div class="github">
+        <a href="https://github.com/DappReader/DappReader-v2" target="_blank" rel="noopener noreferrer">
+          <svg t="1681979538137" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2618" width="18" height="18"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z" p-id="2619" fill="#ffffff"></path></svg>
+        </a>
+      </div>
+      <div class="twitter">
+        <a href="https://twitter.com/dappreader" target="_blank" rel="noopener noreferrer" class="flex-center">
+          <svg t="1681979732323" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3694" width="18" height="18"><path d="M1023.807 194.821c-37.698 16.261-78.594 27.943-120.871 32.459 43.547-25.956 76.665-66.847 92.268-115.568-40.29 24.028-85.76 41.555-133.157 50.649-38.304-40.955-92.864-66.248-153.267-66.248-116.297 0-209.824 94.191-209.824 209.76 0 16.262 1.987 32.518 5.18 48.121-174.108-9.037-329.361-92.205-432.648-219.578-18.186 31.138-28.608 66.908-28.608 105.933 0 72.75 37.038 137.01 93.527 174.708-34.383-1.322-66.907-11.077-94.851-26.616v2.588c0 101.899 72.086 186.395 168.264 205.907-17.527 4.517-36.376 7.104-55.225 7.104-13.61 0-26.621-1.265-39.567-3.252 26.621 83.173 103.945 143.577 196.149 145.564-72.149 56.488-162.425 89.612-260.527 89.612-17.525 0-33.787-0.6-50.649-2.528 92.926 59.74 203.316 94.191 322.258 94.191 385.856 0 597.002-319.607 597.002-596.943 0-9.153 0-18.184-0.606-27.339 40.833-29.872 76.549-66.969 105.152-108.524z" fill="#ffffff" p-id="3695"></path></svg>
+          @dappreader
+        </a>
+      </div>
+    </div>
     <AddFolder ref="addFolder" />
     <CreateContract ref="createContract" />
   </div>
@@ -144,7 +153,7 @@ import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
 import { Container, Draggable } from "vue3-smooth-dnd"
-import { chains } from '../libs/chains'
+import { chains, chainNickNames } from '../libs/chains'
 export default {
   name: '',
   components: {
@@ -407,7 +416,7 @@ export default {
         console.log(arr)
         arr.forEach(e => {
           let chain = e.chain
-          let name = chain?.name || chain?.chainName || '未知'
+          let name = getChainName(chain)
           let index = newArr.findIndex(e => e.name == name)
           if (index > -1) {
             newArr[index].son.push(e)
@@ -458,6 +467,16 @@ export default {
       }
       return color
     }
+    const getChainName = (chain) => {
+      let name = chain.name || chain.chainName || '未知'
+      chainNickNames.forEach(e => {
+        let arr = e.split(',')
+        if (arr[0] == name) {
+          name = arr[1]
+        }
+      })
+      return name
+    }
     watch(menuList, (val) => {
       if (val && openFolderIndex.value >= 0) {
         menuList.value[openFolderIndex.value].open = true
@@ -498,7 +517,8 @@ export default {
       getMenuList,
       getContractList,
       setIsFilter,
-      openFolder
+      openFolder,
+      getChainName
     }
   }
 }
@@ -810,6 +830,22 @@ export default {
     box-sizing: border-box;
     background: none !important;
     border: none !important;
+  }
+}
+.icon-list {
+  width: 100%;
+  margin-top: 12px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  font-size: 12px;
+  color: #FFFFFF;
+  .icon {
+    font-size: 24px;
+    height: 24px;
+    margin-right: 4px;
+  }
+  .twitter {
+    margin-left: 12px;
   }
 }
 </style>
