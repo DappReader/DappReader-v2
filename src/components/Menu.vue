@@ -403,32 +403,35 @@ export default {
       let list = menuList.value
       console.log(list)
       if (isFilter.value == 'filter') {
-        let arr = []
-        list.forEach(e => {
-          let son = e.son
-          if (son.length > 0) {
-            arr.push(...son)
-          }
-        })
-        arr.push(...contractList.value)
-        // 根据arr的chain[chainId]属性创建一个新的数组, {name: xx, son: []}
-        let newArr = []
-        console.log(arr)
-        arr.forEach(e => {
-          let chain = e.chain
-          let name = getChainName(chain)
-          let index = newArr.findIndex(e => e.name == name)
-          if (index > -1) {
-            newArr[index].son.push(e)
-          } else {
-            newArr.push({
-              name,
-              open: openName.value == name ? true : false,
-              son: [e]
-            })
-          }
-        })
-        list = newArr
+        try {
+          let arr = []
+          list.forEach(e => {
+            let son = e.son
+            if (son.length > 0) {
+              arr.push(...son)
+            }
+          })
+          arr.push(...contractList.value)
+          let newArr = []
+          console.log(arr)
+          arr.forEach(e => {
+            let chain = e.chain
+            let name = getChainName(chain)
+            let index = newArr.findIndex(e => e.name == name)
+            if (index > -1) {
+              newArr[index].son.push(e)
+            } else {
+              newArr.push({
+                name,
+                open: openName.value == name ? true : false,
+                son: [e]
+              })
+            }
+          })
+          list = newArr
+        } catch (error) {
+          console.error(error)
+        }
       }
       return list
     }
