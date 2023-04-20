@@ -428,7 +428,7 @@ export default {
         console.log(arr)
         arr.forEach(e => {
           let chain = e.chain
-          let name = getChainName(chain)
+          let name = chain?.name || chain?.chainName || 'unknow'
           try {
             name = getChainName(chain)
           } catch (error) {
