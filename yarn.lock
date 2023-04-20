@@ -946,6 +946,11 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@bugsnag/safe-json-stringify@^6.0.0":
+  version "6.0.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/@bugsnag/safe-json-stringify/-/safe-json-stringify-6.0.0.tgz#22abdcd83e008c369902976730c34c150148a758"
+  integrity sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==
+
 "@css-render/plugin-bem@^0.15.10":
   version "0.15.11"
   resolved "https://repo.huaweicloud.com/repository/npm/@css-render/plugin-bem/-/plugin-bem-0.15.11.tgz#250b853704af1fbb935b8fcd987839dcc9c95ce2"
@@ -4833,6 +4838,18 @@ functions-have-names@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmmirror.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
+
+fundebug-javascript@^2.8.8:
+  version "2.8.8"
+  resolved "https://repo.huaweicloud.com/repository/npm/fundebug-javascript/-/fundebug-javascript-2.8.8.tgz#08b5ff0f305552c42a5201223f9584d4babcf04b"
+  integrity sha512-7F8usYnRfwIkYHDC2RGAyXQ/muE3+NRLjT9CxXUQH6JUSjewRPVqj9Eb7/McTc4ZtAGAdMlLk08vYK04uNyEEQ==
+  dependencies:
+    "@bugsnag/safe-json-stringify" "^6.0.0"
+
+fundebug-vue@^0.3.6:
+  version "0.3.6"
+  resolved "https://repo.huaweicloud.com/repository/npm/fundebug-vue/-/fundebug-vue-0.3.6.tgz#c722781fdce41be842b9c62d99871caa927ea855"
+  integrity sha512-fVA2srxZJrtJu80oWbNIAC2EXJn4HG2uG1cbSxX3BTNIDA5KKz/fRU9cHKshMvt6xD9i1RinDsi9pLeuk8uhBA==
 
 gauge@~2.7.3:
   version "2.7.4"

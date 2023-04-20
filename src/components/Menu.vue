@@ -74,7 +74,7 @@
                   <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
+                <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
               </div>
               <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
                 <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
@@ -103,7 +103,7 @@
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId)}">{{getChainName(file.chain)}}</span></p>
+              <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
             </div>
             <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
               <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
