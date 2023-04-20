@@ -729,7 +729,7 @@ export default {
           box-sizing: border-box;
           background: #2C2D34;
           border-radius: 6px;
-          transform: scale(0.5);
+          transform: scale(0.7);
           display: inline-block;
           transform-origin: 0 50% 0;
           flex: 0;
