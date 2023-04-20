@@ -333,7 +333,7 @@ export const chains = [
 				"name": "etherscan",
 				"url": "https://etherscan.io",
 				"standard": "EIP3091",
-				"color": "#0784c3"
+				"color": "#2bb6af"
 			}
 		]
 	},
@@ -421,7 +421,7 @@ export const chains = [
 				"name": "etherscan-goerli",
 				"url": "https://goerli.etherscan.io",
 				"standard": "EIP3091",
-				"color": "#0784c3"
+				"color": "#0e98fd"
 			}
 		]
 	},
