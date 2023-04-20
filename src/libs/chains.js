@@ -10073,7 +10073,7 @@ export const chains = [
 				"name": "otterscan-sepolia",
 				"url": "https://sepolia.otterscan.io",
 				"standard": "EIP3091",
-				"color": "#3498db"
+				"color": "#cfb5f0"
 			}
 		]
 	},
