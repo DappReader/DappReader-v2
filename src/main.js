@@ -12,6 +12,7 @@ import { create, NSelect, NConfigProvider, NMessageProvider, NModal,
   NCollapseItem, NPopover, NSpin, NDialogProvider, NInputGroup, NButton, NImage, NTooltip } from 'naive-ui'
 import VueHighlightJS from 'vue3-highlightjs'
 import 'highlight.js/styles/hybrid.css'
+require('fundebug-revideo');
 const naive = create({
   components: [ NSelect, NConfigProvider, NMessageProvider, 
     NModal, NFormItem, NInput, NPopconfirm, NTabs, NTabPane, NButton,

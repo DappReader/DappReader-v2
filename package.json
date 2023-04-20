@@ -13,6 +13,7 @@
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.7.2",
     "fundebug-javascript": "^2.8.8",
+    "fundebug-revideo": "^0.8.0",
     "fundebug-vue": "^0.3.6",
     "localforage": "^1.10.0",
     "naive-ui": "^2.33.5",

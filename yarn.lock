@@ -4846,6 +4846,11 @@ fundebug-javascript@^2.8.8:
   dependencies:
     "@bugsnag/safe-json-stringify" "^6.0.0"
 
+fundebug-revideo@^0.8.0:
+  version "0.8.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/fundebug-revideo/-/fundebug-revideo-0.8.0.tgz#2fcdf0a1b5cc3c446365737abe8eb04bfc14b081"
+  integrity sha512-Wwo6/tr2YCtQ3WnjLrUht8ncGvQfsqEH1uiKWz6E/qHcP9Bk9xc6NdaXnV/lhdZilhlMo2ZD6ZLrK6+8tCB29Q==
+
 fundebug-vue@^0.3.6:
   version "0.3.6"
   resolved "https://repo.huaweicloud.com/repository/npm/fundebug-vue/-/fundebug-vue-0.3.6.tgz#c722781fdce41be842b9c62d99871caa927ea855"
