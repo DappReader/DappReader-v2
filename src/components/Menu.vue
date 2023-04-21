@@ -12,13 +12,16 @@
         <img src="@/assets/images/add_folder.svg" alt="">
       </div>
     </div>
-    <div class="input-group flex-center">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <input class="form-input" v-model="searchValue" placeholder="search contract" />
+    <div class="add" style="margin-top: 0">
+      <div class="input-group flex-center">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input class="form-input" v-model="searchValue" placeholder="search contract" />
+      </div>
     </div>
+    
     <div class="contract-title flex-center-sb">contract
       <div class="flex-center">
         <div class="flex-center icon-w icon-w-1" @click="setIsFilter" :style="{background: isFilter == 'filter' ? '#375CFF' : '#2c2d34'}">
@@ -891,7 +894,7 @@ export default {
   box-sizing: border-box;
   margin: auto;
   margin-top: 16px;
-  width: 200px;
+  width: 100%;
   height: 38px;
   svg {
     flex: 0 0 18px;
