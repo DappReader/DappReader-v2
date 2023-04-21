@@ -522,7 +522,7 @@ export const chains = [
 				"name": "etherscan",
 				"url": "https://optimistic.etherscan.io",
 				"standard": "none",
-				"color": "#0784c3"
+				"color": "#ff0620"
 			}
 		]
 	},
@@ -1727,7 +1727,7 @@ export const chains = [
 				"name": "etherscan",
 				"url": "https://kovan-optimistic.etherscan.io",
 				"standard": "EIP3091",
-				"color": "#0784c3"
+				"color": "#ff0620"
 			}
 		],
 		"infoURL": "https://optimism.io",

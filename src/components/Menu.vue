@@ -40,7 +40,7 @@
     >
       <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
         <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop @contextmenu.prevent="onContextMenu($event, index, item.name)">
+          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop @contextmenu.prevent="onContextMenu($event, index, item.name, item)">
             <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
             <img v-else src="@/assets/images/folder.svg" alt="">
             <span>{{item.name}}<span>({{item.son.length}})</span></span>
@@ -252,7 +252,7 @@ export default {
       })
     }
 
-    const onContextMenu = (e, index, name) => {
+    const onContextMenu = (e, index, name, item) => {
       e.preventDefault();
       if (isFilter.value == 'filter' || searchValue.value) {
         return
@@ -310,14 +310,16 @@ export default {
             }
           }),
           onClick: () => {
-            dialog.warning({
+            let d = dialog.warning({
               title: 'warning',
-              content: 'This operation will permanently delete the contract information, do you want to continue?',
+              content: `This operation will permanently delete the folder${item.son.length ? `(with ${item.son.length} contracts)` : ''} information, do you want to continue?`,
               positiveText: 'Ok',
               negativeText: 'Cancel',
-              onPositiveClick: () => {
-                delFolder(index)
-              }
+              action: () => (<div className="flex-center-center" style="font-size:12px;">
+                <div className="flex-center-center" style="cursor: pointer;" onClick={() => d.destroy()}>Cancel</div>
+                <div className="flex-center-center" style="background:#f2c97d;height:28px;padding: 0 12px;box-sizing: border-box;border-radius:4px;margin-left:12px;color:#000;cursor: pointer;" onClick={() => {delFolder(index, 'folder');d.destroy()}}>Keep contracts</div>
+                <div className="flex-center-center" style="background:#e88080;height:28px;padding: 0 12px;box-sizing: border-box;border-radius:4px;margin-left:12px;cursor: pointer;" onClick={() => {delFolder(index);d.destroy()}}>Delete with contracts</div>
+              </div>),
             })
           }
         }]
@@ -393,24 +395,31 @@ export default {
         })
       }
     }
-    const delFolder = async (index) => {
+    const delFolder = async (index, type) => {
       let menuList = await getLs('menuList') || []
       let results = await getLs('results') || {}
-      let folderTtem = menuList[index]
-      folderTtem.son.forEach(e => {
-        if (e.id == activeId.value) {
-          setLs('activeId', '').then(() => {
-            store.commit('setActiveId', '')
-          })
-        }
-        if (results[e.id]) {
-          delete results[e.id]
-        }
-      })
-      setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
-        console.log(res)
-        store.commit("setResults", res)
-      })
+      let contractList = await getLs('contractList') || []
+      if (type == 'folder') {
+        let folderTtem = menuList[index]
+        contractList.push(...folderTtem.son)
+        setContractList(contractList)
+      } else {
+        let folderTtem = menuList[index]
+        folderTtem.son.forEach(e => {
+          if (e.id == activeId.value) {
+            setLs('activeId', '').then(() => {
+              store.commit('setActiveId', '')
+            })
+          }
+          if (results[e.id]) {
+            delete results[e.id]
+          }
+        })
+        setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
+          console.log(res)
+          store.commit("setResults", res)
+        })
+      }
       menuList.splice(index, 1)
       setMenuList(menuList)
     }
