@@ -77,22 +77,27 @@
                     <img src="@/assets/images/conversion.svg" alt="">
                   </div>
                 </div>
-                <n-input
-                  v-if="inputItem.type == 'bytes32[]'"
-                  v-model:value="parameData[inputItem.name]"
-                  type="textarea"
-                  size="small"
-                  :autosize="{
-                    minRows: 3,
-                    maxRows: 5
-                  }" 
-                  class="form-input form-textarea"
-                />
-                <n-input v-else class="form-input" v-model:value="parameData[inputItem.name]" />
-                <div v-if="inputItem.type == 'uint256' && parameData[inputItem.name] && (parameData[inputItem.name] % 1 != 0)" class="wei-btns flex-center">
-                  <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 18)">ToWei(10^18)</div>
-                  <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 9)">ToGwei(10^9)</div>
-                  <p>invalid number, please use digital conversion </p>
+                <div v-if="inputItem.type == 'tuple'">
+                  <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
+                </div>
+                <div v-else>
+                  <n-input
+                    v-if="inputItem.type == 'bytes32[]'"
+                    v-model:value="parameData[inputItem.name]"
+                    type="textarea"
+                    size="small"
+                    :autosize="{
+                      minRows: 3,
+                      maxRows: 5
+                    }" 
+                    class="form-input form-textarea"
+                  />
+                  <n-input v-else class="form-input" v-model:value="parameData[inputItem.name]" />
+                  <div v-if="inputItem.type == 'uint256' && parameData[inputItem.name] && (parameData[inputItem.name] % 1 != 0)" class="wei-btns flex-center">
+                    <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 18)">ToWei(10^18)</div>
+                    <div class="wei-btn flex-center-center" @click="toWei('parameData', inputItem.name, 9)">ToGwei(10^9)</div>
+                    <p>invalid number, please use digital conversion </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -329,8 +334,9 @@ import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
 import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
+import ParameItem from '@/components/ParameItem.vue'
 export default {
-  components: { ContractHd, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
+  components: { ParameItem, ContractHd, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
   setup() {
     let toWeiData = ''
     let toWeiType = ''
@@ -429,7 +435,22 @@ export default {
       showPopover.value = false
     }
 
+    const setParameData = (e) => {
+      let data
+      if (e.type == 'tuple') {
+        data = {}
+        let arr = e.components
+        arr.forEach(el => {
+          data[el.name] = setParameData(el)
+        })
+      } else {
+        data = ''
+      }
+      return data
+    }
+
     const updateAbi = (item, type) => {
+      console.log(item)
       mainContent.value.scrollTop = 0
       if (item.otherName) {
         item.tempName = JSON.parse(JSON.stringify(item.otherName))
@@ -446,7 +467,7 @@ export default {
       }
       let data = {}
       abiItem.value.inputs.forEach(e => {
-        data[e.name] = ''
+        data[e.name] = setParameData(e)
       })
       console.log(data)
       parameData.value = data
@@ -467,6 +488,14 @@ export default {
       abiType.value = ''
       parameData.value = {}
       showSpin.value = false
+    }
+
+    const inputParameData = (val, v) => {
+      let key = Object.keys(val)[0]
+      if (!parameData.value[v]) {
+        parameData.value[v] = {}
+      }
+      parameData.value[v][key] = val[key]
     }
 
     const runFunction = async (abiItem) => {
@@ -502,6 +531,7 @@ export default {
             }
             param.push(item)
           }
+          console.log(param)
           let resultData = null
           let tx = null
           let resultState = ''
@@ -754,6 +784,7 @@ export default {
       console.log(activeId.value)
       if (activeId.value) {
         getContarctData()
+        init()
       }
     }, {immediate: true})
 
@@ -823,7 +854,8 @@ export default {
       showConvert,
       clickConversion,
       showFun,
-      getFunHeight
+      getFunHeight,
+      inputParameData
     }
   }
 }
@@ -1254,7 +1286,7 @@ export default {
           margin-top: 18px;
           font-size: 14px;
           line-height: 18px;
-          text-transform: capitalize;
+          // text-transform: capitalize;
           color: #FFFFFF;
           .result-section-content {
             margin-top: 12px;
@@ -1285,7 +1317,7 @@ export default {
                 border-bottom: 1px solid #2C2D34;
                 font-size: 12px;
                 line-height: 15px;
-                text-transform: capitalize;
+                // text-transform: capitalize;
                 color: #FFFFFF;
                 &:last-child {
                   border-bottom: none;
