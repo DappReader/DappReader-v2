@@ -13,7 +13,7 @@
         <n-input v-model:value="floderName" class="form-input" />
       </n-form-item>
       <div class="form-btns flex-center-center">
-        <div :class="['btn-item', floderName ? 'btn-item-activated' : '', 'flex-center-center']" @click="create">Create</div>
+        <div :class="['btn-item', floderName ? 'btn-item-activated' : '', 'flex-center-center']" @click="create">Save</div>
       </div>
     </div>
   </n-modal>

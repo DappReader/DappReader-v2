@@ -94,7 +94,7 @@
         />
       </n-form-item>
       <div class="form-btns flex-center-center">
-        <div :class="['btn-item', (!formData.name || !formData.chainId || !formData.address || !formData.abi) ? '' : 'btn-item-activated', 'flex-center-center']" @click="create">Create</div>
+        <div :class="['btn-item', (!formData.name || !formData.chainId || !formData.address || !formData.abi) ? '' : 'btn-item-activated', 'flex-center-center']" @click="create">{{formData.id ? 'Save' : 'Create'}}</div>
       </div>
     </div>
     <AddChainModal ref="addChainModal" @add="addChain" />

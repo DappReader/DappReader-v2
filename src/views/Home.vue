@@ -1,5 +1,5 @@
 <template>
-  <div class="home flex-start" @click="hiddenRightMenu">
+  <div class="home flex-start">
     <Menu ref="menuDom" />
     <Main />
     <GetContractModal ref="getContractModal" @confirm="confirm" />
@@ -41,9 +41,6 @@ export default {
     const address = computed(() => {
       return store.state.address
     })
-    const hiddenRightMenu = () => {
-      menuDom.value.hiddenRightMenu()
-    }
     const getContractFun = (password='') => {
       let token = route.params.token
       getContract({token, password}).then(res => {
@@ -120,7 +117,6 @@ export default {
     })
     return {
       menuDom,
-      hiddenRightMenu,
       getContractModal,
       confirm
     }

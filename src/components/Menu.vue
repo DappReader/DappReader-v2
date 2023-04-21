@@ -39,37 +39,16 @@
       group-name="cols"
     >
       <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
-        <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @contextmenu.prevent="folderContextmenu(index)" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop>
+        <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @mouseover="mouseover(index)" @mouseout="mouseout">
+          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop @contextmenu.prevent="onContextMenu($event, index, item.name)">
             <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
             <img v-else src="@/assets/images/folder.svg" alt="">
             <span>{{item.name}}<span>({{item.son.length}})</span></span>
             <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
-            <div v-if="folderContextmenuIndex == index && isFilter == 'none' && !searchValue" class="right-menu">
-              <div class="right-menu-item flex-center" @click="folderStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-              <div class="right-menu-item flex-center" @click.stop="showCreateContract(index)"><img src="@/assets/images/add.svg" alt="">Add Contract</div>
-              <div class="right-menu-item flex-center" @click.stop="showRename(index, item.name)"><img src="@/assets/images/edit.svg" alt="">Rename</div>
-              <n-popconfirm :show-icon="false"
-                class="right-menu-popconfirm"
-                negative-text="Cancel"
-                positive-text="Ok"
-                @positive-click="delFolder(index)"
-              >
-                <template #trigger>
-                  <div class="right-menu-item flex-center" @click.stop>
-                    <img src="@/assets/images/del.svg" alt="">Delete Folder
-                  </div>
-                </template>
-                <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
-              </n-popconfirm>
-              <!-- <div class="right-menu-item flex-center" @click="delFolder(index)">
-                <img src="@/assets/images/del.svg" alt="">Delete Folder
-              </div> -->
-            </div>
           </div>
           <Container class="folder-file" :style="{zIndex: isMousedown ? '9' : '1', maxHeight: item.open ? '': '0'}" group-name="col-items" @drop="(e) => onDrop(index, e)">
-            <Draggable class="file-item-w" v-for="(file, i) in item.son" :key="file.id" @contextmenu.prevent.stop="fileContextmenu(file.id)">
-              <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)">
+            <Draggable class="file-item-w" v-for="(file, i) in item.son" :key="file.id">
+              <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)" @contextmenu.prevent="onFileContextMenu($event, file, i, index)">
                 <svg width="16" height="18" class="file-arrow" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 0V5.2C9 6.88016 9 7.72024 9.32698 8.36197C9.6146 8.92646 10.0735 9.3854 10.638 9.67302C11.2798 10 12.1198 10 13.8 10H16" stroke-width="1.5"/>
                 </svg>
@@ -79,49 +58,19 @@
                 </svg>
                 <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
               </div>
-              <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
-                <div class="right-menu-item flex-center" @click="fileStickyTop(i, index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-                <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, i, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
-                <n-popconfirm :show-icon="false"
-                  class="right-menu-popconfirm"
-                  negative-text="Cancel"
-                  positive-text="Ok"
-                  @positive-click="delFile(i, index)"
-                >
-                  <template #trigger>
-                    <div class="right-menu-item flex-center" @click.stop><img src="@/assets/images/del.svg" alt="">Delete</div>
-                  </template>
-                  <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
-                </n-popconfirm>
-              </div>
             </Draggable>
           </Container>
         </div>
       </div>
       <div class="file-list" @mousedown="mousedown" @mouseup="mouseup">
         <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
-          <Draggable v-for="(file, index) in getContractList()" :key="file.id" class="file-item-w list-group-item" @contextmenu.prevent.stop="fileContextmenu(file.id)">
-            <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)">
+          <Draggable v-for="(file, index) in getContractList()" :key="file.id" class="file-item-w list-group-item" >
+            <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)" @contextmenu.prevent="onFileContextMenu($event, file, index)">
               <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
-            </div>
-            <div class="right-menu" v-if="file.id == fileContextmenuId && isFilter == 'none' && !searchValue">
-              <div class="right-menu-item flex-center" @click="fileStickyTop(index)"><img src="@/assets/images/top.svg" alt="">Sticky Top</div>
-              <div class="right-menu-item flex-center" v-if="!file.isImport" @click="edit(file, index)"><img src="@/assets/images/edit.svg" alt="">Edit</div>
-              <n-popconfirm :show-icon="false"
-                class="right-menu-popconfirm"
-                negative-text="Cancel"
-                positive-text="Ok"
-                @positive-click="delFile(index)"
-              >
-                <template #trigger>
-                  <div class="right-menu-item flex-center" @click.stop><img src="@/assets/images/del.svg" alt="">Delete</div>
-                </template>
-                <p class="popconfirm-msg">This operation will permanently delete the contract information, do you want to continue?</p>
-              </n-popconfirm>
             </div>
           </Draggable>
         </Container>
@@ -156,13 +105,20 @@
 <script>
 import AddFolder from '@/components/AddFolder.vue'
 import CreateContract from '@/components/CreateContract.vue'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, h } from 'vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
 import { Container, Draggable } from "vue3-smooth-dnd"
 import { chains, chainNickNames } from '../libs/chains'
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+import ContextMenu from '@imengyu/vue3-context-menu'
+import { useDialog } from 'naive-ui'
+import topIcon from '../assets/images/top.svg'
+import addIcon from '../assets/images/add.svg'
+import editIcon from '../assets/images/edit.svg'
+import delIcon from '../assets/images/del.svg'
 export default {
   name: '',
   components: {
@@ -177,15 +133,15 @@ export default {
     let dropIndex = -2
     let dropAddIndex = -2
     const store = useStore()
+    const dialog = useDialog()
     const isFilter = ref(localStorage.getItem('isFilter') || 'none')
     const isShowName = ref(localStorage.getItem('isShowName') || 'show')
     const addFolder = ref(null)
     const isMousedown = ref(false)
     const createContract = ref(null)
-    const fileContextmenuId = ref('')
+    const mouseMenuEl = ref(null)
     const searchValue = ref('')
     const openName = ref([])
-    const folderContextmenuIndex = ref(-1)
     const openFolderIndex = ref(-1)
     const activeId = computed(() => {
       return store.state.activeId
@@ -224,7 +180,6 @@ export default {
         createContract.value.setFolderIndex(index)
       }
       createContract.value.show()
-      hiddenRightMenu()
     }
     const showRename = ((index, name) => {
       if (index >= 0) {
@@ -232,17 +187,141 @@ export default {
         addFolder.value.floderName = name
       }
       addFolder.value.show()
-      hiddenRightMenu()
     })
-    const folderContextmenu = (index) => {
-      folderContextmenuIndex.value = index
+
+    const onFileContextMenu = (e, item, i, index) => {
+      e.preventDefault();
+      let list = [{
+        label: "Delete",
+        icon: h('img', {
+          src: delIcon,
+          style: {
+            width: '18px',
+            height: '18px',
+            marginRight: '8px'
+          }
+        }),
+        onClick: () => {
+          dialog.warning({
+            title: 'warning',
+            content: 'This operation will permanently delete the contract information, do you want to continue?',
+            positiveText: 'Ok',
+            negativeText: 'Cancel',
+            onPositiveClick: () => {
+              delFile(item)
+            }
+          })
+        }
+      }]
+      if (!item.isImport) {
+        list.unshift({
+          label: "Edit", 
+          icon: h('img', {
+            src: addIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            edit(item)
+          }
+        })
+      }
+      if (isFilter.value != 'filter' && !searchValue.value) {
+        list.unshift({ 
+          label: "Sticky Top", 
+          icon: h('img', {
+            src: topIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            fileStickyTop(i, index)
+          }
+        })
+      }
+      ContextMenu.showContextMenu({
+        x: e.x,
+        y: e.y,
+        items: list
+      })
     }
-    const hiddenRightMenu = () => {
-      folderContextmenuIndex.value = -1
-      fileContextmenuId.value = ''
-    }
-    const fileContextmenu = (id) => {
-      fileContextmenuId.value = id
+
+    const onContextMenu = (e, index, name) => {
+      e.preventDefault();
+      if (isFilter.value == 'filter' || searchValue.value) {
+        return
+      }
+      ContextMenu.showContextMenu({
+        x: e.x,
+        y: e.y,
+        items: [{ 
+          label: "Sticky Top", 
+          icon: h('img', {
+            src: topIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            folderStickyTop(index)
+          }
+        }, { 
+          label: "Add Contract", 
+          icon: h('img', {
+            src: addIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            showCreateContract(index)
+          }
+        }, {
+          label: "Rename",
+          icon: h('img', {
+            src: editIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            showRename(index, name)
+          }
+        }, {
+          label: "Delete Folder",
+          icon: h('img', {
+            src: delIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '8px'
+            }
+          }),
+          onClick: () => {
+            dialog.warning({
+              title: 'warning',
+              content: 'This operation will permanently delete the contract information, do you want to continue?',
+              positiveText: 'Ok',
+              negativeText: 'Cancel',
+              onPositiveClick: () => {
+                delFolder(index)
+              }
+            })
+          }
+        }]
+      })
     }
     const setMenuList = (menuList) => {
       setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
@@ -276,35 +355,31 @@ export default {
         setContractList(contractList)
       }
     }
-    const edit = (contract, index, folderIndex) => {
-      console.log(contract)
+    const edit = (contract) => {
       let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1, userList } = contract
       let chainId = chain.chainId
       abi = JSON.stringify(abi)
       let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber, userList}
       createContract.value.formData = formData
-      if (folderIndex >= 0) {
-        createContract.value.setFolderIndex(folderIndex)
-      }
       createContract.value.show()
     }
-    const delFile = async (index, folderIndex) => {
-      let id
+    const delFile = async ({id}) => {
+      if (!id) return
       let results = await getLs('results') || {}
+      let menuList = await getLs('menuList') || []
+      let contractList = await getLs('contractList') || []
+      let folderIndex = menuList.findIndex(e => e.son.findIndex(e => e.id == id) >= 0)
       if (folderIndex >= 0) {
-        let menuList = await getLs('menuList') || []
         let folderTtem = menuList[folderIndex]
-        id = folderTtem.son[index].id
+        let index = folderTtem.son.findIndex(e => e.id == id)
         folderTtem.son.splice(index, 1)
         menuList[folderIndex] = folderTtem
         openFolderIndex.value = folderIndex
         setMenuList(menuList)
       } else {
-        let contractList = await getLs('contractList') || []
-        id = contractList[index].id
+        let index = contractList.findIndex(e => e.id == id)
         contractList.splice(index, 1)
         setContractList(contractList)
-        hiddenRightMenu()
       }
       if (id == activeId.value) {
         setLs('activeId', '').then(() => {
@@ -314,7 +389,6 @@ export default {
       if (results[id]) {
         delete results[id]
         setLs('results', JSON.parse(JSON.stringify(results))).then(res => {
-          console.log(res)
           store.commit("setResults", res)
         })
       }
@@ -339,7 +413,6 @@ export default {
       })
       menuList.splice(index, 1)
       setMenuList(menuList)
-      hiddenRightMenu()
     }
     const openFile = async (file) => {
       setLs('activeId', file.id).then(rep => {
@@ -417,7 +490,9 @@ export default {
         return []
       }
       let list = menuList.value
-      console.log(list)
+      list.forEach(e => {
+        e.open = openName.value.indexOf(e.name) > -1 ? true : false
+      })
       if (isFilter.value == 'filter') {
         let arr = []
         list.forEach(e => {
@@ -511,6 +586,7 @@ export default {
       }
     })
     return {
+      mouseMenuEl,
       isShowName,
       isMousedown,
       searchValue,
@@ -521,13 +597,8 @@ export default {
       menuList,
       addFolder,
       createContract,
-      folderContextmenuIndex,
-      fileContextmenuId,
       contractList,
       showAddFolder,
-      folderContextmenu,
-      hiddenRightMenu,
-      fileContextmenu,
       showCreateContract,
       showRename,
       folderStickyTop,
@@ -549,7 +620,9 @@ export default {
       setIsFilter,
       openFolder,
       getChainName,
-      setIsShowName
+      setIsShowName,
+      onContextMenu,
+      onFileContextMenu
     }
   }
 }
@@ -832,41 +905,6 @@ export default {
         // }
       }
     }
-    .right-menu {
-      position: absolute;
-      width: 198px;
-      background: rgba(27, 26, 34, 0.9);
-      border: 1px solid rgba(133, 141, 153, 0.1);
-      box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
-      backdrop-filter: blur(10px);
-      border-radius: 6px;
-      top: 38px;
-      left: 20px;
-      right: 0;
-      padding: 4px 0;
-      box-sizing: border-box;
-      z-index: 999;
-      .right-menu-item {
-        cursor: pointer;
-        width: 192px;
-        height: 30px;
-        margin: auto;
-        padding: 12px;
-        box-sizing: border-box;
-        font-family: 'Montserrat-Medium';
-        font-size: 12px;
-        line-height: 16px;
-        text-transform: capitalize;
-        color: #FFFFFF;
-        &:hover {
-          background: rgba(133, 141, 153, 0.15);
-          border-radius: 4px;
-        }
-        img {
-          margin-right: 8px;
-        }
-      }
-    }
   }
 }
 .popconfirm-msg {
@@ -935,4 +973,37 @@ export default {
 .smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
   overflow: visible !important;
 }
+.mx-context-menu {
+  width: 198px;
+  background: rgba(27, 26, 34, 0.9);
+  border: 1px solid rgba(133, 141, 153, 0.1);
+  box-shadow: 0px 12px 30px rgba(10, 10, 12, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.mx-context-menu-item {
+  cursor: pointer;
+  width: 192px;
+  height: 30px;
+  margin: auto;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font-family: 'Montserrat-Medium';
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: capitalize;
+  color: #FFFFFF;
+}
+.mx-context-menu-item:hover {
+  background: rgba(133, 141, 153, 0.1);
+  border-radius: 4px;
+  color: #FFFFFF;
+}
+
+/* .mx-context-menu-item .mx-icon-placeholder.preserve-width {
+  display: none;
+} */
+
+
 </style>
