@@ -274,8 +274,26 @@
                   </div>
                 </div>
                 <div v-else class="result-section-content">
-                  <div class="result-section-content-hd flex-center">Result</div>
-                  <JsonViewer :value="(item && item.content) || ''" preview-mode boxed sort theme="dark" />
+                  <div class="result-section-content">
+                    <div class="result-section-content-hd flex-center">Result
+                      <div v-if="item.content.constructor === Object">
+                        <img v-if="!item.isShowJson" src="@/assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
+                        <img v-else src="@/assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
+                      </div>
+                      
+                    </div>
+                    <div v-if="!item.isShowJson && item.content.constructor === Object" class="result-section-content-main">
+                      <div class="result-params">
+                        <div class="result-param flex-center" v-for="(val, key, index) in item.content" :key="index">
+                          <div class="result-param-name">{{key}}</div>
+                          <div class="result-param-value">{{val}}</div>
+                          <img src="@/assets/images/copy.svg" alt="" @click="copy(val)">
+                        </div>
+                      </div>
+                    </div>
+                    <JsonViewer v-else :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" expanded />
+                  </div>
+                  <!-- <JsonViewer :value="(item && item.content) || ''" preview-mode boxed sort theme="dark" /> -->
                 </div>
               </div>
               <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
@@ -498,6 +516,25 @@ export default {
       parameData.value[v][key] = val[key]
     }
 
+    const setOutpuData = (e, item) => {
+      let data = item
+      if (e.type == 'tuple') {
+        data = {}
+        let arr = e.components
+        arr.forEach((el,i) => {
+          let it = item[i]
+          let name = el.name || i
+          data[name] = setOutpuData(el, it)
+        })
+      } else {
+        console.log(e.type, data)
+        if (e.type == 'uint256') {
+          data = ethers.utils.formatUnits(item, 0)
+        }
+      }
+      return data
+    }
+
     const runFunction = async (abiItem) => {
       running = false
       let contract = contractData.value.content
@@ -531,7 +568,6 @@ export default {
             }
             param.push(item)
           }
-          console.log(param)
           let resultData = null
           let tx = null
           let resultState = ''
@@ -543,37 +579,26 @@ export default {
             resultState = 'error'
             tx = error
           }
-          console.log(tx, abiItem)
-          if (abiItem.stateMutability == 'view') {
-            if (tx._isBigNumber) {
-              tx = ethers.utils.formatUnits(tx, 0)
-            }
-            if (Array.isArray(tx)) {
-              let td = []
-              tx.forEach(el => {
-                if (el._isBigNumber) {
-                  let num = ethers.utils.formatUnits(el, 0)
-                  td.push(num)
-                } else {
-                  if (Array.isArray(el)) {
-                    let t = []
-                    el.forEach(e => {
-                      if (e._isBigNumber) {
-                        let num = ethers.utils.formatUnits(e, 0)
-                        t.push(num)
-                      } else {
-                        t.push(e)
-                      }
-                    })
-                    el = JSON.parse(JSON.stringify(t))
-                  }
-                  td.push(el)
-                }
+          if (abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') {
+            let res
+            let outputs = abiItem.outputs
+            if (outputs.length == 1) {
+              if (outputs[0].type == 'uint256') {
+                tx = ethers.utils.formatUnits(tx, 0)
+              }
+              res = tx
+            } else {
+              res = {}
+              outputs.forEach((e, i) => {
+                console.log(e, i)
+                let name = e.name || i
+                let item = tx[i]
+                item = setOutpuData(e, item)
+                res[name] = item
               })
-              tx = JSON.parse(JSON.stringify(td))
             }
+            tx = res
           }
-          console.log(tx)
           resultData = {
             content: tx,
             state: resultState,
