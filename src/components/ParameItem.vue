@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="tuple-input">
     <div v-if="inputItem.type == 'tuple'" class="wrap">
       <p class="item-name">{{inputItem.name}}</p>
       <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
     </div>
-    <div v-else>
+    <div v-else class="tuple-item">
       <n-input
         v-if="inputItem.type == 'bytes32[]'"
         v-model:value="parameData[inputItem.name]"
@@ -17,12 +17,12 @@
         class="form-input form-textarea"
       >
         <template #prefix>
-          <p class="prefix">{{inputItem.name}}({{inputItem.type}}): </p>
+          <p class="prefix">{{inputItem.name}}({{inputItem.type}})</p>
         </template>
       </n-input>
       <n-input v-else class="form-input" v-model:value="parameData[inputItem.name]" >
         <template #prefix>
-          <p class="prefix">{{inputItem.name}}({{inputItem.type}}): </p>
+          <p class="prefix">{{inputItem.name}}({{inputItem.type}})</p>
         </template>
       </n-input>
       <div v-if="inputItem.type == 'uint256' && parameData[inputItem.name] && (parameData[inputItem.name] % 1 != 0)" class="wei-btns flex-center">
@@ -93,6 +93,10 @@ export default {
 .prefix {
   font-size: 14px;
   color: #808080;
+  background: rgba(133, 141, 153, 0.15);
+  border-radius: 10px 0 0 10px;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 .wei-btns {
   margin-top: 12px;
@@ -118,4 +122,12 @@ export default {
     line-height: 15px;
   }
 }
+.tuple-item {
+  margin-bottom: 8px;
+}
+</style>
+<style lang="scss">
+  .tuple-input .n-input-wrapper {
+    padding-left: 0 !important;
+  }
 </style>
