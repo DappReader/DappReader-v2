@@ -18,10 +18,11 @@
           placeholder="Please select network"
           v-model:value="formData.chainId"
           filterable
-          :options="defaultChains"
+          :options="selectOptions"
           @update:value="handleUpdateValue"
           label-field="name"
           value-field="chainId"
+          @search="handleSearch"
         >
           <template #action>
             <div class="add-btn flex-center-center" @click="showAdd">
@@ -112,10 +113,12 @@ export default {
   name: 'CreateContract',
   components: {AddChainModal},
   setup() {
+    let defaultChains = []
+
     const store = useStore()
     const message = useMessage()
     const formData = ref({})
-    const defaultChains = ref([])
+    const selectOptions = ref([])
     const addChainModal = ref(null)
     const showModal = ref(false)
     const showAbi = ref(false)
@@ -211,8 +214,28 @@ export default {
         formData.value.abi = fileString
       }
     }
-    const handleUpdateValue = () => {
+    const handleSearch = (query) => {
+      if (query) {
+        console.log(query)
+        selectOptions.value = []
+        selectOptions.value = chains.filter(e => e.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
+      } else {
+        selectOptions.value = defaultChains
+      }
+      
+    }
+    const handleUpdateValue = async () => {
       console.log(formData.value)
+      let chainId = formData.value.chainId
+      let isExist = defaultChains.filter(e => e.chainId == chainId).length > 0
+      if (!isExist) {
+        defaultChains.push(chains.filter(e => e.chainId == chainId)[0])
+        selectOptions.value = defaultChains
+        await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChains))).then(res => {
+          console.log(res)
+          store.commit('setDefaultChains', res)
+        })
+      }
       if (formData.value.address) {
         importAbiFromEtherscan()
       }
@@ -270,23 +293,24 @@ export default {
     }
     const addChain = async (e) => {
       console.log(e)
-      defaultChains.value.push(e)
+      selectOptions.value.push(e)
       addChainModal.value.afterLeave()
       formData.value.chainId = e.chainId
     }
     onBeforeMount(async () => {
       let dc = await getLs('defaultChain') || []
       if (!dc.length) {
-        defaultChains.value = defaultChain
+        selectOptions.value = defaultChain
         await setLs('defaultChain', JSON.parse(JSON.stringify(defaultChain)))
       } else {
-        defaultChains.value = dc
+        selectOptions.value = dc
       }
+      defaultChains = selectOptions.value
     })
     return {
       addChainModal,
       isDisabled,
-      defaultChains,
+      selectOptions,
       chains,
       showModal,
       formData,
@@ -302,7 +326,8 @@ export default {
       setFolderIndex,
       bindInput,
       addChain,
-      showAdd
+      showAdd,
+      handleSearch
     }
   }
 }
