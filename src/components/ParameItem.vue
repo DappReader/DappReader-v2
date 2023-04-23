@@ -70,7 +70,23 @@ export default {
       }
     }, {immediate: true})
     watch(() => parameData.value, (val) => {
-      emit('inputParameData', val)
+      let type = props.inputItem.type
+      let item = JSON.parse(JSON.stringify(val[props.inputItem.name]))
+      if (type.indexOf("[]") > -1) {
+        item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
+        item = item.split(",")
+        item = item.filter((e) => e && e.trim())
+        try {
+          item = item.map((e) => ethers.utils.hexlify(e))
+        } catch (error) {
+          console.log(error)
+        }
+      } else if (type == 'bool') {
+        item = item == 'true' ? true : false
+      }
+      let obj = {}
+      obj[props.inputItem.name] = item
+      emit('inputParameData', obj)
     }, { deep: true })
     return {
       parameData,

@@ -527,9 +527,11 @@ export default {
           data[name] = setOutpuData(el, it)
         })
       } else {
-        console.log(e.type, data)
+        console.log('530', e.type, data, item)
         if (e.type == 'uint256') {
           data = ethers.utils.formatUnits(item, 0)
+        } else if (e.type == 'bool') {
+          data = item ? 'true' : 'false'
         }
       }
       return data
@@ -565,6 +567,8 @@ export default {
               } catch (error) {
                 console.log(error)
               }
+            } else if (type == 'bool') {
+              item = item == 'true' ? true : false
             }
             param.push(item)
           }
@@ -585,6 +589,9 @@ export default {
             if (outputs.length == 1) {
               if (outputs[0].type == 'uint256') {
                 tx = ethers.utils.formatUnits(tx, 0)
+              } else if (outputs[0].type == 'bool') {
+                console.log(tx)
+                tx = tx ? 'true' : 'false'
               }
               res = tx
             } else {
