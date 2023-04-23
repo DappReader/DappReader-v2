@@ -441,7 +441,7 @@ export default {
         console.log(screenwidth)
         if (screenwidth < 1680) {
           isShowHd.value = true
-          contractRef.value.style.height = 'calc(100% - 180px)'
+          contractRef.value.style.height = 'calc(100% - 124px)'
         } else {
           isShowHd.value = false
           contractRef.value.style.height = 'calc(100% - 2px)'
@@ -842,7 +842,7 @@ export default {
       let screenwidth = document.body.clientWidth
       if (screenwidth < 1680) {
         isShowHd.value = true
-        contractRef.value.style.height = 'calc(100% - 150px)'
+        contractRef.value.style.height = 'calc(100% - 124px)'
       } else {
         isShowHd.value = false
         contractRef.value.style.height = 'calc(100% - 5px)'

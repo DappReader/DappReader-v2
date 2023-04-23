@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import { setLs } from '@/service/service'
 export default createStore({
   state: {
     provider: null,
@@ -27,13 +28,19 @@ export default createStore({
       state.balance = value
     },
     setMenuList(state, value) {
-      state.menuList = value
+      setLs('menuList', value).then(() => {
+        state.menuList = value
+      })
     },
     setContractList(state, value) {
-      state.contractList = value
+      setLs('contractList', value).then(() => {
+        state.contractList = value
+      })
     },
     setActiveId(state, value) {
-      state.activeId = value
+      setLs('activeId', value).then(() => {
+        state.activeId = value
+      })
     },
     setUserInfo(state, value) {
       state.userInfo = value
