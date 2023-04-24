@@ -1,4 +1,5 @@
 import { chains } from './chains'
+import { extraRpcs } from './rpcs'
 export const walletSwitchChain = (chainId) => {
   chainId = '0x' + (+chainId).toString(16)
   return new Promise((resolve, reject) => {
@@ -16,11 +17,12 @@ export const walletSwitchChain = (chainId) => {
           if (e.code == 4902) {
             let chain = chains.filter(e => e.chainId == chainId)
             chain = chain[0]
+            let rpc = extraRpcs[chain.chainId].rpcs
             console.log({
               chainId: '0x' + (+chain.chainId).toString(16), // 目标链ID
               chainName: chain.name,
               nativeCurrency: chain.nativeCurrency,
-              rpcUrls: chain.rpc, // 节点
+              rpcUrls: rpc, // 节点
               blockExplorerUrls: [chain.infoURL]
             })
             window.ethereum.request({
@@ -31,7 +33,7 @@ export const walletSwitchChain = (chainId) => {
                 chainId: '0x' + (+chain.chainId).toString(16), // 目标链ID
                 chainName: chain.name,
                 nativeCurrency: chain.nativeCurrency,
-                rpcUrls: chain.rpc, // 节点
+                rpcUrls: rpc, // 节点
               }]
             }).then(() => {
               resolve()

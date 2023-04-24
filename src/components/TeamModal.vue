@@ -11,7 +11,7 @@
   >
     <n-spin :show="loading">
       <div class="modal-content">
-        <div style="padding: 0 20px">
+        <div>
           <p class="sub-title">Add team members</p>
           <SelectSearch ref="selectSearch" :isSearching="isSearching" :list="searchList" @add="add" @search="search" @click.stop />
           <p class="sub-title" style="margin-top: 20px">Team members can be managed here（{{userList.length}}）</p>
