@@ -1,60 +1,90 @@
 # DappReader
 
 
-## What is DappReader?
 
-![cover](https://github.com/DappReader/DappReader-v2/blob/main/img/intro.png)
+![cover](./img/intro.png)
 
+### **DappReader是一款令我们自豪的产品,一款全面面向EVM生态开发者服务的免费工具**
 
-DappReader是一个方便开发者对已发布的智能合约集中化管理的可视化工具
-1. 快速检索与管理已发布的合约
-2. 无代码快速生成智能合约操作界面
-3. 对智能合约整体以及每一个函数单独进行注释
-4. 与开发者或非开发者快速分享开发中的智能合约(包含注释)
-5. 提供一系列类型转换工具,减少开发者工作量
+DappReader旨在为开发者提供已发布的多链合约的管理和快速前端-合约调试。这款工具将帮助开发者更加高效地开发、测试和部署合约项目，提升项目的开发质量和效率。
 
-DappReader is a GUI tool to facilitate developers to centralize the management of published smart contracts
-1. Quickly retrieve and manage contracts whitch was published
-2. Quickly generate smart contract interface without code
-3. Annotate smart contracts's each function individually or Write the doc for the whole contracts
-4. Quickly share the developing smart contracts (including annotations) with developers or non-developers
-5. Provide a series of type conversion tools to reduce the workload of developers
+> 你可以简单理解为对标web2时代的的 **Postman** !
 
+### 你是否也有相同烦恼:
 
-## Why you should usd DappReader?
+1. 使用Remix和Etherscan.io等工具处理已有合约或调试新合约非常不友好，并且需要频繁地更新和验证代码。
+2. 写过的合约很久后忘记在哪里,需要翻交互记录才能找到
 
-作为一个智能合约开发者,我在开发中遇到了不少痛点:
-刚开始我使用Remix来发布和临时调试智能合约,但是Remix的调试模块实在太简单了,已部署的合约甚至会在页面刷新后消失不见
-我也使用过Etherscan.io的Contract模块来临时调试合约,这的确奏效.但是每当我更新合约内容就需要重新发布和验证一次我的代码,过于麻烦
-后来我使用JavaScript和hardhat来调试我写好的合约和编写单元测试,这对大型项目来说非常奏效.可是这对一些临时使用的合约不友好(在开发的过程中往往有70%的时间用来写一些临时的工具类型合约)
-在和团队成员或者其他前端工程师一起远程协作时,需要在办公软件/email中传输abi等信息,十分繁琐
-给非开发者使用智能合约时,不得不写一个前端ui界面并部署到中心化服务器上,非常麻烦
+3. 与团队成员或其他前端工程师进行远程协作时也很繁琐。
+
+4. 另外，让非开发人员使用智能合约需要写复杂的UI并部署到中心化服务器上。
+
+### DappReader的主要功能:
+1. 多种方式方便添加与管理所有EVM链智能合约
+2. 快速检索与管理已发布的合约
+3. 无代码快速生成智能合约操作界面
+4. 对智能合约整体以及每一个函数单独进行注释
+5. 与开发者或非开发者快速分享开发中的智能合约(包含注释),方便合约工程师与前端工程师联调
+6. 提供完全免费的团队分享功能,非常适合小团队使用
+7. 提供一系列类型转换工具,减少开发者工作量
 
 
-它为开发者提供了以下便利:
-非常丝滑的UI界面,可以将智能合约及近百条调用内容在本地保存和随时运行(目前正在开发云端同步功能)
-在本地即可实例化智能合约,不用在开发阶段就大量发布和验证智能合约
-很适合调试临时智能合约,全程不需要写代码
-方便在开发者和非开发者之间快速分享智能合约,美观直观
 
+### DappReader当前的开发进度:
 
-Introduction to DappReader
+- [x] UI完全重新设计开发,使用而更加方便舒适
+- [x] 重新设计返回的展示方案
+- [x] 重新设计且开发动态侧边栏,让开发者更专注于合约本身
+- [x] 开发完整的团队分享功能
+- [ ] 加入更多AI功能
+- [ ] 基于多个智能合约流程执行功能
+- [ ] 基于外部变化自动执行合约的Trigger功能
+- [ ] 用户无代码生成简单前端页面并分享功能
+- [ ] 集成Remix完成一站式开发测试分享功能
+- [ ] 深度结合web2与web3,完成**web3os**
 
-As a smart contract developer, I have encountered many pain points in my development:
+### DappReader功能介绍:
+<img src="./img/invite.png" style="width:50%"/>
 
-At first I used Remix to publish and temporarily debug smart contracts, but Remix's debugging module was so simple and crude that deployed contracts would even disappear after a page refresh.
-I also used the Contract module of Etherscan.io to debug contracts , and it did worked. But every time I updated the contract, I had to republish and validate my code again, which was not cool
+快速与团队成员分享智能合约
 
-Then I used JavaScript and hardhat to debug my contracts and write unit tests, which worked very well for large projects. But this is not friendly to some temporary use of the contract (in process of development often 70% of the time used to write some temporary tool type contract)
-When collaborating with team members or other front-end engineers remotely, you need to transfer abi and other information in sms or in email,which was not cool.
-When using smart contracts for non-developers, Developer had to write a front-end UI interface and deploy it to a centralized server, which was not cool
+<img src="./img/file.png" style="width:50%"/>
 
-It provides developers with the following convenience:
-A very silky UI that allows smart contracts and hundreds of calls/writes/events to be saved locally and run at any time (we are currently working on a cloud sync feature)
-Everyone can instantiate smart contracts locally, so you don't have to publish and verify a lot of smart contracts in the development phase
-Easy to quickly share smart contracts between developers or non-developers, beautiful and intuitive
+快速管理个人与公司的多个链上智能合约
 
-![groupQrCode](https://github.com/DappReader/DappReader-v2/blob/main/img/group.png)
+### 加入我们的中文社区
+<img src="./img/group.png" style="width:50%"/>
+
+### Do you have the same frustrations as well:
+
+1. It is very unfriendly to use tools like Remix and Etherscan.io to handle existing contracts or debug new contracts, and the code needs to be updated and verified frequently.
+2. After a long time, you forget where you wrote the contract and need to search through communication records to find it.
+3. It is also cumbersome to collaborate with team members or other front-end engineers remotely.
+4. Additionally, making non-developers use smart contracts requires writing complex UI and deploying them to centralized servers.
+
+### Main Features of DappReader:
+
+1. Conveniently add and manage all EVM chain smart contracts in various ways.
+2. Quickly search and manage published contracts.
+3. Quickly generate smart contract operation interfaces without code.
+4. Add comments to the entire smart contract or each individual function.
+5. Quickly share developing smart contracts (with comments) with developers or non-developers, making it easy for contract engineers to collaborate with front-end engineers.
+6. Provides completely free team-sharing function that is ideal for small teams.
+7. Provides a series of type conversion tools to reduce the workload for developers.
+
+DappReader Development Progress:
+
+- [x] Completely redesigned UI for a more convenient and comfortable experience.
+- [x] Redesigned the display of returned data.
+- [x] Developed a dynamic sidebar to allow developers to focus more on the contract itself.
+- [x] Developed a complete team sharing feature.
+- [ ] Adding more AI functionality.
+- [ ] Functionality for executing multiple smart contract processes.
+- [ ] Trigger functionality for automatically executing contracts based on external changes.
+- [ ] Functionality for users to generate simple front-end pages without code and share them.
+- [ ] Integration with Remix to provide one-stop development, testing, and sharing features.
+- [ ] Deep integration of web2 and web3 to complete web3os.
+
 
 ## 快速安装
 
