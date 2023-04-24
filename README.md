@@ -54,7 +54,7 @@ A very silky UI that allows smart contracts and hundreds of calls/writes/events 
 Everyone can instantiate smart contracts locally, so you don't have to publish and verify a lot of smart contracts in the development phase
 Easy to quickly share smart contracts between developers or non-developers, beautiful and intuitive
 
-![groupQrCode](https://github.com/DappReader/DappReader-v2/blob/main/img/group.png)
+<div align=center>![groupQrCode](https://github.com/DappReader/DappReader-v2/blob/main/img/group.png)</div>
 
 ## 快速安装
 
