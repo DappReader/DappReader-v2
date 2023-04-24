@@ -40,9 +40,10 @@
         expand-on-click
         :pattern="searchValue"
         :show-irrelevant-nodes="false"
-        key-field="name"
+        key-field="id"
         label-field="name"
         :data="getMenuData()"
+        :selected-keys="[activeId]"
         :node-props="nodeProps"
         @update:expanded-keys="updatePrefixWithExpaned"
         @drop="handleDrop"
@@ -406,6 +407,11 @@ export default {
         if (isShowName.value == 'show') {
           let chain = e.chain
           let name = chain?.name || chain?.chainName || 'unknow'
+          try {
+            name = getChainName(chain)
+          } catch (error) {
+            console.error(error)
+          }
           e.suffix = () => h('div', {
             style: {
               display: 'flex',
@@ -419,11 +425,13 @@ export default {
               transform: 'scale(0.7)',
               background: getColor(chain.chainId),
               transformOrigin: '100% 50% 0',
+              whiteSpace: 'nowrap'
             }
           }, name)
         }
       })
       ml.forEach(e => {
+        e.id = e.name
         e.prefix = () => h('img', {
           src: expandedKeys.value.indexOf(e.name) >= 0 ? folderOpenIcon : folderIcon,
           style: {
@@ -454,6 +462,11 @@ export default {
           if (isShowName.value == 'show') {
             let chain = e.chain
             let name = chain?.name || chain?.chainName || 'unknow'
+            try {
+              name = getChainName(chain)
+            } catch (error) {
+              console.error(error)
+            }
             e.suffix = () => h('div', {
               style: {
                 display: 'flex',
@@ -466,7 +479,8 @@ export default {
                 borderRadius: '6px',
                 transform: 'scale(0.7)',
                 background: getColor(chain.chainId),
-                transformOrigin: '100% 50% 0'
+                transformOrigin: '100% 50% 0',
+                whiteSpace: 'nowrap'
               }
             }, name)
           }
@@ -498,6 +512,7 @@ export default {
             newArr[index].children.push(e)
           } else {
             let item = {
+              id: name,
               name,
               children: [e],
               prefix: () => h('img', {
@@ -1079,6 +1094,9 @@ export default {
   font-size: 12px;
   line-height: 18px;
   color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .menu .n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
