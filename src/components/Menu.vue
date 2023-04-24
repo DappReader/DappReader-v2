@@ -1,5 +1,5 @@
 <template>
-  <div class="content flex-start menu">
+  <div class="content flex-start menu" :style="{width: `${menuWidth}px`}">
     <div class="logo">
       <img src="@/assets/images/logo.svg" alt="">
     </div>
@@ -72,6 +72,7 @@
         </a>
       </div>
     </div>
+    <div class="line" @mousedown="handleStartResize"></div>
     <AddFolder ref="addFolder" />
     <CreateContract ref="createContract" />
   </div>
@@ -97,7 +98,18 @@ import folderIcon from '../assets/images/folder.svg'
 import fileIcon from '../assets/images/file.svg'
 import folderOpenIcon from '../assets/images/folder_open.svg'
 import arrowIcon from '../assets/images/arrow.svg'
-
+function throttle (fn, delay = 300) {
+  let timer = null
+  return function (...args) {
+    if(timer == null){
+      timer = setTimeout(() => {
+        fn.call(this, ...args)
+        clearTimeout(timer)
+        timer = null
+      }, delay);
+    }
+  }
+}
 export default {
   name: '',
   components: {
@@ -107,6 +119,7 @@ export default {
   setup() {
     const store = useStore()
     const dialog = useDialog()
+    const menuWidth = ref(248)
     const isFilter = ref(localStorage.getItem('isFilter') || 'none')
     const isShowName = ref(localStorage.getItem('isShowName') || 'show')
     const expandedKeys = ref([])
@@ -329,9 +342,7 @@ export default {
         store.commit("setContractList", contractList)
       }
       if (id == activeId.value) {
-        setLs('activeId', '').then(() => {
-          store.commit('setActiveId', '')
-        })
+        store.commit('setActiveId', '')
       }
       if (results[id]) {
         delete results[id]
@@ -352,9 +363,7 @@ export default {
         let folderTtem = menuList[index]
         folderTtem.son.forEach(e => {
           if (e.id == activeId.value) {
-            setLs('activeId', '').then(() => {
-              store.commit('setActiveId', '')
-            })
+            store.commit('setActiveId', '')
           }
           if (results[e.id]) {
             delete results[e.id]
@@ -553,6 +562,7 @@ export default {
       return {
         onClick() {
           let id = option.id
+          console.log(id, option.son)
           if (!option.son) {
             store.commit('setActiveId', id)
           }
@@ -681,7 +691,28 @@ export default {
         return
       }
     }
+    const handleResize = (e) => {
+      let endX = e.clientX
+      menuWidth.value = endX
+      if (menuWidth.value < 210) {
+        menuWidth.value = 210
+      } else if (menuWidth.value > 350) {
+        menuWidth.value = 350
+      }
+    }
+    const handleMousemove = throttle(handleResize, 100)
+    const handleStartResize = (e) => {
+      document.body.style.userSelect = 'none'
+      document.addEventListener('mousemove', handleMousemove)
+      document.addEventListener('mouseup', handleEndResize)
+    }
+    const handleEndResize = () => {
+      document.body.style.userSelect = 'auto'
+      document.removeEventListener('mousemove', handleMousemove)
+      document.removeEventListener('mouseup', handleEndResize)
+    }
     return {
+      menuWidth,
       expandedKeys,
       isShowName,
       searchValue,
@@ -704,7 +735,8 @@ export default {
       handleCheckedKeysChange,
       handleDrop,
       getColor,
-      getChainName
+      getChainName,
+      handleStartResize
     }
   }
 }
@@ -712,7 +744,6 @@ export default {
 
 <style scoped lang="scss">
 .content {
-  width: 248px;
   height: 100vh;
   background: #23242A;
   padding: 24px 0 10px 0;
@@ -720,6 +751,14 @@ export default {
   border-right: 1px solid rgba(133, 141, 153, 0.1);
   flex-direction: column;
   position: relative;
+  .line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    cursor: col-resize;
+  }
   .logo {
     padding: 0 20px;
     box-sizing: border-box;
