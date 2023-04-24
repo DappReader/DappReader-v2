@@ -511,10 +511,12 @@ export default {
           console.log(index)
           if (index > -1) {
             newArr[index].children.push(e)
+            newArr[index].son.push(e)
           } else {
             let item = {
               id: name,
               name,
+              son: [e],
               children: [e],
               prefix: () => h('img', {
                 src: expandedKeys.value.indexOf(name) >= 0 ? folderOpenIcon : folderIcon,
