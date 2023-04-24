@@ -38,6 +38,8 @@
         draggable
         block-line
         expand-on-click
+        :pattern="searchValue"
+        :show-irrelevant-nodes="false"
         key-field="name"
         label-field="name"
         :data="getMenuData()"
