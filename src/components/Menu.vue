@@ -701,7 +701,7 @@ export default {
       }
     }
     const handleMousemove = throttle(handleResize, 100)
-    const handleStartResize = (e) => {
+    const handleStartResize = () => {
       document.body.style.userSelect = 'none'
       document.addEventListener('mousemove', handleMousemove)
       document.addEventListener('mouseup', handleEndResize)
