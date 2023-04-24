@@ -3,7 +3,7 @@
 
 ## What is DappReader?
 
-![cover](https://github.com/DappReader/DappReader-v2/blob/main/img/intro1.png)
+![cover](https://github.com/DappReader/DappReader-v2/blob/main/img/intro.png)
 
 
 DappReader是一个方便开发者对已发布的智能合约集中化管理的可视化工具
