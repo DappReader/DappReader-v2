@@ -7,14 +7,14 @@ import './assets/css/main.scss'
 import * as fundebug from "fundebug-javascript";
 import FundebugVue from "fundebug-vue";
 fundebug.apikey = "948f50789ff7b2290e4aa9bae8b78ec10ef9de1b90131f1ab01901ca002611b2"
-import { create, NSelect, NConfigProvider, NMessageProvider, NModal, 
-  NFormItem, NInput, NPopconfirm, NTabs, NTabPane, NCollapse, 
+import { create, NSelect, NConfigProvider, NMessageProvider, NModal, NDropdown,
+  NFormItem, NInput, NPopconfirm, NTabs, NTabPane, NCollapse, NTree,
   NCollapseItem, NPopover, NSpin, NDialogProvider, NInputGroup, NButton, NImage, NTooltip } from 'naive-ui'
 import VueHighlightJS from 'vue3-highlightjs'
 import 'highlight.js/styles/hybrid.css'
 require('fundebug-revideo');
 const naive = create({
-  components: [ NSelect, NConfigProvider, NMessageProvider, 
+  components: [ NSelect, NConfigProvider, NMessageProvider, NTree, NDropdown,
     NModal, NFormItem, NInput, NPopconfirm, NTabs, NTabPane, NButton,
     NCollapse, NCollapseItem, NPopover, NSpin, NDialogProvider, NInputGroup, NImage, NTooltip ]
 })

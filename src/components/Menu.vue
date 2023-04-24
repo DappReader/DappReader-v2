@@ -1,5 +1,5 @@
 <template>
-  <div class="content flex-start">
+  <div class="content flex-start menu">
     <div class="logo">
       <img src="@/assets/images/logo.svg" alt="">
     </div>
@@ -21,7 +21,6 @@
         <input class="form-input" v-model="searchValue" placeholder="search contract" />
       </div>
     </div>
-    
     <div class="contract-title flex-center-sb">contract
       <div class="flex-center">
         <div class="flex-center icon-w icon-w-1" @click="setIsFilter" :style="{background: isFilter == 'filter' ? '#375CFF' : '#2c2d34'}">
@@ -34,47 +33,22 @@
         </div>
       </div>
     </div>
-    <div 
-      class="contract" 
-      group-name="cols"
-    >
-      <div class="folder-list" @mousedown="mousedown" @mouseup="mouseup">
-        <div v-for="(item, index) in getMenuList()" :key="index" :class="['folder-item', item.open ? 'folder-item-activated' : '']" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <div class="flex-center folder-item-main" style="height: 30px" @click="openFolder(item)" @mousedown.stop @contextmenu.prevent="onContextMenu($event, index, item.name, item)">
-            <img v-if="item.open" src="@/assets/images/folder_open.svg" alt="">
-            <img v-else src="@/assets/images/folder.svg" alt="">
-            <span>{{item.name}}<span>({{item.son.length}})</span></span>
-            <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
-          </div>
-          <Container class="folder-file" :style="{zIndex: isMousedown ? '9' : '1', maxHeight: item.open ? '': '0'}" group-name="col-items" @drop="(e) => onDrop(index, e)">
-            <Draggable class="file-item-w" v-for="(file, i) in item.son" :key="file.id">
-              <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)" @contextmenu.prevent="onFileContextMenu($event, file, i, index)">
-                <svg width="16" height="18" class="file-arrow" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 0V5.2C9 6.88016 9 7.72024 9.32698 8.36197C9.6146 8.92646 10.0735 9.3854 10.638 9.67302C11.2798 10 12.1198 10 13.8 10H16" stroke-width="1.5"/>
-                </svg>
-                <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
-              </div>
-            </Draggable>
-          </Container>
-        </div>
-      </div>
-      <div class="file-list" @mousedown="mousedown" @mouseup="mouseup">
-        <Container orientation="vertical" @drop="(e) => onDrop(-1, e)" group-name="col-items">
-          <Draggable v-for="(file, index) in getContractList()" :key="file.id" class="file-item-w list-group-item" >
-            <div :class="['file-item', 'flex-center', activeId == file.id ? 'file-item-activated' : '']" @click="openFile(file)" @contextmenu.prevent="onFileContextMenu($event, file, index)">
-              <svg width="18" height="18" class="file-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M13.5 15.75H4.5C4.08579 15.75 3.75 15.4142 3.75 15L3.75 3C3.75 2.58579 4.08579 2.25 4.5 2.25L10.1723 2.25C10.3812 2.25 10.5807 2.33715 10.7226 2.49044L14.0503 6.08435C14.1787 6.22298 14.25 6.40496 14.25 6.5939L14.25 15C14.25 15.4142 13.9142 15.75 13.5 15.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14.25 6.75L10.5 6.75C10.0858 6.75 9.75 6.41421 9.75 6L9.75 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <p class="file-name flex-center">{{file.name}} <span v-if="file.chain && file.chain.chainId && isShowName == 'show'" :style="{background: getColor(file.chain.chainId), color: file.chain.chainId == 56 ? '#000' : '#fff'}">{{getChainName(file.chain)}}</span></p>
-            </div>
-          </Draggable>
-        </Container>
-      </div>
+    <div class="contract">
+      <n-tree
+        draggable
+        block-line
+        expand-on-click
+        :pattern="searchValue"
+        :show-irrelevant-nodes="false"
+        key-field="id"
+        label-field="name"
+        :data="getMenuData()"
+        :selected-keys="[activeId]"
+        :node-props="nodeProps"
+        @update:expanded-keys="updatePrefixWithExpaned"
+        @drop="handleDrop"
+        @update:checked-keys="handleCheckedKeysChange"
+      />
     </div>
     <div class="group flex-center-center">
       <n-image
@@ -105,12 +79,11 @@
 <script>
 import AddFolder from '@/components/AddFolder.vue'
 import CreateContract from '@/components/CreateContract.vue'
-import { ref, computed, watch, h } from 'vue'
+import { ref, computed, h } from 'vue'
 import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
-import { Container, Draggable } from "vue3-smooth-dnd"
 import { chains, chainNickNames } from '../libs/chains'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
@@ -119,30 +92,26 @@ import topIcon from '../assets/images/top.svg'
 import addIcon from '../assets/images/add.svg'
 import editIcon from '../assets/images/edit.svg'
 import delIcon from '../assets/images/del.svg'
+import folderIcon from '../assets/images/folder.svg'
+import fileIcon from '../assets/images/file.svg'
+import folderOpenIcon from '../assets/images/folder_open.svg'
+import arrowIcon from '../assets/images/arrow.svg'
+
 export default {
   name: '',
   components: {
     AddFolder,
     CreateContract,
-    Container,
-    Draggable
   },
   setup() {
-    let timeout = null
-    let moveData = null
-    let dropIndex = -2
-    let dropAddIndex = -2
     const store = useStore()
     const dialog = useDialog()
     const isFilter = ref(localStorage.getItem('isFilter') || 'none')
     const isShowName = ref(localStorage.getItem('isShowName') || 'show')
+    const expandedKeys = ref([])
     const addFolder = ref(null)
-    const isMousedown = ref(false)
     const createContract = ref(null)
-    const mouseMenuEl = ref(null)
     const searchValue = ref('')
-    const openName = ref([])
-    const openFolderIndex = ref(-1)
     const activeId = computed(() => {
       return store.state.activeId
     })
@@ -152,18 +121,7 @@ export default {
     const contractList = computed(() => {
       return store.state.contractList || []
     })
-    const openFolder = (item) => {
-      item.open = !item.open
-      let index = openName.value.indexOf(item.name)
-      if (index > -1) {
-        openName.value.splice(index, 1)
-      } else {
-        openName.value.push(item.name)
-      }
-      openFolderIndex.value = -1
-    }
     const setIsFilter = () => {
-      openName.value = []
       isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
       localStorage.setItem('isFilter', isFilter.value)
     }
@@ -176,7 +134,6 @@ export default {
     }
     const showCreateContract = (index) => {
       if (index >= 0) {
-        openFolderIndex.value = index
         createContract.value.setFolderIndex(index)
       }
       createContract.value.show()
@@ -237,7 +194,6 @@ export default {
             style: {
               width: '18px',
               height: '18px',
-              marginRight: '8px'
             }
           }),
           onClick: () => {
@@ -252,7 +208,7 @@ export default {
       })
     }
 
-    const onContextMenu = (e, index, name, item) => {
+    const onContextMenu = (e, index, item) => {
       e.preventDefault();
       if (isFilter.value == 'filter' || searchValue.value) {
         return
@@ -297,7 +253,7 @@ export default {
             }
           }),
           onClick: () => {
-            showRename(index, name)
+            showRename(index, item.name)
           }
         }, {
           label: "Delete Folder",
@@ -325,21 +281,11 @@ export default {
         }]
       })
     }
-    const setMenuList = (menuList) => {
-      setLs('menuList', JSON.parse(JSON.stringify(menuList))).then(res => {
-        store.commit("setMenuList", res)
-      })
-    }
-    const setContractList = (contractList) => {
-      setLs('contractList', JSON.parse(JSON.stringify(contractList))).then(res => {
-        store.commit("setContractList", res)
-      })
-    }
     const folderStickyTop = async (index) => {
       let menuList = await getLs('menuList') || []
       let item = menuList.splice(index, 1)
       menuList.unshift(item[0])
-      setMenuList(menuList)
+      store.commit("setMenuList", menuList)
     }
     const fileStickyTop = async (index, folderIndex) => {
       if (folderIndex >= 0) {
@@ -348,13 +294,12 @@ export default {
         let item = folderTtem.son.splice(index, 1)
         folderTtem.son.unshift(item[0])
         menuList[folderIndex] = folderTtem
-        openFolderIndex.value = folderIndex
-        setMenuList(menuList)
+        store.commit("setMenuList", menuList)
       } else {
         let contractList = await getLs('contractList') || []
         let item = contractList.splice(index, 1)
         contractList.unshift(item[0])
-        setContractList(contractList)
+        store.commit("setContractList", contractList)
       }
     }
     const edit = (contract) => {
@@ -376,12 +321,11 @@ export default {
         let index = folderTtem.son.findIndex(e => e.id == id)
         folderTtem.son.splice(index, 1)
         menuList[folderIndex] = folderTtem
-        openFolderIndex.value = folderIndex
-        setMenuList(menuList)
+        store.commit("setMenuList", menuList)
       } else {
         let index = contractList.findIndex(e => e.id == id)
         contractList.splice(index, 1)
-        setContractList(contractList)
+        store.commit("setContractList", contractList)
       }
       if (id == activeId.value) {
         setLs('activeId', '').then(() => {
@@ -402,7 +346,7 @@ export default {
       if (type == 'folder') {
         let folderTtem = menuList[index]
         contractList.push(...folderTtem.son)
-        setContractList(contractList)
+        store.commit("setContractList", contractList)
       } else {
         let folderTtem = menuList[index]
         folderTtem.son.forEach(e => {
@@ -421,149 +365,7 @@ export default {
         })
       }
       menuList.splice(index, 1)
-      setMenuList(menuList)
-    }
-    const openFile = async (file) => {
-      setLs('activeId', file.id).then(rep => {
-        store.commit('setActiveId', rep)
-      })
-    }
-    const onDrop = (index, dragResult) => {
-      console.log(index, dragResult)
-      let menuListData = menuList.value
-      let contractListData = contractList.value
-      const { removedIndex, addedIndex } = dragResult
-      if (removedIndex !== null || addedIndex !== null) {
-        if (index == -1) {
-          if (addedIndex !== null) {
-            dropAddIndex = addedIndex
-            dropIndex = index
-          }
-          if (removedIndex !== null) {
-            moveData = contractListData.splice(removedIndex, 1)[0]
-          }
-          if (moveData && dropAddIndex > -1) {
-            if (dropIndex == -1) {
-              contractListData.splice(dropAddIndex, 0, moveData)
-            } else {
-              menuListData[dropIndex].son.splice(dropAddIndex, 0, moveData)
-              setMenuList(menuListData)
-            }
-            moveData = null
-            dropAddIndex = -2
-            dropIndex = -2
-          }
-          setContractList(contractListData)
-        } else {
-          if (addedIndex !== null) {
-            dropAddIndex = addedIndex
-            dropIndex = index
-          }
-          if (removedIndex !== null) {
-            moveData = menuListData[index].son.splice(removedIndex, 1)[0]
-          }
-          if (moveData && dropAddIndex > -1) {
-            if (dropIndex == -1) {
-              contractListData.splice(dropAddIndex, 0, moveData)
-              setContractList(contractListData)
-            } else {
-              menuListData[dropIndex].son.splice(dropAddIndex, 0, moveData)
-            }
-            moveData = null
-            dropAddIndex = -2
-            dropIndex = -2
-          }
-          setMenuList(menuListData)
-        }
-      }
-    }
-    const mousedown = () => {
-      console.log('mousedown')
-      isMousedown.value = true
-    }
-    const mouseup = () => {
-      isMousedown.value = false
-    }
-    const mouseover = (index) => {
-      if (isMousedown.value) {
-        timeout = setTimeout(() => {
-          menuList.value[index].open = true
-        }, 500)
-      }
-    }
-    const mouseout = () => {
-      clearTimeout(timeout)
-    }
-    const getMenuList = () => {
-      if ((!contractList.value.length && !menuList.value.length) || searchValue.value) {
-        return []
-      }
-      let list = menuList.value
-      list.forEach(e => {
-        e.open = openName.value.indexOf(e.name) > -1 ? true : false
-      })
-      if (isFilter.value == 'filter') {
-        let arr = []
-        list.forEach(e => {
-          let son = e.son
-          if (son.length > 0) {
-            arr.push(...son)
-          }
-        })
-        arr.push(...contractList.value)
-        let newArr = []
-        console.log(arr)
-        arr.forEach(e => {
-          let chain = e.chain
-          let name = chain?.name || chain?.chainName || 'unknow'
-          try {
-            name = getChainName(chain)
-          } catch (error) {
-            console.error(error)
-          }
-          let index = newArr.findIndex(el => el.name == name)
-          if (index > -1) {
-            newArr[index].son.push(e)
-          } else {
-            newArr.push({
-              name,
-              open: openName.value.indexOf(name) > -1 ? true : false,
-              son: [e]
-            })
-          }
-        })
-        list = newArr
-      }
-      return list
-    }
-    const getContractList = () => {
-      let list = contractList.value
-      if (isFilter.value == 'filter') {
-        list = []
-      }
-      if (searchValue.value) {
-        console.log(searchValue.value)
-        let arr = []
-        menuList.value.forEach(e => {
-          let son = e.son
-          if (son.length > 0) {
-            arr.push(...son)
-          }
-        })
-        arr.push(...contractList.value)
-        // filter name 包含 searchValue.value
-        let newArr = []
-        arr.forEach(e => {
-          let name = JSON.parse(JSON.stringify(e.name))
-          name = name.toLowerCase()
-          let keyword = JSON.parse(JSON.stringify(searchValue.value)).toLowerCase()
-          if (name.indexOf(keyword) > -1) {
-            newArr.push(e)
-          }
-        })
-        list = newArr
-      }
-      return list
+      store.commit("setMenuList", menuList)
     }
     const getColor = (chainId) => {
       let color = '#2C2D34'
@@ -589,20 +391,299 @@ export default {
       })
       return name
     }
-    watch(menuList, (val) => {
-      if (val && openFolderIndex.value >= 0) {
-        menuList.value[openFolderIndex.value].open = true
+    const getMenuData = () => {
+      let ml = JSON.parse(JSON.stringify(menuList.value))
+      let cl = JSON.parse(JSON.stringify(contractList.value))
+      let list = []
+      cl.forEach(e => {
+        e.prefix = () => h('img', {
+          src: fileIcon,
+          style: {
+            width: '18px',
+            height: '18px',
+            marginRight: '4px'
+          }
+        })
+        if (isShowName.value == 'show') {
+          let chain = e.chain
+          let name = chain?.name || chain?.chainName || 'unknow'
+          try {
+            name = getChainName(chain)
+          } catch (error) {
+            console.error(error)
+          }
+          e.suffix = () => h('div', {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              fontSize: '12px',
+              height: '18px',
+              padding: '0 4px',
+              borderRadius: '6px',
+              transform: 'scale(0.7)',
+              background: getColor(chain.chainId),
+              transformOrigin: '100% 50% 0',
+              whiteSpace: 'nowrap'
+            }
+          }, name)
+        }
+      })
+      ml.forEach(e => {
+        e.id = e.name
+        e.prefix = () => h('img', {
+          src: expandedKeys.value.indexOf(e.name) >= 0 ? folderOpenIcon : folderIcon,
+          style: {
+            width: '18px',
+            height: '18px',
+            marginRight: '4px'
+          }
+        });
+        e.suffix = () => h('img', {
+          src: arrowIcon,
+          style: {
+            width: '18px',
+            height: '18px',
+            transform: expandedKeys.value.indexOf(e.name) >= 0 ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'all 0.3s',
+          }
+        })
+
+        e.son.forEach(e => {
+          e.prefix = () => h('img', {
+            src: fileIcon,
+            style: {
+              width: '18px',
+              height: '18px',
+              marginRight: '4px'
+            }
+          })
+          if (isShowName.value == 'show') {
+            let chain = e.chain
+            let name = chain?.name || chain?.chainName || 'unknow'
+            try {
+              name = getChainName(chain)
+            } catch (error) {
+              console.error(error)
+            }
+            e.suffix = () => h('div', {
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                fontSize: '12px',
+                height: '18px',
+                padding: '0 4px',
+                borderRadius: '6px',
+                transform: 'scale(0.7)',
+                background: getColor(chain.chainId),
+                transformOrigin: '100% 50% 0',
+                whiteSpace: 'nowrap'
+              }
+            }, name)
+          }
+        })
+        e.children = e.son
+      })
+      if (isFilter.value == 'filter') {
+        let arr = []
+        ml.forEach(e => {
+          let son = e.son
+          if (son.length > 0) {
+            arr.push(...son)
+          }
+        })
+        arr.push(...cl)
+        let newArr = []
+        console.log(arr)
+        arr.forEach(e => {
+          let chain = e.chain
+          let name = chain?.name || chain?.chainName || 'unknow'
+          try {
+            name = getChainName(chain)
+          } catch (error) {
+            console.error(error)
+          }
+          let index = newArr.findIndex(el => el.name == name)
+          console.log(index)
+          if (index > -1) {
+            newArr[index].children.push(e)
+          } else {
+            let item = {
+              id: name,
+              name,
+              children: [e],
+              prefix: () => h('img', {
+                src: expandedKeys.value.indexOf(name) >= 0 ? folderOpenIcon : folderIcon,
+                style: {
+                  width: '18px',
+                  height: '18px',
+                  marginRight: '4px'
+                }
+              }),
+              suffix: () => h('img', {
+                src: arrowIcon,
+                style: {
+                  width: '18px',
+                  height: '18px',
+                  transform: expandedKeys.value.indexOf(name) >= 0 ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'all 0.3s',
+                }
+              })
+            }
+            newArr.push(item)
+          }
+        })
+        console.log(newArr)
+        list = newArr
+      } else {
+        list.push(...ml, ...cl)
       }
-    })
+      return list
+    }
+    const updatePrefixWithExpaned = (keys) => {
+      expandedKeys.value = keys
+    }
+    const nodeProps = ({ option }) => {
+      return {
+        onClick() {
+          let id = option.id
+          if (!option.son) {
+            store.commit('setActiveId', id)
+          }
+        },
+        onContextmenu(e) {
+          e.preventDefault()
+          if (option.son) {
+            let folderIndex = menuList.value.findIndex(e => e.name == option.name)
+            onContextMenu(e, folderIndex, option)
+          } else {
+            let index = contractList.value.findIndex(e => e.id == option.id)
+            let folderIndex = -1
+            if (index == -1) {
+              folderIndex = menuList.value.findIndex(e => e.son.findIndex(e => e.id == option.id) != -1)
+              index = menuList.value[folderIndex].son.findIndex(e => e.id == option.id)
+            }
+            onFileContextMenu(e, option, index, folderIndex)
+          }
+        }
+      }
+    }
+    const handleCheckedKeysChange = (checkedKeys) => {
+      console.log('checkedKeys', checkedKeys)
+    }
+    const handleDrop = ({ node, dragNode, dropPosition }) => {
+      console.log(node, dragNode, dropPosition)
+      let dragNodeType = dragNode.children ? 'folder' : 'file'
+      let nodeType = node.children ? 'folder' : 'file'
+      let nodeName = node.name
+      let dragNodeName = dragNode.name
+      let ml = JSON.parse(JSON.stringify(menuList.value))
+      let cl = JSON.parse(JSON.stringify(contractList.value))
+      if (dragNodeType == 'folder' && nodeType == 'file' && dropPosition == 'after') {
+        let index = ml.findIndex(e => e.name == dragNodeName)
+        console.log(index, dragNodeName)
+        ml.push(ml.splice(index, 1)[0])
+        store.commit('setMenuList', ml)
+      } else if (dragNodeType == 'folder' && nodeType == 'folder') {
+        if (dropPosition == 'after') {
+          let index = ml.findIndex(e => e.name == dragNodeName)
+          let addIndex = ml.findIndex(e => e.name == nodeName)
+          ml.splice(addIndex + 1, 0, ml.splice(index, 1)[0])
+        } else if (dropPosition == 'before') {
+          let index = ml.findIndex(e => e.name == dragNodeName)
+          let addIndex = ml.findIndex(e => e.name == nodeName)
+          ml.splice(addIndex, 0, ml.splice(index, 1)[0])
+        } else if (dropPosition == 'inside') {
+          return
+        }
+        store.commit('setMenuList', ml)
+      } else if (dragNodeType == 'file' && nodeType == 'folder') {
+        let mlIndex = -1
+        let contractIndex = cl.findIndex(e => e.id == dragNode.id)
+        if (contractIndex == -1) {
+          ml.forEach((e, i) => {
+            let index = e.son.findIndex(e => e.id == dragNode.id)
+            if (index != -1) {
+              contractIndex = index
+              mlIndex = i
+            }
+          })
+        }
+        if (dropPosition == 'inside') {
+          let folderIndex = ml.findIndex(e => e.name == nodeName)
+          if (mlIndex == -1) {
+            ml[folderIndex].son.unshift(cl.splice(contractIndex, 1)[0])
+          } else {
+            ml[folderIndex].son.unshift(ml[mlIndex].son.splice(contractIndex, 1)[0])
+          }
+        } else {
+          if (mlIndex == -1) {
+            cl.unshift(cl.splice(contractIndex, 1)[0])
+          } else {
+            cl.unshift(ml[mlIndex].son.splice(contractIndex, 1)[0])
+          }
+        }
+        store.commit('setMenuList', ml)
+        store.commit('setContractList', cl)
+      } else if (dragNodeType == 'file' && nodeType == 'file') {
+        let dIndex = cl.findIndex(e => e.id == dragNode.id)
+        let addIndex = cl.findIndex(e => e.id == node.id)
+        let mlIndex = -1
+        let addMlIndex = -1
+        if (dIndex == -1) {
+          ml.forEach((e, i) => {
+            let index = e.son.findIndex(e => e.id == dragNode.id)
+            if (index != -1) {
+              dIndex = index
+              mlIndex = i
+            }
+          })
+        }
+        if (addIndex == -1) {
+          ml.forEach((e, i) => {
+            let index = e.son.findIndex(e => e.id == node.id)
+            if (index != -1) {
+              addIndex = index
+              addMlIndex = i
+            }
+          })
+        }
+        if (dropPosition == 'after') {
+          if (mlIndex == -1 && addMlIndex == -1) {
+            cl.splice(addIndex + 1, 0, cl.splice(dIndex, 1)[0])
+          } else if (mlIndex == -1 && addMlIndex > -1) {
+            ml[addMlIndex].son.splice(addIndex + 1, 0, cl.splice(dIndex, 1)[0])
+          } else if (mlIndex > -1 && addMlIndex == -1) {
+            cl.splice(addIndex + 1, 0, ml[mlIndex].son.splice(dIndex, 1)[0])
+          } else if (mlIndex > -1 && addMlIndex > -1) {
+            ml[addMlIndex].son.splice(addIndex + 1, 0, ml[mlIndex].son.splice(dIndex, 1)[0])
+          }
+        } else if (dropPosition == 'before') {
+          if (mlIndex == -1 && addMlIndex == -1) {
+            cl.splice(addIndex, 0, cl.splice(dIndex, 1)[0])
+          } else if (mlIndex == -1 && addMlIndex > -1) {
+            ml[addMlIndex].son.splice(addIndex, 0, cl.splice(dIndex, 1)[0])
+          } else if (mlIndex > -1 && addMlIndex == -1) {
+            cl.splice(addIndex, 0, ml[mlIndex].son.splice(dIndex, 1)[0])
+          } else if (mlIndex > -1 && addMlIndex > -1) {
+            ml[addMlIndex].son.splice(addIndex, 0, ml[mlIndex].son.splice(dIndex, 1)[0])
+          }
+        }
+        store.commit('setContractList', cl)
+        store.commit('setMenuList', ml)
+      } else {
+        return
+      }
+    }
     return {
-      mouseMenuEl,
+      expandedKeys,
       isShowName,
-      isMousedown,
       searchValue,
-      openName,
       isFilter,
       activeId,
-      openFolderIndex,
       menuList,
       addFolder,
       createContract,
@@ -610,28 +691,17 @@ export default {
       showAddFolder,
       showCreateContract,
       showRename,
-      folderStickyTop,
-      fileStickyTop,
-      edit,
-      delFolder,
-      delFile,
-      openFile,
       imgUrl: ref(group),
       previewSrc: ref(groupQrCode),
-      onDrop,
-      mousedown,
-      mouseup,
-      mouseover,
-      mouseout,
-      getColor,
-      getMenuList,
-      getContractList,
       setIsFilter,
-      openFolder,
-      getChainName,
       setIsShowName,
-      onContextMenu,
-      onFileContextMenu
+      getMenuData,
+      nodeProps,
+      updatePrefixWithExpaned,
+      handleCheckedKeysChange,
+      handleDrop,
+      getColor,
+      getChainName
     }
   }
 }
@@ -1014,5 +1084,35 @@ export default {
   display: none;
 } */
 
+.menu .n-tree-node-content {
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+  box-sizing: border-box;
+}
+
+.menu .n-tree-node-content .n-tree-node-content__text {
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu .n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
+  background: rgba(54,92,255,.7) !important;
+}
+
+.menu .n-tree .n-tree-node-wrapper {
+  padding: 0 !important;
+}
+
+.menu .n-tree .n-tree-node {
+  height: 30px;
+}
+
+.menu .n-tree .n-tree-node-switcher {
+  display: none !important;
+}
 
 </style>
