@@ -52,6 +52,14 @@ DappReader旨在为开发者提供已发布的多链合约的管理和快速前�
 
 快速管理个人与公司的多个链上智能合约
 
+<img src="./img/edit.png" style="width:50%"/>
+
+轻松标注智能合约函数,与队友共享
+
+<img src="./img/transaction.png" style="width:50%"/>
+
+更方便,更智能的输入纠错,自动数据decimal转换
+
 ### 加入我们的中文社区
 <img src="./img/group.png" style="width:50%"/>
 
