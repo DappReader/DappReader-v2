@@ -104,6 +104,10 @@
             <input class="link flex-center" v-model="link" disabled ref="input">
             <div class="copy-btn flex-center-center">Copy link</div>
           </div>
+          <div v-if="itemIndex == 1" class="input flex-center" style="margin-top:16px">
+            <input class="link flex-center" v-model="mirrorLink" ref="input">
+            <div class="copy-btn flex-center-center" style="font-size: 14px" @click="copy(mirrorLink)">Share To Mirror</div>
+          </div>
         </div>
       </div>
     </n-spin>
@@ -131,6 +135,7 @@ export default {
     const password = ref('')
     const token = ref(props.contract && props.contract.token || '')
     const link = ref('')
+    const mirrorLink = ref('')
     const searchList = ref([])
     const teamList = ref([])
     const loading = ref(false)
@@ -242,6 +247,7 @@ export default {
     watch(() => token.value, () => {
       let origin = window.location.origin
       link.value = `${origin}/${token.value}`
+      mirrorLink.value = `${link.value}?display=iframe&height=800&width=960&size=large`
     }, {immediate: true})
     watch(() => props.contract, () => {
       let t = props.contract && props.contract.token || ''
@@ -265,6 +271,7 @@ export default {
       isSearching,
       selectSearch,
       link,
+      mirrorLink,
       showModal,
       token,
       loading,
@@ -529,7 +536,7 @@ export default {
           outline: none;
         }
         .copy-btn {
-          width: 98px;
+          width: 118px;
           height: 40px;
           background: #375CFF;
           border-radius: 4px;

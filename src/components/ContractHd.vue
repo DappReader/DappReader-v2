@@ -25,6 +25,15 @@
           </svg>
           <span>Copy ABI</span>
         </div>
+        <div v-if="isIframe" class="hd-btn-item flex-center-center btn " @click="copy(contract.address)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.8333 17.5L3.33333 17.5C2.8731 17.5 2.5 17.1269 2.5 16.6667L2.5 5.83333C2.5 5.3731 2.8731 5 3.33333 5L7.98816 5C8.20917 5 8.42113 5.0878 8.57741 5.24408L11.4226 8.08925C11.5789 8.24554 11.6667 8.4575 11.6667 8.67851V16.6667C11.6667 17.1269 11.2936 17.5 10.8333 17.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.33325 5L8.33325 3.33333C8.33325 2.8731 8.70635 2.5 9.16659 2.5L13.8214 2.5C14.0424 2.5 14.2544 2.5878 14.4107 2.74408L17.2558 5.58925C17.4121 5.74554 17.4999 5.9575 17.4999 6.17851V14.1667C17.4999 14.6269 17.1268 15 16.6666 15L11.6666 15" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.6667 9.16667L8.33333 9.16667C7.8731 9.16667 7.5 8.79357 7.5 8.33333L7.5 5" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.4999 6.66667L14.1666 6.66667C13.7063 6.66667 13.3333 6.29357 13.3333 5.83333L13.3333 2.5" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Copy Address</span>
+        </div>
         <div class="hd-btn-item flex-center-center hd-btn-item-h btn hover-6F4AC5" @click="getSourceCode(contract.address, contract.chain, contract.sources)">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_1151_17154)">
@@ -51,7 +60,7 @@
           </svg>
           <span>Decode Input</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
+        <div v-if="!isIframe" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="share">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 17.5C16.3807 17.5 17.5 16.3807 17.5 15C17.5 13.6193 16.3807 12.5 15 12.5C13.6193 12.5 12.5 13.6193 12.5 15C12.5 16.3807 13.6193 17.5 15 17.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M7.5 11.25L12.5 13.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -61,14 +70,14 @@
           </svg>
           <span>Share</span>
         </div>
-        <div v-if="(!contract.isImport && contract.token) || !contract.token" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
+        <div v-if="((!contract.isImport && contract.token) || !contract.token) && !isIframe" class="hd-btn-item flex-center-center btn hd-btn-item-h" @click="edit">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M2.66663 13.3334H13.3333" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M2.66663 13.3333H5.33329L12.8619 5.80474C13.1222 5.54439 13.1222 5.12228 12.8619 4.86193L11.138 3.13807C10.8777 2.87772 10.4556 2.87772 10.1952 3.13807L2.66663 10.6667V13.3333Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <span>Edit</span>
         </div>
-        <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-F43658" @click="del">
+        <div v-if="!isIframe" class="hd-btn-item flex-center-center btn hd-btn-item-h hover-F43658" @click="del">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -79,7 +88,7 @@
       </div>
     </div>
     <div class="desc">{{contract.remark}}</div>
-    <div class="flex-center-sb info">
+    <div class="flex-center-sb info" v-if="!isIframe">
       <div class="flex-center">
         <div class="info-item flex-center" @click="copy(contract.address)">
           <div class="info-key">Contract Address</div>
@@ -264,6 +273,9 @@ export default {
       return (value) => {
         return formatAddress(value)
       }
+    })
+    const isIframe = computed(() => {
+      return store.state.isIframe
     })
 
     const showTeamModal = () => {
@@ -545,6 +557,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      isIframe,
       teamModal,
       balance,
       decodeModal,

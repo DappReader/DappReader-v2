@@ -79,6 +79,11 @@ export default {
     }
     
     onMounted(() => {
+      if (window.top === window.self) {
+        store.commit("setIsIframe", false)
+      } else {
+        store.commit("setIsIframe", true)
+      }
       getProvider()
       fn()
       getData()
