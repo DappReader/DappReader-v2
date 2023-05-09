@@ -14,17 +14,28 @@ export const useUtils = () => {
         delete e.tempName
         return e
       })
-      console.log(value)
       value = JSON.stringify(value)
     } else {
       value = JSON.stringify(value)
       let reg = /^["|'](.*)["|']$/g
       value = value.replace(reg,"$1")
     }
-    if (navigator.clipboard) {
+    if (!navigator.clipboard || window.top != window.self) {
+      let textarea = document.createElement('textarea')
+      document.body.appendChild(textarea)
+      textarea.style.position = 'fixed'
+      textarea.style.clip = 'rect(0 0 0 0)'
+      textarea.style.top = '10px'
+      textarea.value = value
+      textarea.select()
+      document.execCommand('copy', true)
+      document.body.removeChild(textarea)
+      message.success('Copy successful')
+    } else {
       navigator.clipboard.writeText(value)
       message.success('Copy successful')
     }
+      
   }
 
   const toEtherscanAddress = (address, chain, type) => {
@@ -98,7 +109,7 @@ export const useUtils = () => {
       let data = info
       let has = await hasContrace(data.address, menuList, contractList)
       if (has) {
-        message.info('Contract already exists')
+        // message.info('Contract already exists')
         await open(has)
         return
       }

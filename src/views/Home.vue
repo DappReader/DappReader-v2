@@ -1,6 +1,6 @@
 <template>
   <div class="home flex-start">
-    <Menu ref="menuDom" />
+    <Menu ref="menuDom" v-if="!isIframe" />
     <Main />
     <GetContractModal ref="getContractModal" @confirm="confirm" />
   </div>
@@ -40,6 +40,9 @@ export default {
     })
     const address = computed(() => {
       return store.state.address
+    })
+    const isIframe = computed(() => {
+      return store.state.isIframe
     })
     const getContractFun = (password='') => {
       let token = route.params.token
@@ -116,6 +119,7 @@ export default {
       }
     })
     return {
+      isIframe,
       menuDom,
       getContractModal,
       confirm

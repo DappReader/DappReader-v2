@@ -1,6 +1,6 @@
 <template>
   <div class="contract-content">
-    <div v-if="isShowHd" style="margin-bottom: 30px;">
+    <div v-if="isShowHd || isIframe" style="margin-bottom: 30px;">
       <ContractHd v-if="contractData" :contract="contractData.content"  />
     </div>
     <div class="contract-main flex-start" ref="contractRef">
@@ -148,14 +148,14 @@
             <div v-for="(item, index) in contractData.result" :key="index" class="result-item">
               <div class="result-item-hd flex-center">
                 <div class="result-item-hd-l">
-                  <div class="result-name">{{item.state == 'success' ? '✅' : '❌'}} Run function : {{item.name}}</div>
+                  <div class="result-name">{{item.state == 'success' ? '✅' : '❌'}} <span v-if="!isIframe">Run function :</span> {{item.name}}</div>
                 </div>
                 <div class="result-item-hd-r flex-center">
-                  <div class="result-time flex-center"><img src="@/assets/images/time.svg" alt="">
+                  <div class="result-time flex-center" v-if="!isIframe"><img src="@/assets/images/time.svg" alt="">
                     {{createAt(item.createAt)}}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed within {{item.confirmed}} sec</span> 
                   </div>
-                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contractData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt="">View Etherscan</div>
-                  <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt="">Resend</div>
+                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contractData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt=""><span>View Etherscan</span></div>
+                  <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt=""><span>Resend</span></div>
                 </div>
               </div>
               <div v-if="item.content.hash" class="result-info flex-center">
@@ -328,7 +328,7 @@
           <!-- <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
         </div>
       </div>
-      <ContractMsg v-if="!isShowHd && contractData" :contract="contractData.content" />
+      <ContractMsg v-if="!isShowHd && contractData && !isIframe" :contract="contractData.content" />
     </div>
     
     <NetworkErrorModal v-if="contractData && contractData.content" :chain="contractData.content.chain" @switchChain="switchChainFun" ref="networkErrorModal" />
@@ -401,6 +401,9 @@ export default {
     })
     const contractList = computed(() => {
       return store.state.contractList
+    })
+    const isIframe = computed(() => {
+      return store.state.isIframe
     })
     const createAt = computed(() => {
       return (value) => {
@@ -716,8 +719,8 @@ export default {
         }
         let abi = contract.abi || []
         let list = abi.filter((e) => e.type == "function")
-        let readAbi = list.filter((e) => e.stateMutability == "view")
-        let writeAbi = list.filter((e) => e.stateMutability != "view")
+        let readAbi = list.filter((e) => (e.stateMutability != "nonpayable" && e.stateMutability != "payable"))
+        let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
         readFun.value = readAbi
         writeFun.value = writeAbi
       }
@@ -850,6 +853,7 @@ export default {
     })
 
     return {
+      isIframe,
       address,
       contractRef,
       isShowHd,
@@ -1273,7 +1277,7 @@ export default {
             margin-right: 8px;
           }
           height: 30px;
-          padding: 0 12px;
+          padding: 0 6px;
           background: #22212B;
           border-radius: 6px;
           box-sizing: border-box;
@@ -1283,6 +1287,21 @@ export default {
           color: #FFFFFF;
           margin-left: 12px;
           cursor: pointer;
+          max-width: 30px;
+          overflow: hidden;
+          justify-content: flex-start;
+          transition: all .5s;
+          span {
+            transition: all .5s;
+            opacity: 0;
+            white-space: nowrap;
+          }
+          &:hover {
+            max-width: 150px;
+            span {
+              opacity: 1;
+            }
+          }
         }
         .result-info {
           margin-top: 15px;
@@ -1364,6 +1383,7 @@ export default {
                   margin-right: 10px;
                   white-space: normal;
                   word-wrap: break-word;
+                  overflow: hidden;
                 }
                 img {
                   width: 18px;

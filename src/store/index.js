@@ -12,7 +12,8 @@ export default createStore({
     isShowLogin: false,
     userInfo: {},
     defaultChains: [],
-    results: {}
+    results: {},
+    isIframe: false
   },
   mutations: {
     setAddress(state, value) {
@@ -50,6 +51,9 @@ export default createStore({
     },
     setResults(state, value) {
       state.results = value
+    },
+    setIsIframe(state, value) {
+      state.isIframe = value
     },
     init(state) {
       state.provider = null

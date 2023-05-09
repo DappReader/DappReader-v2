@@ -1,13 +1,14 @@
 <template>
   <div class="nav flex-center">
     <div class="nav-l">
-      <div v-if="address" class="input-group flex-center">
+      <div v-if="address && !isIframe" class="input-group flex-center">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M12.75 12.75L15.75 15.75" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <input class="form-input" v-model="contractAddress" placeholder="search contract address" @input="inputFun" @keyup.enter="handleClickSearch"  />
       </div>
+      <img v-if="isIframe" src="@/assets/images/logo.svg" alt="" style="margin-left: 24px">
     </div>
     <div class="nav-r flex-center">
       <div v-if="address" class="wallet flex-center-sb chain-w">
@@ -45,15 +46,20 @@
         <div class="nickname">{{fixed(balance)}}</div>
       </div>
       <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
-      <div v-if="userInfo.address" class="user-info" @click="editUser">
-        <div class="user-avatar">
-          <Avatar :width="34" :avatar="userInfo.avatar" :address="userInfo.address" />
+      <div v-if="!isIframe">
+        <div v-if="userInfo.address" class="user-info" @click="editUser">
+          <div class="user-avatar">
+            <Avatar :width="34" :avatar="userInfo.avatar" :address="userInfo.address" />
+          </div>
+        </div>
+        <div v-else class="user-info" @click="checkUserRegistFun">
+          <div class="user-avatar">
+            <img src="@/assets/images/user.svg" alt="">
+          </div>
         </div>
       </div>
-      <div v-else class="user-info" @click="checkUserRegistFun">
-        <div class="user-avatar">
-          <img src="@/assets/images/user.svg" alt="">
-        </div>
+      <div v-if="isIframe" style="margin-left: 16px;cursor: pointer;" @click="openDR">
+        <svg t="1683619110199" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2624" id="mx_n_1683619110199" width="24" height="24"><path d="M475.3408 850.5344h-266.24a37.2736 37.2736 0 0 1-37.2736-37.2736v-266.24a37.2736 37.2736 0 1 1 74.5472 0v228.9664h228.9664a37.2736 37.2736 0 0 1 0 74.5472zM830.3104 495.5648a37.2736 37.2736 0 0 1-37.2736-37.2736V229.3248h-228.9664a37.2736 37.2736 0 1 1 0-74.5472h266.24a37.2736 37.2736 0 0 1 37.2736 37.2736v266.24a37.2736 37.2736 0 0 1-37.2736 37.2736z" p-id="2625" fill="#ffffff"></path></svg>
       </div>
     </div>
     <CreateContract ref="createContract" />
@@ -141,6 +147,9 @@ export default {
     })
     const isShowLogin = computed(() => {
       return store.state.isShowLogin
+    })
+    const isIframe = computed(() => {
+      return store.state.isIframe
     })
     const handleUpdateValue = (e) => {
       switchChain(e)
@@ -335,6 +344,10 @@ export default {
       })
     }
 
+    const openDR = () => {
+      window.open('https://dappreader.com')
+    }
+
     watch(network, (val) => {
       chainId.value = val && val.chainId || null
       chain.value = chains.filter(e => e.chainId == chainId.value)[0]
@@ -354,6 +367,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      isIframe,
       chain,
       userInfo,
       editModal,
@@ -389,7 +403,8 @@ export default {
       addChain,
       switchChain,
       editUser,
-      editUserInfo
+      editUserInfo,
+      openDR
     }
   }
 }
