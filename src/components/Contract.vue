@@ -1,6 +1,6 @@
 <template>
   <div class="contract-content">
-    <div v-if="isShowHd || isIframe" style="margin-bottom: 30px;">
+    <div v-if="isShowHd || isIframe" style="margin-bottom: 24px;">
       <ContractHd v-if="contractData" :contract="contractData.content"  />
     </div>
     <div class="contract-main flex-start" ref="contractRef">

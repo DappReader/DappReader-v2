@@ -25,7 +25,7 @@
           </svg>
           <span>Copy ABI</span>
         </div>
-        <div v-if="isIframe" class="hd-btn-item flex-center-center hd-btn-item-h btn hover-57B36F" @click="copy(contract.address)">
+        <div v-if="isIframe" class="hd-btn-item flex-center-center btn " @click="copy(contract.address)">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.8333 17.5L3.33333 17.5C2.8731 17.5 2.5 17.1269 2.5 16.6667L2.5 5.83333C2.5 5.3731 2.8731 5 3.33333 5L7.98816 5C8.20917 5 8.42113 5.0878 8.57741 5.24408L11.4226 8.08925C11.5789 8.24554 11.6667 8.4575 11.6667 8.67851V16.6667C11.6667 17.1269 11.2936 17.5 10.8333 17.5Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M8.33325 5L8.33325 3.33333C8.33325 2.8731 8.70635 2.5 9.16659 2.5L13.8214 2.5C14.0424 2.5 14.2544 2.5878 14.4107 2.74408L17.2558 5.58925C17.4121 5.74554 17.4999 5.9575 17.4999 6.17851V14.1667C17.4999 14.6269 17.1268 15 16.6666 15L11.6666 15" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
