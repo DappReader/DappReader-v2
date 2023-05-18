@@ -82,7 +82,7 @@
                 </div>
                 <div v-else>
                   <n-input
-                    v-if="inputItem.type == 'bytes32[]'"
+                    v-if="inputItem.type.indexOf('[]') > -1"
                     v-model:value="parameData[inputItem.name]"
                     type="textarea"
                     size="small"
@@ -569,6 +569,9 @@ export default {
                 item = item.map((e) => ethers.utils.hexlify(e))
               } catch (error) {
                 console.log(error)
+              }
+              if (type.indexOf("address") > -1) {
+                item = item.map((e) => ethers.utils.getAddress(e))
               }
             } else if (type == 'bool') {
               item = item == 'true' ? true : false

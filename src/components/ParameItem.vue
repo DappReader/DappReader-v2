@@ -6,7 +6,7 @@
     </div>
     <div v-else class="tuple-item">
       <n-input
-        v-if="inputItem.type == 'bytes32[]'"
+        v-if="inputItem.type.indexOf('[]') > -1"
         v-model:value="parameData[inputItem.name]"
         type="textarea"
         size="small"
