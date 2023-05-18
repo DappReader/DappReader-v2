@@ -17,7 +17,8 @@ export const walletSwitchChain = (chainId) => {
           if (e.code == 4902) {
             let chain = chains.filter(e => e.chainId == chainId)
             chain = chain[0]
-            let rpc = extraRpcs[chain.chainId].rpcs
+            let extra = extraRpcs[chain.chainId]
+            let rpc = extra ? extra.rpcs : chain.rpc
             console.log({
               chainId: '0x' + (+chain.chainId).toString(16), // 目标链ID
               chainName: chain.name,
