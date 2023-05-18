@@ -39,6 +39,7 @@
         block-line
         expand-on-click
         :pattern="searchValue"
+        :filter="searchFilter"
         :show-irrelevant-nodes="false"
         key-field="id"
         label-field="name"
@@ -135,6 +136,13 @@ export default {
     const contractList = computed(() => {
       return store.state.contractList || []
     })
+    const searchFilter = (pattern, treeOption) => {
+      let r = false
+      if (pattern) {
+        r = (treeOption.name.toLowerCase().indexOf(pattern.toLowerCase()) > -1) || (treeOption.address.toLowerCase().indexOf(pattern.toLowerCase()) > -1)
+      }
+      return r
+    }
     const setIsFilter = () => {
       isFilter.value = isFilter.value == 'none' ? 'filter' : 'none'
       localStorage.setItem('isFilter', isFilter.value)
@@ -736,7 +744,8 @@ export default {
       handleDrop,
       getColor,
       getChainName,
-      handleStartResize
+      handleStartResize,
+      searchFilter
     }
   }
 }
