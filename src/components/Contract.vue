@@ -297,22 +297,25 @@
                 </div>
               </div>
               <div v-if="item.content && item.content.events && item.content.events.length" class="result-section">
-                <div class="result-section-title">event list</div>
-                <div class="result-section-content" v-for="(event, inx) in item.content.events" :key="inx">
-                  <div class="result-section-content-hd flex-center">{{ event.eventSignature }}</div>
-                  <div class="result-section-content-main">
-                    <div class="result-params" :style="{'max-height': event.showEvents ? '300px' : '0'}">
-                      <div v-for="(param, i) in eventParam(event.eventSignature)" :key="i" class="result-param flex-center">
-                        <div class="result-param-name">{{param}}</div>
-                        <div v-if="event.isFormatUnits && param == 'uint256'" class="result-param-value">{{formatUnits(event.args[i])}}</div>
-                        <div v-else class="result-param-value">{{event.args[i]}}</div>
-                        <img v-if="param != 'uint256'" src="@/assets/images/copy.svg" alt="" @click="copy(event.args[i])">
-                        <img v-else src="@/assets/images/conversion.svg" alt="" @click="() => event.isFormatUnits = !event.isFormatUnits">
+                <div class="result-section-title">Event List</div>
+                <div :style="{'max-height': item.showEvents ? '300px' : '0', overflow: 'hidden'}">
+                  <div class="result-section-content" v-for="(event, inx) in item.content.events" :key="inx">
+                    <div class="result-section-content-hd flex-center">{{ event.eventSignature }}</div>
+                    <div class="result-section-content-main">
+                      <div class="result-params">
+                        <div v-for="(param, i) in eventParam(event.eventSignature)" :key="i" class="result-param flex-center">
+                          <div class="result-param-name">{{param}}</div>
+                          <div v-if="event.isFormatUnits && param == 'uint256'" class="result-param-value">{{formatUnits(event.args[i])}}</div>
+                          <div v-else class="result-param-value">{{event.args[i]}}</div>
+                          <img v-if="param != 'uint256'" src="@/assets/images/copy.svg" alt="" @click="copy(event.args[i])">
+                          <img v-else src="@/assets/images/conversion.svg" alt="" @click="() => event.isFormatUnits = !event.isFormatUnits">
+                        </div>
                       </div>
                     </div>
-                    <div class="result-param-show flex-center-center" @click="event.showEvents = !event.showEvents">show <img src="@/assets/images/arrow.svg" alt="" :style="{transform: event.showEvents ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
                   </div>
                 </div>
+                <div class="result-param-show flex-center-center" @click="item.showEvents = !item.showEvents">show <img src="@/assets/images/arrow.svg" alt="" :style="{transform: item.showEvents ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
+                
               </div>
             </div>
           </div>
@@ -575,6 +578,7 @@ export default {
                   console.log(error)
                 }
               }
+              console.log(item)
             } else if (type == 'bool') {
               item = item == 'true' ? true : false
             }
@@ -583,6 +587,7 @@ export default {
           let resultData = null
           let tx = null
           let resultState = ''
+          sendInfo.value.gasLimit = ethers.utils.hexlify(100000)
           try {
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
@@ -1396,24 +1401,24 @@ export default {
                   cursor: pointer;
                 }
               }
-              .result-param-show {
-                background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #17171A 50%);
-                border-radius: 0px 0px 10px 10px;
-                width: 100%;
-                height: 20px;
-                cursor: pointer;
-                font-size: 0px;
-                img {
-                  width: 16px;
-                  height: 16px;
-                  margin-left: 8px;
-                }
-              }
             }
           }
         }
        }
     }
+  }
+}
+.result-param-show {
+  // background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.63) 17.45%, #17171A 50%);
+  border-radius: 0px 0px 10px 10px;
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+  font-size: 0px;
+  img {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
   }
 }
 .demo-hint {

@@ -76,10 +76,15 @@ export default {
         item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
         item = item.split(",")
         item = item.filter((e) => e && e.trim())
-        try {
-          item = item.map((e) => ethers.utils.hexlify(e))
-        } catch (error) {
-          console.log(error)
+        item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
+        if (type.indexOf("address") > -1) {
+          item = item.map((e) => ethers.utils.getAddress(e))
+        } else {
+          try {
+            item = item.map((e) => ethers.utils.hexlify(e))
+          } catch (error) {
+            console.log(error)
+          }
         }
       } else if (type == 'bool') {
         item = item == 'true' ? true : false

@@ -283,8 +283,13 @@ export default {
     }
 
     const getSourceCode = async (address, chain, sources) => {
-      console.log('sources', sources)
       showSourceCode.value = true
+      if (!(chain.chainId == 1 || chain.chainId == 42 || chain.chainId == 3 || chain.chainId == 5 || chain.chainId == 11155111)) {
+        sources = null
+        let CD = props.contract
+        CD.sources = null
+        setData(CD)
+      }
       if (sources) {
         console.log(contractData.value)
         sourceCode.value = sources
@@ -298,6 +303,13 @@ export default {
         else if (chain.chainId == 3) name = 'api-ropsten'
         else if (chain.chainId == 5) name = 'api-goerli'
         else if (chain.chainId == 11155111) name = 'api-sepolia'
+        else name = ''
+        if (!name) {
+          showLoading.value = false
+          showSourceCode.value = false
+          message.error('The current chain is not supported')
+          return
+        }
         let data = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`)
         let result = data.result
         if (data.status == 0) {

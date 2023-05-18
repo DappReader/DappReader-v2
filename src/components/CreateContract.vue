@@ -6,6 +6,7 @@
     preset="card"
     title="Create Contract"
     :on-after-leave="afterLeave"
+    style="width: 650px"
   >
     <div class="form">
       <n-form-item show-require-mark label="Contract Name">
@@ -81,6 +82,17 @@
               <p>From Etherscan</p>
             </div>
           </n-spin>
+          <n-spin :show="showSpin">
+            <div :class="['import-item', 'flex-center-center']" @click="showAbiModal = true">
+              <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="stroke" d="M20.9997 25H6.99968C6.35534 25 5.83301 24.4777 5.83301 23.8333L5.83301 5.16667C5.83301 4.52234 6.35534 4 6.99967 4L15.8233 4C16.1483 4 16.4585 4.13556 16.6793 4.37402L21.8557 9.96454C22.0554 10.1802 22.1663 10.4633 22.1663 10.7572L22.1663 23.8333C22.1663 24.4777 21.644 25 20.9997 25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="fill" d="M16.8633 15.1364C16.5704 14.8435 16.0956 14.8435 15.8027 15.1364C15.5098 15.4293 15.5098 15.9042 15.8027 16.1971L16.8633 15.1364ZM18.6663 18.0001L19.1967 18.5304C19.4896 18.2375 19.4896 17.7626 19.1967 17.4698L18.6663 18.0001ZM15.8027 19.8031C15.5098 20.096 15.5098 20.5709 15.8027 20.8637C16.0956 21.1566 16.5704 21.1566 16.8633 20.8637L15.8027 19.8031ZM15.8027 16.1971L18.136 18.5304L19.1967 17.4698L16.8633 15.1364L15.8027 16.1971ZM18.136 17.4698L15.8027 19.8031L16.8633 20.8637L19.1967 18.5304L18.136 17.4698Z" fill="#858D99"/>
+                <path class="fill" d="M11.136 20.8637C11.4289 21.1566 11.9038 21.1566 12.1967 20.8637C12.4896 20.5709 12.4896 20.096 12.1967 19.8031L11.136 20.8637ZM9.33301 18.0001L8.80268 17.4698C8.66203 17.6104 8.58301 17.8012 8.58301 18.0001C8.58301 18.199 8.66203 18.3898 8.80268 18.5304L9.33301 18.0001ZM12.1967 16.1971C12.4896 15.9042 12.4896 15.4293 12.1967 15.1364C11.9038 14.8435 11.4289 14.8435 11.136 15.1364L12.1967 16.1971ZM12.1967 19.8031L9.86334 17.4698L8.80268 18.5304L11.136 20.8637L12.1967 19.8031ZM9.86334 18.5304L12.1967 16.1971L11.136 15.1364L8.80268 17.4698L9.86334 18.5304Z" fill="#858D99"/>
+                <path class="stroke" d="M22.167 11L16.3337 11C15.6893 11 15.167 10.4777 15.167 9.83333L15.167 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p>General Contract</p>
+            </div>
+          </n-spin>
         </div>
       </n-form-item>
       <n-form-item label="Remark">
@@ -100,6 +112,18 @@
     </div>
     <AddChainModal ref="addChainModal" @add="addChain" />
   </n-modal>
+  <n-modal 
+    v-model:show="showAbiModal"
+    :mask-closable="false"
+    class="custom-card modal-style"
+    preset="card"
+    title="Select General Contract"
+  >
+    <div :class="['contract-type', generalIndex == 1 ? 'contract-type-a' : '']" @click="generalIndex = 1">ERC 20</div>
+    <div :class="['contract-type', generalIndex == 2 ? 'contract-type-a' : '']" @click="generalIndex = 2">ERC 721</div>
+    <div :class="['contract-type', generalIndex == 3 ? 'contract-type-a' : '']" @click="generalIndex = 3">ERC 721a</div>
+    <div class="contract-btn" @click="setGeneralContract">OK</div>
+  </n-modal>
 </template>
 
 <script>
@@ -109,18 +133,20 @@ import { chains, defaultChain } from '../libs/chains'
 import { getLs, setLs } from "@/service/service";
 import { useMessage } from 'naive-ui'
 import AddChainModal from '@/components/AddChainModal'
+import { erc20Abi, erc721Abi, erc721aAbi } from '@/libs/abi'
 export default {
   name: 'CreateContract',
   components: {AddChainModal},
   setup() {
     let defaultChains = []
-
     const store = useStore()
     const message = useMessage()
     const formData = ref({})
     const selectOptions = ref([])
     const addChainModal = ref(null)
     const showModal = ref(false)
+    const showAbiModal = ref(false)
+    const generalIndex = ref(1)
     const showAbi = ref(false)
     const showSpin = ref(false)
     const isDisabled = ref(false)
@@ -132,6 +158,17 @@ export default {
     const setFolderIndex = (index) => {
       folderIndex.value = index
       console.log(folderIndex.value)
+    }
+    const setGeneralContract = () => {
+      if (generalIndex.value == 1) {
+        formData.value.abi = JSON.stringify(erc20Abi)
+      } else if (generalIndex.value == 2) {
+        formData.value.abi = JSON.stringify(erc721Abi)
+      } else if (generalIndex.value == 3) {
+        formData.value.abi = JSON.stringify(erc721aAbi)
+      }
+      showAbiModal.value = false
+      generalIndex.value = 1
     }
     const create = async () => {
       if (!formData.value.name || !formData.value.chainId || !formData.value.address || !formData.value.abi) return
@@ -261,6 +298,12 @@ export default {
           else if (chain.chainId == 3) name = 'api-ropsten'
           else if (chain.chainId == 5) name = 'api-goerli'
           else if (chain.chainId == 11155111) name = 'api-sepolia'
+          else name = ''
+          if (!name) {
+            isDisabled.value = true
+            showSpin.value = false
+            return
+          }
           let abiData = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getabi&address=${formData.value.address}&apikey=${apiKey}`)
           showSpin.value = false
           let result = abiData.result
@@ -308,6 +351,8 @@ export default {
       defaultChains = selectOptions.value
     })
     return {
+      generalIndex,
+      showAbiModal,
       addChainModal,
       isDisabled,
       selectOptions,
@@ -327,7 +372,8 @@ export default {
       bindInput,
       addChain,
       showAdd,
-      handleSearch
+      handleSearch,
+      setGeneralContract
     }
   }
 }
@@ -340,7 +386,8 @@ export default {
   .import-item {
     padding: 0 18px;
     box-sizing: border-box;
-    width: 156px;
+    flex: 0 0 146px;
+    width: 146px;
     height: 80px;
     background: #17171A;
     border: 1px solid rgba(133, 141, 153, 0.1);
@@ -421,5 +468,39 @@ export default {
     text-transform: capitalize;
     color: #FFFFFF;
   }
+}
+.contract-type {
+  box-sizing: border-box;
+  width: calc(100% - 40px);
+  margin: auto;
+  height: 40px;
+  background: #17171A;
+  border: 1px solid rgba(133, 141, 153, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &-a {
+    background: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    color: #17171A;
+  }
+}
+.contract-btn {
+  box-sizing: border-box;
+  width: calc(100% - 40px);
+  margin: auto;
+  height: 40px;
+  background: #375CFF;
+  border: 1px solid rgba(133, 141, 153, 0.1);
+  border-radius: 10px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #FFFFFF;
 }
 </style>
