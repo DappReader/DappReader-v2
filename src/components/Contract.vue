@@ -148,7 +148,7 @@
             <div v-for="(item, index) in contractData.result" :key="index" class="result-item">
               <div class="result-item-hd flex-center">
                 <div class="result-item-hd-l">
-                  <div class="result-name">{{item.state == 'success' ? '✅' : '❌'}} <span v-if="!isIframe">Run function :</span> {{item.name}}</div>
+                  <div class="result-name">{{item.state == 'success' ? (item.content.hash && !item.content.blockNumber) ? '⌛️' : '✅' : '❌'}} <span v-if="!isIframe">Run function :</span> {{item.name}}</div>
                 </div>
                 <div class="result-item-hd-r flex-center">
                   <div class="result-time flex-center" v-if="!isIframe"><img src="@/assets/images/time.svg" alt="">
@@ -632,14 +632,17 @@ export default {
           setResult(resultData)
           init()
           if (tx && tx.hash) {
-            const receipt = await tx.wait()
-            console.log(receipt)
-            resultData.content = Object.assign(resultData.content, receipt)
-            resultData.confirmed = Math.ceil((new Date().getTime() - resultData.createAt.getTime()) / 1000)
+            try {
+              const receipt = await tx.wait()
+              resultData.content = Object.assign(resultData.content, receipt)
+              resultData.confirmed = Math.ceil((new Date().getTime() - resultData.createAt.getTime()) / 1000)
+            } catch (error) {
+              resultData.state = 'error'
+            }
             setResult(resultData)
+            
           }
         } catch (error) {
-          console.error(error)
           message.error(error)
           showSpin.value = false
         }
@@ -1256,6 +1259,31 @@ export default {
           line-height: 18px;
           color: #FFFFFF;
           font-family: 'Montserrat-Medium';
+          .loader {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+            transform:rotate(45deg);
+            background: #fff;
+          }
+          .loader::before {
+            content: "";
+            box-sizing: border-box;
+            position: absolute;
+            inset: 0px;
+            border-radius: 50%;
+            border: 6px solid #FF3D00;
+            animation: prixClipFix 2s infinite linear;
+          }
+
+          @keyframes prixClipFix {
+            0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+            25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+            50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+            75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+            100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
+          }
         }
         .result-time {
           font-weight: 400;
