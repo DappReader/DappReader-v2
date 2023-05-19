@@ -587,7 +587,6 @@ export default {
           let resultData = null
           let tx = null
           let resultState = ''
-          sendInfo.value.gasLimit = ethers.utils.hexlify(100000)
           try {
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
