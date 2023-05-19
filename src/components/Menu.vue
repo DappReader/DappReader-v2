@@ -87,7 +87,7 @@ import { useStore } from 'vuex'
 import { getLs, setLs } from '@/service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
-import { chains, chainNickNames } from '../libs/chains'
+import { chains, chainNickNames, chainColors } from '../libs/chains'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import { useDialog } from 'naive-ui'
@@ -387,9 +387,8 @@ export default {
     }
     const getColor = (chainId) => {
       let color = '#2C2D34'
-      let chain = chains.find(e => e.chainId == chainId)
-      if (chain && chain.explorers && chain.explorers[0]?.color) {
-        color = chain.explorers[0]?.color
+      if (chainColors[chainId]) {
+        color = chainColors[chainId]
       }
       return color
     }

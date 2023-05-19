@@ -9,7 +9,7 @@ export const connectWallet = (init) => {
         let accounts = await web3Provider.request({ method: 'eth_accounts' }) 
         if (!init || (accounts && accounts.length)) {
           await window.ethereum.request({ method: 'eth_requestAccounts' })
-          let web3 = new ethers.providers.Web3Provider(web3Provider);
+          let web3 = new ethers.providers.Web3Provider(web3Provider, "any");
           resolve(web3);
         }
         // await window.ethereum.enable();
