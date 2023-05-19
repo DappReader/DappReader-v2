@@ -703,8 +703,8 @@ export default {
       menuWidth.value = endX
       if (menuWidth.value < 210) {
         menuWidth.value = 210
-      } else if (menuWidth.value > 350) {
-        menuWidth.value = 350
+      } else if (menuWidth.value > 400) {
+        menuWidth.value = 400
       }
     }
     const handleMousemove = throttle(handleResize, 100)

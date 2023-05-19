@@ -38,8 +38,8 @@ export default {
       validator() {
         if (!floderName.value) {
           return new Error('Please input the folder name')
-        } else if (floderName.value.length > 12) {
-          return new Error('max 12')
+        } else if (floderName.value.length > 24) {
+          return new Error('max 24')
         }
       }
     }
@@ -47,7 +47,7 @@ export default {
       showModal.value = true
     }
     const create = async () => {
-      if (!floderName.value || floderName.value.length > 12) return
+      if (!floderName.value || floderName.value.length > 24) return
       let menuList = await getLs('menuList') || []
       // 判断是否已存在
       let isExist = menuList.some(item => item.name == floderName.value)
