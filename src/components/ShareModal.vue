@@ -108,6 +108,10 @@
             <input class="link flex-center" v-model="mirrorLink" ref="input">
             <div class="copy-btn flex-center-center" style="font-size: 14px" @click="copy(mirrorLink)">Share To Mirror</div>
           </div>
+          <div v-if="itemIndex == 1" class="input flex-center" style="margin-top:16px">
+            <input class="link flex-center" v-model="iframeLink" ref="input">
+            <div class="copy-btn flex-center-center" style="font-size: 14px" @click="copy(iframeLink, 'iframe')">Share With Iframe</div>
+          </div>
         </div>
       </div>
     </n-spin>
@@ -136,6 +140,7 @@ export default {
     const token = ref(props.contract && props.contract.token || '')
     const link = ref('')
     const mirrorLink = ref('')
+    const iframeLink = ref('')
     const searchList = ref([])
     const teamList = ref([])
     const loading = ref(false)
@@ -248,6 +253,7 @@ export default {
       let origin = window.location.origin
       link.value = `${origin}/${token.value}`
       mirrorLink.value = `${link.value}?display=iframe&height=800&width=960&size=large`
+      iframeLink.value = `<iframe src="${mirrorLink.value}" width="1080" height="800" frameborder="0" scrolling="no"></iframe>`
     }, {immediate: true})
     watch(() => props.contract, () => {
       let t = props.contract && props.contract.token || ''
@@ -272,6 +278,7 @@ export default {
       selectSearch,
       link,
       mirrorLink,
+      iframeLink,
       showModal,
       token,
       loading,
@@ -300,7 +307,7 @@ export default {
   backdrop-filter: blur(5px);
   z-index: 3000;
   .modal-content {
-    width: 540px;
+    width: 580px;
     background: #23242A;
     border: 1px solid rgba(133, 141, 153, 0.1);
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
@@ -536,7 +543,7 @@ export default {
           outline: none;
         }
         .copy-btn {
-          width: 118px;
+          width: 132px;
           height: 40px;
           background: #375CFF;
           border-radius: 4px;

@@ -15,6 +15,8 @@ export const useUtils = () => {
         return e
       })
       value = JSON.stringify(value)
+    } else if (type == 'iframe') {
+      value = JSON.parse(JSON.stringify(value))
     } else {
       value = JSON.stringify(value)
       let reg = /^["|'](.*)["|']$/g
