@@ -253,7 +253,7 @@ export default {
       let origin = window.location.origin
       link.value = `${origin}/${token.value}`
       mirrorLink.value = `${link.value}?display=iframe&height=800&width=960&size=large`
-      iframeLink.value = `<iframe src="${mirrorLink.value}" width="1080" height="800" frameborder="0" scrolling="no"></iframe>`
+      iframeLink.value = `<iframe src="${link.value}" width="1080" height="800" frameborder="0" scrolling="no"></iframe>`
     }, {immediate: true})
     watch(() => props.contract, () => {
       let t = props.contract && props.contract.token || ''
