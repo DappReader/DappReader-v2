@@ -206,8 +206,8 @@
             </div>
           </div>
           
-          <div class="source-pane-w">
-            <div class="source-pane" v-for="item in sourceCode" :key="item.name" :style="{zIndex: activeName == item.name ? 1 : '-1'}">
+          <div v-for="item in sourceCode" :key="item.name">
+            <div class="source-pane" v-show="activeName == item.name">
               <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
             </div>
           </div>
@@ -484,10 +484,10 @@ export default {
       let scrollLeft = el1.offsetLeft
       const containWidth = el.offsetWidth
       console.log(scrollLeft, containWidth)
-      // let resultSpot = scrollLeft - 160 - containWidth / 2 
+      let resultSpot = scrollLeft - 160 - containWidth / 2 
       activeName.value = name
       activeIndex.value = index
-      // el.scrollTo((resultSpot + 50), 100)
+      el.scrollTo((resultSpot + 50), 100)
     }
     const domMove = (i) => {
       let el = document.querySelector('.source-tabs-w')
@@ -976,20 +976,10 @@ export default {
     }
   }
 }
-.source-pane-w {
-  height: calc(80vh - 40px);
-  position: relative;
-  border-radius: 0 0 10px 10px;
-}
 .source-pane {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: calc(80vh - 40px);
   overflow: auto;
   border-radius: 0 0 10px 10px;
-  z-index: -1;
 }
 .ft {
   justify-content: flex-end;
