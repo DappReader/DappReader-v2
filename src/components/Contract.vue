@@ -587,8 +587,11 @@ export default {
           let resultData = null
           let tx = null
           let resultState = ''
+          let sinfo = JSON.parse(JSON.stringify(sendInfo.value))
+          sinfo.gasPrice = ethers.utils.hexlify(sinfo.gasPrice || 0)
+          sinfo.value = ethers.utils.hexlify(sinfo.value || 0)
           try {
-            tx = await C[abiItem.name](...param, sendInfo.value)
+            tx = await C[abiItem.name](...param, sinfo)
             resultState = 'success'
           } catch (error) {
             console.error(error)
