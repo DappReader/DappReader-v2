@@ -482,10 +482,10 @@ export default {
       let scrollLeft = el1.offsetLeft
       const containWidth = el.offsetWidth
       console.log(scrollLeft, containWidth)
-      let resultSpot = scrollLeft - 160 - containWidth / 2 
+      // let resultSpot = scrollLeft - 160 - containWidth / 2 
       activeName.value = name
       activeIndex.value = index
-      el.scrollTo((resultSpot + 50), 100)
+      // el.scrollTo((resultSpot + 50), 100)
     }
     const domMove = (i) => {
       let el = document.querySelector('.source-tabs-w')
@@ -859,6 +859,7 @@ export default {
   height: 34px;
   padding-right: 60px;
   box-sizing: border-box;
+  z-index: 2;
 }
 .source-tabs-right {
   position: absolute;
@@ -1001,6 +1002,7 @@ export default {
   height: calc(80vh - 40px);
   position: relative;
   border-radius: 0 0 10px 10px;
+  z-index: 1;
 }
 .source-pane {
   position: absolute;
