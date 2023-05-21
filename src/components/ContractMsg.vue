@@ -206,8 +206,8 @@
             </div>
           </div>
           
-          <div v-for="item in sourceCode" :key="item.name">
-            <div class="source-pane" v-if="activeName == item.name">
+          <div class="source-pane-w">
+            <div class="source-pane" v-for="item in sourceCode" :key="item.name" :style="{zIndex: activeName == item.name ? 1 : '-1'}">
               <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
             </div>
           </div>
@@ -295,7 +295,9 @@ export default {
         setData(CD)
       }
       if (sources) {
-        console.log(contractData.value)
+        sources.forEach(e => {
+          e.name = e.name.split('/').pop()
+        })
         sourceCode.value = sources
         activeName.value = sources[0].name
         activeIndex.value = 0
@@ -335,8 +337,9 @@ export default {
               source = JSON.parse(source)
               let sources = source.sources
               for (let k in sources) {
+                let name = k.split('/').pop()
                 let item = {
-                  name: k,
+                  name: name,
                   content: sources[k].content
                 }
                 sourcesArr.push(item)
@@ -973,10 +976,20 @@ export default {
     }
   }
 }
-.source-pane {
+.source-pane-w {
   height: calc(80vh - 40px);
+  position: relative;
+  border-radius: 0 0 10px 10px;
+}
+.source-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: auto;
   border-radius: 0 0 10px 10px;
+  z-index: -1;
 }
 .ft {
   justify-content: flex-end;
