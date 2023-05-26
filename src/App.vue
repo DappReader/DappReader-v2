@@ -28,6 +28,7 @@ export default {
     })
     const fn = () => {
       let ethereum = window.ethereum
+      if (!ethereum) return
       ethereum.on("accountsChanged", (accounts) => {
         console.log("账号切换", accounts[0])
         if (!accounts[0]) {
