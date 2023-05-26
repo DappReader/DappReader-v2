@@ -440,11 +440,12 @@ export default {
       }
     })
 
+    window.onerror = e => console.log(e)
+
     window.onresize = () =>{
       return (() => {
         window.screenwidth = document.body.clientWidth
         let screenwidth = window.screenwidth
-        console.log(screenwidth)
         if (screenwidth < 1680) {
           isShowHd.value = true
           contractRef.value.style.height = 'calc(100% - 124px)'
@@ -538,6 +539,12 @@ export default {
           data = ethers.utils.formatUnits(item, 0)
         } else if (e.type == 'bool') {
           data = item ? 'true' : 'false'
+        } else {
+          try {
+            data = convertBigNumber(item)
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
       return data
@@ -598,12 +605,21 @@ export default {
           if (abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') {
             let res
             let outputs = abiItem.outputs
+            console.log('outputs', outputs)
             if (outputs.length == 1) {
               if (outputs[0].type == 'uint256') {
+                console.log(typeof tx, tx)
                 tx = ethers.utils.formatUnits(tx, 0)
               } else if (outputs[0].type == 'bool') {
                 console.log(tx)
                 tx = tx ? 'true' : 'false'
+              } else {
+                try {
+                  tx = convertBigNumber(tx)
+                  console.log('tx', tx)
+                } catch (error) {
+                  console.log(error)
+                }
               }
               res = tx
             } else {
@@ -646,6 +662,28 @@ export default {
           showSpin.value = false
         }
       }
+    }
+
+    const convertBigNumber = (obj) => {
+      let data = JSON.parse(JSON.stringify(obj))
+      if (typeof data === 'object') {
+        console.log(data, Array.isArray(data))
+        if (Array.isArray(data)) {
+          for (let i = 0; i < data.length; i++) {
+            data[i] = convertBigNumber(data[i]);
+          }
+        } else {
+          console.log(2)
+          if (data._isBigNumber || data.type == 'BigNumber') {
+            data = ethers.utils.formatUnits(data, 0)
+          } else {
+            for (let key in data) {
+              data[key] = convertBigNumber(data[key])
+            }
+          }
+        }
+      }
+      return data
     }
 
     const setResult = async (result) => {
