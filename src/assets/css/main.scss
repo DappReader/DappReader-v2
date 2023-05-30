@@ -108,13 +108,8 @@ $mainColor: #1C42FF;
   width: 500px;
 }
 
-.n-tabs .n-tab-pane {
-  color: rgba(133, 141, 153, 0) !important;
-}
 
-.n-tabs-pad {
-  display: none !important;
-}
+
 
 .form-input {
   margin-top: 2px;
@@ -243,65 +238,10 @@ $mainColor: #1C42FF;
   }
 }
 
-.n-tabs-wrapper {
-  background: #0A0A0C !important;
-  border-radius: 10px;
-}
-
-.n-tabs .n-tabs-tab-wrapper {
-  // width: 140px !important;
-}
-
-.n-tabs-tab__label {
-  width: 100%;
-  white-space: noworp;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.n-tabs-tab-pad {
-  display: none !important;
-}
-
-.n-tabs .n-tabs-tab {
-  transition: none !important;
-}
-
-.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab {
-  background: #2C2D34;
-  border-radius: 0px 0px 0px 0px !important;
-  position: relative;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    height: 12px;
-    left: 0;
-    margin: auto;
-    background: rgba(133, 141, 153, 0.2);
-  }
-}
-
-.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab.n-tabs-tab--active {
-  border-radius: 10px 10px 0px 0px !important;
-  background: #0A0A0C;
-  position: relative;
-  right: -1px;
-  z-index: 9;
-  &::after {
-    display: none !important;
-  }
-}
-
-.n-tabs .n-tabs-nav-scroll-wrapper {
-  background: #15141B;
-}
-
-.n-tabs .n-tabs-nav-scroll-content {
-  max-width: calc(100vw - 248px) !important;
-}
+// .n-tabs-wrapper {
+//   background: #0A0A0C !important;
+//   border-radius: 10px;
+// }
 
 .v-x-scroll {
   width: 50%;
