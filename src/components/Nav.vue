@@ -182,7 +182,12 @@ export default {
           const apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
           const fetcher = (...args) => fetch(...args).then((res) => res.json())
           let chain = chainsOptions.filter(e => e.chainId == chainId.value)[0]
-          let endpointURL = chain.endpointURL   
+          console.log(chainsOptions)
+          let endpointURL = chain?.endpointURL
+          if (!endpointURL) {
+            message.error('The current chain is not supported')
+            return
+          }
           let abiData = await fetcher(`${endpointURL}/api?module=contract&action=getabi&address=${contractAddress.value}&apikey=${apiKey}`)
           let result = abiData.result
           if (abiData.status == 0) {
@@ -199,6 +204,7 @@ export default {
           contractAddress.value = ''
           searchLoading.value = false
         } catch (error) {
+          console.log(error)
           message.error(error)
           searchLoading.value = false
         }

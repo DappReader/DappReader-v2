@@ -782,7 +782,10 @@ export default {
         let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
         readFun.value = readAbi
         writeFun.value = writeAbi
-        contractData.value.content = await getCreatorAddress(contract)
+        if (!contract.contractCreator) {
+          contractData.value.content = await getCreatorAddress(contract)
+          setData(contractData.value.content)
+        }
       }
     }
 
