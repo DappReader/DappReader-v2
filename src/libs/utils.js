@@ -52,7 +52,7 @@ export const getCreatorAddress = async (item) => {
   let chain = item.chain
   let address = item.address
   let response = null
-  if ((chain.chainId == 1 || chain.chainId == 42 || chain.chainId == 10 || chain.chainId == 3 || chain.chainId == 5 || chain.chainId == 11155111)) {
+  if ((chain.chainId == 1 || chain.chainId == 42 || chain.chainId == 3 || chain.chainId == 5 || chain.chainId == 11155111)) {
     let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
     let chain = item.chain
     let name = 'api'
@@ -61,7 +61,6 @@ export const getCreatorAddress = async (item) => {
     else if (chain.chainId == 5) name = 'api-goerli'
     else if (chain.chainId == 11155111) name = 'api-sepolia'
     else if (chain.chainId == 1) name = 'api'
-    else if (chain.chainId == 10) name = 'api-optimistic'
     else name = ''
     response = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
     
@@ -69,6 +68,8 @@ export const getCreatorAddress = async (item) => {
     response = await fetcher(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
   } else if (chain.chainId == 137) {
     response = await fetcher(`https://api.polygonscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
+  } else if (chain.chainId == 10) {
+    response = await fetcher(`https://api-optimistic.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${address}`)
   }
   if (response && response.status === '1' && response.result && response.result.length > 0) {
     const contracts = response.result
