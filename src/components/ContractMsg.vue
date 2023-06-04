@@ -16,9 +16,13 @@
           <div class="info-item-value">{{contract.createAt ? createAt(contract.createAt) : '--'}}</div>
         </div>
         <div class="info-line"></div>
-        <div class="info-item flex-center info-copy" @click="copy(contract.address)">
+        <div class="info-item flex-center info-copy" @click="toEtherscanAddress(contract.address, contract.chain)">
           <div class="info-item-key">contract address</div>
-          <div class="info-item-value flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+          <div class="info-item-value info-item-value-a flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt="" @click.stop="copy(contract.address)"></div>
+        </div>
+        <div v-if="contract.contractCreator" class="info-item flex-center info-copy" @click="toEtherscanAddress(contract.contractCreator, contract.chain)">
+          <div class="info-item-key">contract address</div>
+          <div class="info-item-value info-item-value-a flex-center"><span>{{formatAddr(contract.contractCreator)}}</span> <img src="@/assets/images/copy.svg" alt="" @click.stop="copy(contract.contractCreator)"></div>
         </div>
         <div class="info-line"></div>
         <div class="info-item flex-center">
@@ -744,6 +748,15 @@ export default {
             width: 16px;
             margin-left: 12px;
             cursor: pointer;
+          }
+          &.info-item-value-a {
+            span {
+              cursor: pointer;
+              &:hover {
+                color: #0784C3;
+              }
+            }
+            
           }
         }
       }

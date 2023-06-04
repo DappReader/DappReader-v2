@@ -352,7 +352,7 @@ import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
 import { setLs } from '@/service/service'
-import { formatDate, formatAddress } from '../libs/utils'
+import { formatDate, formatAddress, getCreatorAddress } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
 import "vue3-json-viewer/dist/index.css"
 import { useUtils } from '../hooks/useUtils'
@@ -782,6 +782,7 @@ export default {
         let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
         readFun.value = readAbi
         writeFun.value = writeAbi
+        contractData.value.content = await getCreatorAddress(contract)
       }
     }
 

@@ -90,10 +90,21 @@
     <div class="desc">{{contract.remark}}</div>
     <div class="flex-center-sb info" v-if="!isIframe">
       <div class="flex-center">
-        <div class="info-item flex-center" @click="copy(contract.address)">
+        <div class="info-item flex-center" @click="toEtherscanAddress(contract.address, contract.chain)">
           <div class="info-key">Contract Address</div>
-          <div class="info-value">{{getAddress(contract.address)}}</div>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="info-value info-value-a">{{getAddress(contract.address)}}</div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="copy(contract.address)">
+            <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="info-line" v-if="contract.contractCreator"></div>
+        <div class="info-item flex-center" v-if="contract.contractCreator" @click="toEtherscanAddress(contract.contractCreator, contract.chain)">
+          <div class="info-key">Contract Creator</div>
+          <div class="info-value info-value-a">{{getAddress(contract.contractCreator)}}</div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="copy(contract.contractCreator)">
             <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -105,6 +116,7 @@
           <div class="info-key">Contract Balance</div>
           <div class="info-value">{{balance}}</div>
         </div>
+        
       </div>
       <div v-if="contract.userList && contract.userList.length" class="team flex-center">
         <p>Team Members</p>
@@ -306,6 +318,7 @@ export default {
         else if (chain.chainId == 3) name = 'api-ropsten'
         else if (chain.chainId == 5) name = 'api-goerli'
         else if (chain.chainId == 11155111) name = 'api-sepolia'
+        else if (chain.chainId == 1) name = 'api'
         else name = ''
         if (!name) {
           showLoading.value = false
@@ -758,6 +771,12 @@ export default {
         text-transform: capitalize;
         color: #FFFFFF;
         margin-left: 10px;
+        &.info-value-a {
+          cursor: pointer;
+          &:hover {
+            color: #0784C3;
+          }
+        }
       }
       svg {
         width: 16px;

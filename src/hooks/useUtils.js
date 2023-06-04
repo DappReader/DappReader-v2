@@ -43,7 +43,6 @@ export const useUtils = () => {
   const toEtherscanAddress = (address, chain, type) => {
     let network = chains.filter(e => e.chainId == chain.chainId)[0]
     let host = network.explorers[0]?.url
-    console.log(network, host)
     if (host) {
       let url = `${host}/address/${address}`
       if (type == 'tx') {
