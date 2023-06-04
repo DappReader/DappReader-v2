@@ -21,7 +21,7 @@
           <div class="info-item-value info-item-value-a flex-center"><span>{{formatAddr(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt="" @click.stop="copy(contract.address)"></div>
         </div>
         <div v-if="contract.contractCreator" class="info-item flex-center info-copy" @click="toEtherscanAddress(contract.contractCreator, contract.chain)">
-          <div class="info-item-key">contract address</div>
+          <div class="info-item-key">Creator Address</div>
           <div class="info-item-value info-item-value-a flex-center"><span>{{formatAddr(contract.contractCreator)}}</span> <img src="@/assets/images/copy.svg" alt="" @click.stop="copy(contract.contractCreator)"></div>
         </div>
         <div class="info-line"></div>

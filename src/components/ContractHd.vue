@@ -102,7 +102,7 @@
         </div>
         <div class="info-line" v-if="contract.contractCreator"></div>
         <div class="info-item flex-center" v-if="contract.contractCreator" @click="toEtherscanAddress(contract.contractCreator, contract.chain)">
-          <div class="info-key">Contract Creator</div>
+          <div class="info-key">Creator Address</div>
           <div class="info-value info-value-a">{{getAddress(contract.contractCreator)}}</div>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="copy(contract.contractCreator)">
             <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
