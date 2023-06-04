@@ -387,6 +387,18 @@ $mainColor: #1C42FF;
   border: none !important;
 }
 
+.n-date-panel .n-date-panel-dates .n-date-panel-date.n-date-panel-date--selected {
+  color: #FFFFFF !important;
+}
+
+.n-date-panel .n-date-panel-actions .n-button .n-button__content {
+  color: #FFFFFF !important;
+}
+
+.n-date-panel .n-date-panel-actions .n-button:not(.n-button--disabled):hover {
+  background-color: #4B6CFF !important;
+}
+
 .search-modal {
   position: relative;
   .n-card-header {

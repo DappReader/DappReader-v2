@@ -71,7 +71,12 @@
               <div class="fun-parames-title">Parameters</div>
               <div class="parame-item" v-for="(inputItem, index) in abiItem.inputs" :key="index">
                 <div class="parame-item-hd flex-center-sb">
-                  <div class="parame-name flex-center">{{inputItem.name}} <span>Data type: {{inputItem.type}}</span></div>
+                  <div class="parame-name flex-center">{{inputItem.name}} <span>Data type: {{inputItem.type}}</span> 
+                    <label class="time-w" v-if="inputItem.type == 'uint256'">
+                      <n-date-picker type="datetime" clearable style="opacity: 0;width: 0;height: 0;" @update:value="dateConfirm($event, inputItem.name)" />
+                      <svg t="1685859757627" class="time-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1529" width="16" height="16"><path d="M512 64C264.8 64 64 264.8 64 512s200.8 448 448 448 448-200.8 448-448S759.2 64 512 64z m0 832c-212 0-384-172-384-384s172-384 384-384 384 172 384 384-172 384-384 384z m32-393.6l191.2 110.4-32 55.2L488.8 544H480V256h64v246.4z" p-id="1530" fill="#858d99"></path></svg>
+                    </label>
+                  </div>
                   <div v-if="inputItem.type == 'uint256'" class="conversion flex-center" @click="showConvert('parameData', inputItem.name)">
                     <span>Digital Conversion</span>
                     <img src="@/assets/images/conversion.svg" alt="">
@@ -454,6 +459,10 @@ export default {
           contractRef.value.style.height = 'calc(100% - 2px)'
         }
       })()
+    }
+
+    const dateConfirm = (e, type) => {
+      parameData.value[type] = Math.floor(e / 1000) + ''
     }
 
     const hiddenPopover = () => {
@@ -941,7 +950,8 @@ export default {
       clickConversion,
       showFun,
       getFunHeight,
-      inputParameData
+      inputParameData,
+      dateConfirm
     }
   }
 }
@@ -1208,6 +1218,23 @@ export default {
                 font-size: 12px;
                 line-height: 15px;
                 color: #858D99;
+              }
+            }
+            .time-w {
+              height: 16px;
+              cursor: pointer;
+              margin-left: 12px;
+            }
+            .time-icon {
+              width: 16px;
+              height: 16px;
+              cursor: pointer;
+              position: relative;
+              z-index: 999;
+              &:hover {
+                path {
+                  fill: #FFFFFF;
+                }
               }
             }
             .conversion {
