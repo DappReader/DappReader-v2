@@ -130,5 +130,6 @@ export const getSourceCode = async (contract) => {
       contract.isGetSources = true
     }
   }
+  contract.isGetSources = true
   return contract
 }

@@ -71,12 +71,12 @@ export default {
         localStorage.setItem('inited', 'inited')
       }
 
-      store.commit("setActiveId", activeId)
       store.commit("setResults", results)
       store.commit("setMenuList", menuList)
       store.commit("setContractList", contractList)
       store.commit("setDefaultChains", defaultChains)
       store.commit("setUserInfo", userInfo || {})
+      store.commit("setActiveId", activeId)
     }
     
     onMounted(() => {

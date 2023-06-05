@@ -743,7 +743,6 @@ export default {
           }
         })
       }
-      console.log(contract)
       if (!contract) return
       let token = toRaw(contract.token)
       if (token && token != 'undefined') token = `https://dappreader.com/${token}`
@@ -883,22 +882,15 @@ export default {
     }
 
     watch(activeId, async () => {
-      console.log(activeId.value)
-      if (activeId.value) {
-        getContarctData()
+      if (contractList.value.length && activeId.value) {
         init()
+        getContarctData()
       }
     }, {immediate: true})
 
-    watch(menuList, async () => {
-      if (activeId.value) {
-        getContarctData()
-      }
-    }, {immediate: true, deep: true})
-
-    watch(contractList, async () => {
-      if (activeId.value) {
-        getContarctData()
+    watch(() => contractList.value.filter(e => e.id == activeId.value)[0], async (val) => {
+      if (val && contractData.value?.content && contractData.value.content != val) {
+        contractData.value.content = val
       }
     }, {immediate: true, deep: true})
 
