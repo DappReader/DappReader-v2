@@ -63,7 +63,6 @@ export const getCreatorAddress = async (item) => {
     else if (chain.chainId == 1) name = 'api'
     else name = ''
     response = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
-    
   } else if (chain.chainId == 56) {
     response = await fetcher(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
   } else if (chain.chainId == 137) {
@@ -76,4 +75,57 @@ export const getCreatorAddress = async (item) => {
     item.contractCreator = contracts[0].contractCreator
   }
   return item
+}
+
+export const getSourceCode = async (contract) => {
+  let address = contract.address
+  let chain = contract.chain
+  if (!(chain.chainId == 1 || chain.chainId == 42 || chain.chainId == 3 || chain.chainId == 5 || chain.chainId == 11155111)) {
+    contract.sources = null
+    contract.isGetSources = true
+  } else {
+    let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
+    let name = 'api'
+    if (chain.chainId == 42) name = 'api-kovan' 
+    else if (chain.chainId == 3) name = 'api-ropsten'
+    else if (chain.chainId == 5) name = 'api-goerli'
+    else if (chain.chainId == 11155111) name = 'api-sepolia'
+    else if (chain.chainId == 1) name = 'api'
+    else name = ''
+    if (!name) {
+      contract.sources = null
+    }
+    let data = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`)
+    let result = data.result
+    if (data.status == 1) {
+      result = result[0]
+      if (result.SourceCode) {
+        let source = result.SourceCode
+        let sourcesArr = []
+        if (source[0] == '{') {
+          source = source.slice(1, -1)
+          source = JSON.parse(source)
+          let sources = source.sources
+          for (let k in sources) {
+            let name = k.split('/').pop()
+            let item = {
+              name: name,
+              content: sources[k].content
+            }
+            sourcesArr.push(item)
+          }
+        } else {
+          let item = {
+            name: 'sol.sol',
+            content: source
+          }
+          sourcesArr.push(item)
+        }
+        console.log(sourcesArr)
+        contract.sources = sourcesArr
+        contract.isGetSources = true
+      }
+    }
+  }
+  return contract
 }

@@ -352,7 +352,7 @@ import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
 import { setLs } from '@/service/service'
-import { formatDate, formatAddress, getCreatorAddress } from '../libs/utils'
+import { formatDate, formatAddress, getCreatorAddress, getSourceCode } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
 import "vue3-json-viewer/dist/index.css"
 import { useUtils } from '../hooks/useUtils'
@@ -784,6 +784,10 @@ export default {
         writeFun.value = writeAbi
         if (!contract.contractCreator) {
           contractData.value.content = await getCreatorAddress(contract)
+          setData(contractData.value.content)
+        }
+        if (!contract.isGetSources) {
+          contractData.value.content = await getSourceCode(contract)
           setData(contractData.value.content)
         }
       }

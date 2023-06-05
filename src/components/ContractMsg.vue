@@ -155,6 +155,7 @@
     <DecodeModal ref="decodeModal" :contract="contractData" />
     <GetContractModal ref="getContractModal" @confirm="getContractFun" />
     <TeamModal ref="teamModal" />
+    <SourceCodeModal ref="sourceCodeModal" />
     <n-modal
       v-model:show="showHint"
       :mask-closable="false"
@@ -175,49 +176,6 @@
         </n-spin>
       </div>
     </n-modal>
-    <n-modal
-      v-model:show="showSourceCode"
-      :mask-closable="false"
-      class="custom-card modal-style"
-      preset="card"
-      :style="{width: '70vw',maxWidth: '1408px', 'border-radius': '10px', 'min-height': '200px'}"
-      title="View Source Code"
-    >
-      <n-spin :show="showLoading">
-        <div style="max-height: 80vh; overflow: auto;border-radius: 10px;position: relative;">
-          <div class="source-tabs-b">
-            <div v-if="sourceCode.length && sourceCode.length > 1" class="source-tabs-w">
-              <div class="source-tbas flex-center">
-                <div v-for="(item, index) in sourceCode" :key="item.name" :class="['source-tab-item', activeName == item.name ? 'source-tab-item-activated' : '', index == activeIndex - 1 ? 'source-tab-item-activated-prev' : '']" @click="update(item.name, index)">
-                    <n-tooltip trigger="hover">
-                      <template #trigger>
-                        <div class="source-tab-item-content flex-center-sb">
-                          <span>{{item.name}}</span>
-                        </div>
-                      </template>
-                      {{item.name}}
-                    </n-tooltip>
-                </div>
-              </div>
-            </div>
-            <div class="source-tabs-right flex-center-sb">
-              <svg @click="domMove(1)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11.25 14.25L6 9L11.25 3.75" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <svg @click="domMove(2)" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6.75 3.75L12 9L6.75 14.25" stroke="#858D99" stroke-width="1.6875" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          
-          <div v-for="item in sourceCode" :key="item.name">
-            <div class="source-pane" v-show="activeName == item.name">
-              <pre v-highlightjs="item.content"><code class="javascript" style="border-radius: 0 0 10px 10px;"></code></pre>
-            </div>
-          </div>
-        </div>
-      </n-spin>
-    </n-modal>
   </div>
 </template>
 <script>
@@ -236,6 +194,8 @@ import Avatar from "@/components/Avatar.vue"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
 import { formatDate, formatAddress } from '../libs/utils'
+import SourceCodeModal from '@/components/SourceCodeModal.vue'
+
 export default {
   props: ['contract'],
   components: {
@@ -244,7 +204,8 @@ export default {
     GetContractModal,
     DecodeModal,
     Avatar,
-    TeamModal
+    TeamModal,
+    SourceCodeModal
   },
   setup(props) {
     const store = useStore()
@@ -255,16 +216,16 @@ export default {
     const sourceCode = ref([])
     const shareModal = ref(null)
     const showHint = ref(false)
-    const showSourceCode = ref(false)
     const showLoading = ref(false)
     const getContractModal = ref(null)
+    const sourceCodeModal = ref(null)
     const teamModal= ref(null)
     const decodeModal = ref(null)
     const syncing = ref(false)
     const activeName = ref('')
     const activeIndex = ref(-1)
     const contractData = ref({})
-    const fetcher = (...args) => fetch(...args).then((res) => res.json())
+    
     const { toEtherscanAddress, copy, setData } = useUtils()
     
     const provider = computed(() => {
@@ -290,86 +251,8 @@ export default {
       teamModal.value.show(props.contract || {})
     }
 
-    const getSourceCode = async (address, chain, sources) => {
-      showSourceCode.value = true
-      if (!(chain.chainId == 1 || chain.chainId == 42 || chain.chainId == 3 || chain.chainId == 5 || chain.chainId == 11155111)) {
-        sources = null
-        let CD = props.contract
-        CD.sources = null
-        setData(CD)
-      }
-      if (sources) {
-        sources.forEach(e => {
-          e.name = e.name.split('/').pop()
-        })
-        sourceCode.value = sources
-        activeName.value = sources[0].name
-        activeIndex.value = 0
-      } else {
-        showLoading.value = true
-        let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
-        let name = ''
-        if (chain.chainId == 1) name = 'api' 
-        else if (chain.chainId == 42) name = 'api-kovan' 
-        else if (chain.chainId == 3) name = 'api-ropsten'
-        else if (chain.chainId == 5) name = 'api-goerli'
-        else if (chain.chainId == 11155111) name = 'api-sepolia'
-        if (!name) {
-          showLoading.value = false
-          showSourceCode.value = false
-          message.error('The current chain is not supported')
-          return
-        }
-        let data = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`)
-        let result = data.result
-        if (data.status == 0) {
-          showLoading.value = false
-          showSourceCode.value = false
-          if (result == 'Contract source code not verified') {
-            message.error('The current contract is not open source, can not be obtained through etherscan')
-          } else {
-            message.error(result)
-          }
-        } else if (data.status == 1) {
-          result = result[0]
-          if (result.SourceCode) {
-            let source = result.SourceCode
-            console.log(source[0])
-            let sourcesArr = []
-            if (source[0] == '{') {
-              source = source.slice(1, -1)
-              source = JSON.parse(source)
-              let sources = source.sources
-              for (let k in sources) {
-                let name = k.split('/').pop()
-                let item = {
-                  name: name,
-                  content: sources[k].content
-                }
-                sourcesArr.push(item)
-              }
-            } else {
-              let item = {
-                name: 'sol.sol',
-                content: source
-              }
-              sourcesArr.push(item)
-            }
-            console.log(sourcesArr)
-            sourceCode.value = sourcesArr
-            activeName.value = sourcesArr[0].name
-            activeIndex.value = 0
-            let CD = props.contract
-            CD.sources = sourcesArr
-            setData(CD)
-            showLoading.value = false
-          } else {
-            showLoading.value = false
-            showSourceCode.value = false
-            message.error('The current contract is not open source, can not be obtained through etherscan')
-          }
-        }
-      }
+    const getSourceCode = async () => {
+      sourceCodeModal.value.show(props.contract)
     }
 
     const getContractFun = () => {
@@ -579,6 +462,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      sourceCodeModal,
       teamModal,
       decodeModal,
       balance,
@@ -587,7 +471,6 @@ export default {
       address,
       getContractModal,
       showLoading,
-      showSourceCode,
       activeIndex,
       activeName,
       sourceCode,
