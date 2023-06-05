@@ -125,6 +125,9 @@ export const getSourceCode = async (contract) => {
         contract.sources = sourcesArr
         contract.isGetSources = true
       }
+    } else {
+      contract.sources = null
+      contract.isGetSources = true
     }
   }
   return contract
