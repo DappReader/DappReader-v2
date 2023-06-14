@@ -82,7 +82,7 @@
                     <img src="@/assets/images/conversion.svg" alt="">
                   </div>
                 </div>
-                <div v-if="inputItem.type == 'tuple'">
+                <div v-if="inputItem.type.indexOf('tuple') > -1">
                   <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
                 </div>
                 <div v-else>
@@ -580,7 +580,10 @@ export default {
             let name = inputs[i].name
             let type = inputs[i].type
             let item = parameData.value[name]
-            if (type.indexOf("[]") > -1) {
+            if (type == 'tuple[]') {
+              item = [[...Object.values(item)]]
+              console.log('tuple', item)
+            } else if (type.indexOf("[]") > -1) {
               item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
               item = item.split(",")
               item = item.filter((e) => e && e.trim())
@@ -604,6 +607,7 @@ export default {
           let tx = null
           let resultState = ''
           try {
+            console.log(...param)
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
@@ -667,6 +671,7 @@ export default {
             
           }
         } catch (error) {
+          console.log(error)
           message.error(error)
           showSpin.value = false
         }

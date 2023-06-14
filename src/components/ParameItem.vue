@@ -72,7 +72,10 @@ export default {
     watch(() => parameData.value, (val) => {
       let type = props.inputItem.type
       let item = JSON.parse(JSON.stringify(val[props.inputItem.name]))
-      if (type.indexOf("[]") > -1) {
+      if (type == 'tuple[]') {
+        item = [[...Object.values(item)]]
+        console.log('tuple', item)
+      } else if (type.indexOf("[]") > -1) {
         item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
         item = item.split(",")
         item = item.filter((e) => e && e.trim())
