@@ -83,8 +83,8 @@ axios.interceptors.response.use(response => {
  * @returns {Promise}
  */
 
-export const post = (url, data = {}) => {
-  url = `${baseURL}${url}`
+export const post = (url, data = {}, host) => {
+  url = host ? `${host}${url}` : `${baseURL}${url}`
   return new Promise((resolve,reject) => {
     axios.post(url, data).then(response => {
       resolve(response.data)
