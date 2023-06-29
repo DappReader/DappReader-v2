@@ -255,7 +255,12 @@ export default {
     }
 
     const getSourceCode = async () => {
-      sourceCodeModal.value.show(props.contract)
+      if (props.contract.sources && props.contract.sources.length) {
+        sourceCodeModal.value.show(props.contract)
+      } else {
+        // 弹窗提示
+        message.info('The current contract is not open source')
+      }
     }
 
     const getContractFun = () => {
