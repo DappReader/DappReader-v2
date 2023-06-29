@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="showSourceCode" :mask-closable="false" class="custom-card modal-style" preset="card"
+  <n-modal v-model:show="showSourceCode" :on-after-leave="afterLeave" :mask-closable="false" class="custom-card modal-style" preset="card"
     :style="{ width: '90vw', 'min-height': '200px', height: '90vh' }" title="View Source Code">
     <div class="code-content">
       <n-tabs
@@ -32,7 +32,6 @@
             <div v-if="item.report" class="ai-report" v-html="formatReport(item.report)"></div>
           </div>
         </div>
-        
       </n-tab-pane>
       </n-tabs>
     </div>
@@ -46,11 +45,13 @@ import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { solidity } from '@replit/codemirror-lang-solidity';
 import { getReport } from '../http/abi'
 import { useUtils } from '../hooks/useUtils'
+import { useMessage } from 'naive-ui'
 export default {
   components: {
     Codemirror
   },
   setup() {
+    const message = useMessage()
     const extensions = [solidity, vscodeDark]
     const { setData } = useUtils()
     const showSourceCode = ref(false)
@@ -89,8 +90,14 @@ export default {
           contractData.value.sources = sources
           setData(contractData.value)
           aiLoading.value = false
+        } else {
+          aiLoading.value = false
+          message.error(res.msg)
         }
         
+      }).catch(err => {
+        aiLoading.value = false
+        message.error(err)
       })
     }
     const formatReport = (code) => {
@@ -101,6 +108,12 @@ export default {
         code = code.replace(/(<br \/>)+/g, '<br />')
       }
       return code
+    }
+    const afterLeave = () => {
+      showSourceCode.value = false
+      activeName.value = ''
+      activeIndex.value = 0
+      sourcesList.value = []
     }
     return {
       code: ``,
@@ -115,7 +128,8 @@ export default {
       aiLoading,
       show,
       getReportFun,
-      formatReport
+      formatReport,
+      afterLeave
     }
   }
 }

@@ -86,7 +86,8 @@ export default {
             console.log(1)
             getContractModal.value.showModal = true
           } else if (res.openSourceType == 'Team') {
-            if (userInfo.value && userInfo.value.nickname) {
+            let token = localStorage.getItem('token') || ''
+            if (userInfo.value && userInfo.value.nickname && token) {
               getContractFun()
             } else {
               if (!address.value) {

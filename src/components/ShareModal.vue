@@ -189,7 +189,8 @@ export default {
       })
     }
     const share = async () => {
-      if (!userInfo.value.nickname) {
+      let token = localStorage.getItem('token') || ''
+      if (!userInfo.value.nickname || !token) {
         store.commit('login')
         return
       }
