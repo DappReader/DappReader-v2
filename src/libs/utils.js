@@ -174,9 +174,17 @@ export const getSourceCode = async (contract) => {
         console.log(sourcesArr)
         contract.sources = sourcesArr
         contract.isGetSources = true
-        contract.abi = JSON.parse(result.ABI)
-        console.log(JSON.parse(result.ABI))
-        contract.isUpdate = false
+        let abi = result.ABI
+        let cAbi = contract.abi
+        if (abi && cAbi && abi != JSON.stringify(cAbi)) {
+          if (contract.isUpdate) {
+            contract.isUpdate = false
+            contract.abi = JSON.parse(result.ABI)
+          } else {
+            contract.isUpdate = true
+          }
+        }
+        
       } else {
         contract.sources = null
         contract.isGetSources = true
