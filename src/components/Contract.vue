@@ -1,5 +1,23 @@
 <template>
   <div class="contract-content">
+    <div v-if="contractData.content?.isUpdate" class="update-section flex-center-center">
+      <n-dialog
+        :showIcon="false"
+        :closable="false"
+        title=""
+        content="The current smart contract has been upgraded. Would you like to update the contract information?"
+        negative-text="No"
+        positive-text="Yes"
+        @positive-click="updateSourceCode"
+        class="update-section-content"
+      />
+      <!-- <div class="update-section-content">
+        <div class="update-title">The current smart contract has been upgraded. Would you like to update the contract information?</div>
+        <div class="update-btn" @click="updateSourceCode">Yes</div>
+        <div class="update-btn" >No</div>
+      </div> -->
+      
+    </div>
     <div v-if="isShowHd || isIframe" style="margin-bottom: 24px;">
       <ContractHd v-if="contractData" :contract="contractData.content"  />
     </div>
@@ -352,7 +370,7 @@ import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
 import { setLs } from '@/service/service'
-import { formatDate, formatAddress, getCreatorAddress, getSourceCode } from '../libs/utils'
+import { formatDate, formatAddress, getCreatorAddress, getSourceCode, getContractInfo } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
 import "vue3-json-viewer/dist/index.css"
 import { useUtils } from '../hooks/useUtils'
@@ -562,6 +580,10 @@ export default {
     const runFunction = async (abiItem) => {
       running = false
       let contract = contractData.value.content
+      if (contract.isUpdate) {
+        message.error('Please update the contract first')
+        return
+      }
       if (!provider.value) {
         getProvider()
         return
@@ -738,6 +760,21 @@ export default {
       })
     }
 
+    const updateSourceCode = async () => {
+      contractData.value.content = await getSourceCode(contractData.value.content)
+      setData(contractData.value.content)
+      if (!contractData.value.content.sources) {
+        message.error('Contract source code not verified')
+      } else {
+        let abi = contractData.value.content.abi || []
+        let list = abi.filter((e) => e.type == "function")
+        let readAbi = list.filter((e) => (e.stateMutability != "nonpayable" && e.stateMutability != "payable"))
+        let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
+        readFun.value = readAbi
+        writeFun.value = writeAbi
+      }
+    }
+
     const getContarctData = async () => {
       let contract = contractList.value.filter(e => e.id == activeId.value)[0]
       for (let i = 0; i < menuList.value.length; i++) {
@@ -786,10 +823,17 @@ export default {
         let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
         readFun.value = readAbi
         writeFun.value = writeAbi
+        console.log(contract)
+
         if (!contract.contractCreator) {
           contractData.value.content = await getCreatorAddress(contract)
           setData(contractData.value.content)
         }
+        if (contract.isProxy || !contract.adminAddress) {
+          contractData.value.content = await getContractInfo(contract)
+          setData(contractData.value.content)
+        }
+
         if (!contract.isGetSources) {
           contractData.value.content = await getSourceCode(contract)
           setData(contractData.value.content)
@@ -956,7 +1000,8 @@ export default {
       showFun,
       getFunHeight,
       inputParameData,
-      dateConfirm
+      dateConfirm,
+      updateSourceCode,
     }
   }
 }
@@ -968,6 +1013,41 @@ export default {
   width: 100%;
   height: calc(100vh - 60px);
   overflow: hidden;
+  position: relative;
+  .update-section {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    .update-section-content {
+      width: 580px;
+      background: #23242A;
+      .update-title {
+        font-size: 16px;
+        color: #fff;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .update-btn {
+        margin-right: 0;
+        margin-left: auto;
+        font-size: 12px;
+        color: #fff;
+        line-height: 1.6;
+        width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #375CFF;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 30px;
+
+      }
+    }
+  }
   .contract-main {
     height: calc(100% - 189px);
     .collapse {

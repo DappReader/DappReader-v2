@@ -454,7 +454,7 @@ export default {
         balance.value = 0
       }
       contractData.value = props.contract
-      if (props.contract.isImport && props.contract.token) {
+      if (props.contract?.isImport && props.contract?.token) {
         checkContractInfo({token: props.contract.token}).then(res => {
           if (!contractData.value.authorAddress) {
             contractData.value.authorAddress = res.authorAddress
