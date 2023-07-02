@@ -183,6 +183,9 @@ export const getSourceCode = async (contract) => {
           } else {
             contract.isUpdate = true
           }
+        } else {
+          contract.abi = JSON.parse(result.ABI)
+          contract.isUpdate = false
         }
         
       } else {
