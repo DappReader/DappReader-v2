@@ -786,6 +786,8 @@ export default {
           contractMsg.value.isRefreshContract = false
         }
       } else {
+        contractData.value.content.verified = 0
+        setData(contractData.value.content)
         if (contractHd.value) {
           contractHd.value.isRefreshContract = false
         }
