@@ -41,7 +41,7 @@
       </n-form-item>
       <n-alert v-if="formData.isProxy" title="Proxy Contract" :type="formData.isGetSources ? formData.abi ? 'success' : 'error' : 'info'" style="margin-bottom:16px">
         Proxy Address: {{ formData.proxyAddress }}
-        <p v-if="formData.isGetSources && formData.abi">ABI has been poured from Etherscan</p>
+        <p v-if="formData.isGetSources && formData.abi">ABI has been pulled from Etherscan</p>
         <p v-if="formData.isGetSources && !formData.abi">Contract source code not verified</p>
       </n-alert>
       <n-form-item show-require-mark label="Import ABI" >
