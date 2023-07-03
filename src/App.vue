@@ -1,10 +1,12 @@
 <template>
   <n-config-provider :theme="darkTheme" :theme-overrides="darkThemeOverrides">
-    <n-message-provider>
-      <n-dialog-provider>
-        <router-view />
-      </n-dialog-provider>
-    </n-message-provider>
+    <n-notification-provider placement="bottom-right">
+      <n-message-provider>
+        <n-dialog-provider>
+          <router-view />
+        </n-dialog-provider>
+      </n-message-provider>
+    </n-notification-provider>
   </n-config-provider>
 </template>
 <script>

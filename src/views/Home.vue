@@ -8,7 +8,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
@@ -18,6 +18,7 @@ import Main from '../components/Main.vue'
 import GetContractModal from '../components/GetContractModal.vue'
 import { checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
+import { useNotification } from "naive-ui"
 export default {
   name: 'Home',
   components: {
@@ -32,6 +33,7 @@ export default {
     const router = useRouter()
     const { setData } = useUtils()
     const { getProvider } = useIsActivating()
+    const notification = useNotification();
     const message = useMessage()
     const menuDom = ref(null)
     const getContractModal = ref(null)
@@ -106,6 +108,19 @@ export default {
     const confirm = (e) => {
       getContractFun(e)
     }
+    onMounted(() => {
+      let isNotify = localStorage.getItem('isNotify') || ''
+      if (!isNotify) {
+        notification.info({
+          content: "Let's play together",
+          meta: () => <p style={{lineHeight: 1.4}}>Our Discord channel is now open! Welcome everyone to join and build together! <a style={{color: '#0784C3'}} href='https://discord.gg/sJNpCehep' target="_blank">https://discord.gg/sJNpCehep</a></p>,
+          keepAliveOnHover: true,
+          onClose: () => {
+            localStorage.setItem('isNotify', true)
+          }
+        })
+      }
+    })
     watch(userInfo, () => {
       let token = route.params.token
       if (token) {
