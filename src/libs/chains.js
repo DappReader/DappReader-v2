@@ -317,7 +317,7 @@ export const chainsRpc = [{
   chain: "BSC",
   name: "Binance Smart Chain Mainnet",
   icon: "binance",
-  rpc: "https://bsc-dataseed.binance.org/"
+  rpc: "https://rpc.ankr.com/bsc"
 }, {
   chainId: 11155111,
   chain: "ETH",

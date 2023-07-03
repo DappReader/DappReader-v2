@@ -77,9 +77,9 @@ export const getCreatorAddress = async (item) => {
     else name = ''
     response = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
   } else if (chain.chainId == 56) {
-    response = await fetcher(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
+    response = await fetcher(`https://api.bscscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}`)
   } else if (chain.chainId == 137) {
-    response = await fetcher(`https://api.polygonscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}&apikey=${apiKey}`)
+    response = await fetcher(`https://api.polygonscan.com/api?module=contract&action=getcontractcreation&contractaddresses=${address}`)
   } else if (chain.chainId == 10) {
     response = await fetcher(`https://api-optimistic.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${address}`)
   }
@@ -108,6 +108,7 @@ export const getContractInfo = async (item) => {
       get_address(proxy_address, impl_slot), 
       get_address(proxy_address, eip1822_slot)
     ])
+    console.log(res)
     let admin_address = res[0]
     let eip1967_address = res[1]
     let eip1822_address = res[2]
