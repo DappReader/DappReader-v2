@@ -39,10 +39,10 @@
       <n-form-item show-require-mark label="Contract Address" >
         <n-input v-model:value="formData.address" class="form-input" />
       </n-form-item>
-      <n-alert v-if="formData.isProxy" title="Proxy Contract" :type="formData.isGetSources ? formData.abi ? 'success' : 'error' : 'info'" style="margin-bottom:16px">
+      <n-alert v-if="formData.isProxy" title="Proxy Contract" :type="formData.isGetSources ? formData.sources ? 'success' : 'error' : 'info'" style="margin-bottom:16px">
         Proxy Address: {{ formData.proxyAddress }}
-        <p v-if="formData.isGetSources && formData.abi">ABI has been pulled from Etherscan</p>
-        <p v-if="formData.isGetSources && !formData.abi">Contract source code not verified</p>
+        <p v-if="formData.isGetSources && formData.sources">ABI has been pulled from Etherscan</p>
+        <p v-if="formData.isGetSources && !formData.sources">Contract source code not verified</p>
       </n-alert>
       <n-form-item show-require-mark label="Import ABI" >
         <n-input type="textarea"

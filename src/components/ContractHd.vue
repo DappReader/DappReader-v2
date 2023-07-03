@@ -47,7 +47,14 @@
             </clipPath>
             </defs>
           </svg>
-          <span>Source Code</span>
+          <div class="span">
+            <p>Source Code</p>
+            <p style="font-size: 10px;color: #F43658;">AI Audit</p>
+          </div>
+        </div>
+        <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-fill" @click="refreshContract">
+          <svg :class="[isRefreshContract ? 'refresh' : '']" t="1688392730493" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4332" width="20" height="20"><path d="M938.336973 255.26894c-16.685369-6.020494-35.090879 2.752226-40.939358 19.437594l-24.770032 69.493701c-29.070385-65.537376-74.998152-123.162103-133.48295-166.337645-185.947253-137.611288-450.848984-100.112212-590.180413 83.942886C81.534688 350.908785 52.980346 460.653788 68.805644 570.742819c15.825298 110.605073 74.48211 208.481102 164.789518 275.394591 75.686209 55.904586 164.273476 83.082815 252.172686 83.082815 128.494541 0 255.26894-57.624727 338.007727-166.853687 36.639006-48.335965 61.581052-102.348396 74.48211-160.833193 3.78431-17.373425-7.224593-34.402822-24.426004-38.187133-17.201411-3.78431-34.402822 7.052579-38.187133 24.426004-10.836889 49.36805-31.994625 95.123803-62.957164 135.891147-118.173694 156.016798-342.996136 187.839409-500.90509 70.869814-76.546279-56.592642-126.086343-139.33143-139.503444-232.907106-13.417101-93.059634 10.664875-185.775239 67.77356-261.11742C318.05409 144.491853 542.704519 112.497228 700.785486 229.466823c57.280699 42.315471 100.112212 100.972283 123.334117 167.197715l-110.261045-43.003528c-16.513355-6.364522-35.090879 1.720141-41.627415 18.233496-6.536536 16.513355 1.720141 35.090879 18.233496 41.627415l162.38132 63.473207c3.78431 1.548127 7.740635 2.236183 11.69696 2.236183 0.516042 0 1.032085-0.172014 1.548127-0.172014 1.204099 0.172014 2.408198 0.688056 3.612296 0.688056 13.245087 0 25.630102-8.256677 30.274483-21.32975l57.796741-161.693264C963.623047 279.694944 955.022342 261.289434 938.336973 255.26894z" fill="#858D99" p-id="4333"></path></svg>
+          <span>Refresh Proxy Contract</span>
         </div>
         <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-0670A6" @click="toEtherscanAddress(contract.address, contract.chain)">
           <img src="@/assets/images/show.svg" alt="">
@@ -87,7 +94,15 @@
         </div>
       </div>
     </div>
-    <div class="desc">{{contract.remark}}</div>
+    <div class="desc flex-center" v-if="contract.isProxy">Proxy contract 
+      <n-popover style="width: 250px;height: 300px;overflow-y: auto;" trigger="click">
+        <template #trigger>
+          <svg t="1688391241143" style="margin-left: 8px;outline:none" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3197" width="16" height="16"><path d="M514.048 54.272q95.232 0 178.688 36.352t145.92 98.304 98.304 145.408 35.84 178.688-35.84 178.176-98.304 145.408-145.92 98.304-178.688 35.84-178.176-35.84-145.408-98.304-98.304-145.408-35.84-178.176 35.84-178.688 98.304-145.408 145.408-98.304 178.176-36.352zM515.072 826.368q26.624 0 44.544-17.92t17.92-43.52q0-26.624-17.92-44.544t-44.544-17.92-44.544 17.92-17.92 44.544q0 25.6 17.92 43.52t44.544 17.92zM567.296 574.464q-1.024-16.384 20.48-34.816t48.128-40.96 49.152-50.688 24.576-65.024q2.048-39.936-8.192-74.752t-33.792-59.904-60.928-39.936-87.552-14.848q-62.464 0-103.936 22.016t-67.072 53.248-35.84 64.512-9.216 55.808q1.024 26.624 16.896 38.912t34.304 12.8 33.792-10.24 15.36-31.232q0-12.288 7.68-30.208t20.992-34.304 32.256-27.648 42.496-11.264q46.08 0 73.728 23.04t25.6 57.856q0 17.408-10.24 32.256t-26.112 28.672-33.792 27.648-33.792 28.672-26.624 32.256-11.776 37.888l1.024 38.912q0 15.36 14.336 29.184t37.888 14.848q23.552-1.024 37.376-15.36t12.8-32.768l0-24.576z" p-id="3198" fill="#858D99"></path></svg>
+        </template>
+        <span style="line-height: 1.4">Proxy contract is a contract which delegates calls to another contract. To interact with the actual contract you have to go through the proxy, and the proxy knows which contract to delegate the call to (the target). <br />A proxy pattern is used when you want upgradability for your contracts. This way the proxy contract stays immutable, but you can deploy a new contract behind the proxy contract - simply change the target address inside the proxy contract. <br /> Therefore it's a bit dangerous to use a proxy contract, since there are no guarantees that the underlying (target) contract hasn't been changed to a malicious one. There is no strict definition on how to detect a proxy contract, but basically it's anything that delegates the functionality to another contract. You have to analyze the source code to be able to decide.</span>
+      </n-popover>
+    </div>
+    <div class="desc" v-if="contract.remark">{{contract.remark}}</div>
     <div class="flex-center-sb info" v-if="!isIframe">
       <div class="flex-center">
         <div class="info-item flex-center" @click="toEtherscanAddress(contract.address, contract.chain)">
@@ -99,6 +114,18 @@
             <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
+        </div>
+        <div class="info-line" v-if="contract.proxyAddress"></div>
+        <div v-if="contract.proxyAddress" class="info-item flex-center" @click="toEtherscanAddress(contract.proxyAddress, contract.chain)">
+          <div class="info-key">Implementation Address</div>
+          <div class="info-value info-value-a">{{getAddress(contract.proxyAddress)}}</div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" @click.stop="copy(contract.proxyAddress)">
+            <path d="M8.66667 14L2.66667 14C2.29848 14 2 13.7015 2 13.3333L2 4.66667C2 4.29848 2.29848 4 2.66667 4L6.39053 4C6.56734 4 6.73691 4.07024 6.86193 4.19526L9.13807 6.4714C9.2631 6.59643 9.33334 6.766 9.33334 6.94281V13.3333C9.33334 13.7015 9.03486 14 8.66667 14Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66666 4L6.66666 2.66667C6.66666 2.29848 6.96513 2 7.33332 2L11.0572 2C11.234 2 11.4036 2.07024 11.5286 2.19526L13.8047 4.4714C13.9298 4.59643 14 4.766 14 4.94281V11.3333C14 11.7015 13.7015 12 13.3333 12L9.33332 12" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.33333 7.33333L6.66667 7.33333C6.29848 7.33333 6 7.03486 6 6.66667L6 4" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 5.33333L11.3333 5.33333C10.9651 5.33333 10.6667 5.03486 10.6667 4.66667L10.6667 2" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg @click.stop="refreshContract" :class="[isRefreshContract ? 'refresh' : '']" t="1688392730493" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4332" width="16" height="16"><path d="M938.336973 255.26894c-16.685369-6.020494-35.090879 2.752226-40.939358 19.437594l-24.770032 69.493701c-29.070385-65.537376-74.998152-123.162103-133.48295-166.337645-185.947253-137.611288-450.848984-100.112212-590.180413 83.942886C81.534688 350.908785 52.980346 460.653788 68.805644 570.742819c15.825298 110.605073 74.48211 208.481102 164.789518 275.394591 75.686209 55.904586 164.273476 83.082815 252.172686 83.082815 128.494541 0 255.26894-57.624727 338.007727-166.853687 36.639006-48.335965 61.581052-102.348396 74.48211-160.833193 3.78431-17.373425-7.224593-34.402822-24.426004-38.187133-17.201411-3.78431-34.402822 7.052579-38.187133 24.426004-10.836889 49.36805-31.994625 95.123803-62.957164 135.891147-118.173694 156.016798-342.996136 187.839409-500.90509 70.869814-76.546279-56.592642-126.086343-139.33143-139.503444-232.907106-13.417101-93.059634 10.664875-185.775239 67.77356-261.11742C318.05409 144.491853 542.704519 112.497228 700.785486 229.466823c57.280699 42.315471 100.112212 100.972283 123.334117 167.197715l-110.261045-43.003528c-16.513355-6.364522-35.090879 1.720141-41.627415 18.233496-6.536536 16.513355 1.720141 35.090879 18.233496 41.627415l162.38132 63.473207c3.78431 1.548127 7.740635 2.236183 11.69696 2.236183 0.516042 0 1.032085-0.172014 1.548127-0.172014 1.204099 0.172014 2.408198 0.688056 3.612296 0.688056 13.245087 0 25.630102-8.256677 30.274483-21.32975l57.796741-161.693264C963.623047 279.694944 955.022342 261.289434 938.336973 255.26894z" fill="#858D99" p-id="4333"></path></svg>
         </div>
         <div class="info-line" v-if="contract.contractCreator"></div>
         <div class="info-item flex-center" v-if="contract.contractCreator" @click="toEtherscanAddress(contract.contractCreator, contract.chain)">
@@ -214,10 +241,11 @@ export default {
     TeamModal,
     SourceCodeModal
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore()
     const dialog = useDialog()
     const message = useMessage()
+    const isRefreshContract = ref(false)
     const createContract = ref(null)
     const sourceCode = ref([])
     const shareModal = ref(null)
@@ -259,8 +287,12 @@ export default {
         sourceCodeModal.value.show(props.contract)
       } else {
         // 弹窗提示
-        message.info('The current contract is not open source')
+        message.info('Contract source code not verified')
       }
+    }
+
+    const refreshContract = () => {
+      emit('refreshContract')
     }
 
     const getContractFun = () => {
@@ -471,6 +503,7 @@ export default {
       }
     }, {immediate: true})
     return {
+      isRefreshContract,
       sourceCodeModal,
       isIframe,
       teamModal,
@@ -500,7 +533,8 @@ export default {
       getContractFun,
       decode,
       getAddress,
-      showTeamModal
+      showTeamModal,
+      refreshContract
     }
   }
 }
@@ -572,7 +606,7 @@ export default {
           width: 16px;
           height: 16px;
         }
-        span {
+        span, .span {
           margin-left: 8px;
         }
         &.hd-btn-item-red {
@@ -585,6 +619,15 @@ export default {
           background: #0784C3;
           &:hover {
             background: #0670A6 !important;
+          }
+        }
+        &.hover-fill {
+          &:hover {
+            svg {
+              path {
+                fill: #FFFFFF;
+              }
+            }
           }
         }
         &.hover-6F4AC5 {
@@ -604,17 +647,17 @@ export default {
         }
         &.hd-btn-item-h {
           justify-content: flex-start;
-          transition: all .5s;
+          transition: all .6s;
           max-width: 40px;
           overflow: hidden;
-          span {
-            transition: all .5s;
+          span, .span {
+            transition: all .6s;
             opacity: 0;
             white-space: nowrap;
           }
           &:hover {
-            max-width: 150px;
-            span {
+            max-width: 190px;
+            span, .span {
               opacity: 1;
             }
           }
@@ -921,6 +964,13 @@ export default {
     border-radius: 5px;
     cursor: pointer;
   }
+}
+.refresh {
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
 <style>
