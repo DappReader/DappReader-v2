@@ -57,8 +57,12 @@ export const formatDate = (fmt, date) => {
   return fmt
 }
 
-export const formatAddress = (address) => {
-  return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
+export const formatAddress = (address, num) => {
+  if (num) {
+    return address ? `${address.slice(0, num)}...${address.slice(-num)}` : ''
+  } else {
+    return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
+  }
 }
 
 export const getCreatorAddress = async (item) => {

@@ -762,7 +762,7 @@ export default {
       }
       contractData.value.content = await getContractInfo(contractData.value.content)
       setData(contractData.value.content)
-      if (contractData.value.content.isUpdate) {
+      if (contractData.value.content.isUpdate || contractData.value.content.verified != 1) {
         let res = await getSourceCode(JSON.parse(JSON.stringify(contractData.value.content)))
         if (!res.sources) {
           message.error('Contract source code not verified')
