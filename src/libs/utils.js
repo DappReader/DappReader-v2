@@ -99,6 +99,9 @@ export const getContractInfo = async (item) => {
       provider = new ethers.providers.JsonRpcProvider(chain.rpc)
     }
   })
+  if (!provider) {
+    return item
+  }
   try {
     let res = await Promise.all([
       get_address(proxy_address, admin_slot), 

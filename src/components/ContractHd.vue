@@ -360,11 +360,11 @@ export default {
       })
     }
     const edit = () => {
-      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1, userList = [] } = props.contract
-      let chainId = ''
-      if (chain && chain.chainId) chainId = chain.chainId
-      abi = JSON.stringify(abi)
-      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber, userList}
+      let data = JSON.parse(JSON.stringify(props.contract))
+      let chain = data.chain
+      data.chainId = chain.chainId
+      data.abi = JSON.stringify(props.contract.abi)
+      let formData = data
       createContract.value.show()
       createContract.value.formData = formData
     }

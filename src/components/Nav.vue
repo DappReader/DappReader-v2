@@ -179,26 +179,6 @@ export default {
             address: contractAddress.value,
             chainId: chainId.value
           }
-          const apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
-          const fetcher = (...args) => fetch(...args).then((res) => res.json())
-          let chain = chainsOptions.filter(e => e.chainId == chainId.value)[0]
-          console.log(chainsOptions)
-          let endpointURL = chain?.endpointURL
-          if (!endpointURL) {
-            message.error('The current chain is not supported')
-          } else {
-            let abiData = await fetcher(`${endpointURL}/api?module=contract&action=getabi&address=${contractAddress.value}&apikey=${apiKey}`)
-            let result = abiData.result
-            if (abiData.status == 0) {
-              if (result == 'Contract source code not verified') {
-                message.error('The current contract is not open source, can not be obtained through etherscan')
-              } else {
-                message.error(result)
-              }
-            } else if (abiData.status == 1) {
-              formData.abi = result
-            }
-          }
           createContract.value.show()
           createContract.value.formData = formData
           contractAddress.value = ''

@@ -37,8 +37,13 @@
         </n-select>
       </n-form-item>
       <n-form-item show-require-mark label="Contract Address" >
-        <n-input v-model:value="formData.address" class="form-input" @input="bindInput" />
+        <n-input v-model:value="formData.address" class="form-input" />
       </n-form-item>
+      <n-alert v-if="formData.isProxy" title="Proxy Contract" :type="formData.isGetSources ? formData.abi ? 'success' : 'error' : 'info'" style="margin-bottom:16px">
+        Proxy Address: {{ formData.proxyAddress }}
+        <p v-if="formData.isGetSources && formData.abi">ABI has been poured from Etherscan</p>
+        <p v-if="formData.isGetSources && !formData.abi">Contract source code not verified</p>
+      </n-alert>
       <n-form-item show-require-mark label="Import ABI" >
         <n-input type="textarea"
             v-if="showAbi || formData.abi"
@@ -72,7 +77,7 @@
             <p>Paste ABI Text</p>
           </div>
           <n-spin :show="showSpin">
-            <div :class="['import-item', 'flex-center-center', isDisabled ? 'disabled' : '']" @click="importAbiFromEtherscan">
+            <div :class="['import-item', 'flex-center-center', isDisabled ? 'disabled' : '']" @click="getContractInfoFun">
               <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="stroke" d="M20.9997 25H6.99968C6.35534 25 5.83301 24.4777 5.83301 23.8333L5.83301 5.16667C5.83301 4.52234 6.35534 4 6.99967 4L15.8233 4C16.1483 4 16.4585 4.13556 16.6793 4.37402L21.8557 9.96454C22.0554 10.1802 22.1663 10.4633 22.1663 10.7572L22.1663 23.8333C22.1663 24.4777 21.644 25 20.9997 25Z" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path class="fill" d="M16.8633 15.1364C16.5704 14.8435 16.0956 14.8435 15.8027 15.1364C15.5098 15.4293 15.5098 15.9042 15.8027 16.1971L16.8633 15.1364ZM18.6663 18.0001L19.1967 18.5304C19.4896 18.2375 19.4896 17.7626 19.1967 17.4698L18.6663 18.0001ZM15.8027 19.8031C15.5098 20.096 15.5098 20.5709 15.8027 20.8637C16.0956 21.1566 16.5704 21.1566 16.8633 20.8637L15.8027 19.8031ZM15.8027 16.1971L18.136 18.5304L19.1967 17.4698L16.8633 15.1364L15.8027 16.1971ZM18.136 17.4698L15.8027 19.8031L16.8633 20.8637L19.1967 18.5304L18.136 17.4698Z" fill="#858D99"/>
@@ -125,13 +130,14 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import { useStore } from 'vuex'
 import { chains, defaultChain } from '../libs/chains'
 import { getLs, setLs } from "@/service/service";
 import { useMessage } from 'naive-ui'
 import AddChainModal from '@/components/AddChainModal'
 import { erc20Abi, erc721Abi, erc721aAbi } from '@/libs/abi'
+import { getContractInfo, getSourceCode } from '../libs/utils'
 export default {
   name: 'CreateContract',
   components: {AddChainModal},
@@ -149,7 +155,6 @@ export default {
     const showSpin = ref(false)
     const isDisabled = ref(false)
     const folderIndex = ref(-1)
-    const fetcher = (...args) => fetch(...args).then((res) => res.json())
     const show = () => {
       showModal.value = true
     }
@@ -170,13 +175,14 @@ export default {
     }
     const create = async () => {
       if (!formData.value.name || !formData.value.chainId || !formData.value.address || !formData.value.abi) return
-      let {abi, address, chainId, name, remark, id = '', createAt = '', token='', authorAddress='', versionNumber = 1, userList = []} = formData.value
+      let {abi, address, chainId, name, remark, id = ''} = formData.value
       let chain = chains.filter(e => e.chainId == chainId)[0]
-      abi = JSON.parse(abi)
+      formData.value.chain = chain
+      let info = JSON.parse(JSON.stringify(formData.value))
+      info.abi = JSON.parse(abi)
       let menuList = await getLs('menuList') || []
       let contractList = await getLs('contractList') || []
       if (formData.value.id) {
-        let info = {name, address, abi, chain, id, remark, createAt, token, authorAddress, versionNumber, userList}
         for (let i = 0; i < menuList.length; i++) {
           let son = menuList[i].son
           son.forEach((e, index) => {
@@ -211,15 +217,9 @@ export default {
         })
         showModal.value = false
       } else {
-        let data = {
-          abi,
-          address,
-          chain,
-          name,
-          remark,
-          id: `${address}${new Date().getTime()}`,
-          createAt: new Date().getTime()
-        }
+        let data = JSON.parse(JSON.stringify(info))
+        data.id = `${address}${new Date().getTime()}`
+        data.createAt = new Date().getTime()
         if (folderIndex.value >= 0) {
           let folderItem = menuList[folderIndex.value]
           let son = folderItem.son || []
@@ -271,53 +271,53 @@ export default {
           store.commit('setDefaultChains', res)
         })
       }
-      if (formData.value.address) {
-        importAbiFromEtherscan()
+      if (formData.value.address && formData.value.address.length == 42) {
+        getContractInfoFun()
       }
     }
     const bindInput = () => {
       if (formData.value.chainId && formData.value.address && (formData.value.address.length == 42)) {
+        getContractInfoFun()
+      }
+    }
+    const getContractInfoFun = async () => {
+      if (isDisabled.value) return
+      showSpin.value = true
+      let data = {
+        address: formData.value.address,
+        chain: {chainId: formData.value.chainId}
+      }
+      try {
+        let res = await getContractInfo(data)
+        if (res.isProxy) {
+          formData.value.isProxy = true
+          formData.value.proxyAddress = res.proxyAddress || ''
+        }
+        importAbiFromEtherscan()
+      } catch (error) {
         importAbiFromEtherscan()
       }
     }
     const importAbiFromEtherscan = async() => {
-      let apiKey = '19SE5KR1KSVTIYMRTBJ8VQ3UJGGVFKIK5W'
       if (!formData.value.address) {
         message.error('Please input contract address')
       } else if (!formData.value.chainId) {
         message.error('Please input contract chain')
       } else {
-        showSpin.value = true
         try {
-          let chain = chains.filter(e => e.chainId == formData.value.chainId)[0]
-          console.log(chain)
-          let name = 'api'
-          if (chain.chainId == 42) name = 'api-kovan' 
-          else if (chain.chainId == 3) name = 'api-ropsten'
-          else if (chain.chainId == 5) name = 'api-goerli'
-          else if (chain.chainId == 11155111) name = 'api-sepolia'
-          else name = ''
-          if (!name) {
-            isDisabled.value = true
-            showSpin.value = false
-            return
+          let data = {
+            address: formData.value.address,
+            chain: {chainId: formData.value.chainId},
+            proxyAddress: formData.value.proxyAddress
           }
-          let abiData = await fetcher(`https://${name}.etherscan.io/api?module=contract&action=getabi&address=${formData.value.address}&apikey=${apiKey}`)
+          let r = await getSourceCode(data)
+          formData.value.abi = r.abi ? JSON.stringify(r.abi) : null
+          formData.value.sources = r.sources || null
+          formData.value.isGetSources = r.isGetSources
           showSpin.value = false
-          let result = abiData.result
-          if (abiData.status == 0) {
-            isDisabled.value = true
-            if (result == 'Contract source code not verified') {
-              // message.error('The current contract is not open source, can not be obtained through etherscan')
-            } else {
-              // message.error(result)
-            }
-          } else if (abiData.status == 1) {
-            formData.value.abi = result
-          }
+          if (!formData.value.abi) isDisabled.value = true
         } catch (error) {
           showSpin.value = false
-          console.log(error)
           message.error(error)
         }
       }
@@ -348,6 +348,11 @@ export default {
       }
       defaultChains = selectOptions.value
     })
+    watch(() => formData.value.address, (val) => {
+      if (val && val.length == 42 && !formData.value.abi) {
+        bindInput()
+      }
+    })
     return {
       generalIndex,
       showAbiModal,
@@ -365,7 +370,7 @@ export default {
       create,
       show,
       afterLeave,
-      importAbiFromEtherscan,
+      getContractInfoFun,
       setFolderIndex,
       bindInput,
       addChain,

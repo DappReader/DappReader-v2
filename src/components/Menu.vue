@@ -329,10 +329,11 @@ export default {
       }
     }
     const edit = (contract) => {
-      let { abi, address, chain, createAt, id, name, token, authorAddress, versionNumber = 1, userList } = contract
-      let chainId = chain.chainId
-      abi = JSON.stringify(abi)
-      let formData = {abi, address, chainId, createAt, id, name, token, authorAddress, versionNumber, userList}
+      let chainId = contract.chain.chainId
+      let data = JSON.parse(JSON.stringify(contract))
+      data.chainId = chainId
+      data.abi = JSON.stringify(contract.abi)
+      let formData = data
       createContract.value.formData = formData
       createContract.value.show()
     }

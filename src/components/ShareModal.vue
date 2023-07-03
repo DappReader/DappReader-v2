@@ -2,7 +2,7 @@
   <div v-if="showModal" class="modal flex-center-center share-modal" @click="searchList = []">
     <n-spin :show="loading">
       <div class="modal-content">
-        <div class="close" @click="showModal = false">
+        <div class="close" @click="afterLeave">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M20 20L4 4" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M20 4L4 20" stroke="#858D99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -148,6 +148,11 @@ export default {
       return store.state.userInfo
     })
 
+    const afterLeave = () => {
+      showModal.value = false
+      password.value = ''
+    }
+
     const changeTab = (index) => {
       if (token.value) return
       itemIndex.value = index
@@ -189,8 +194,8 @@ export default {
       })
     }
     const share = async () => {
-      let token = localStorage.getItem('token') || ''
-      if (!userInfo.value.nickname || !token) {
+      let userToken = localStorage.getItem('token') || ''
+      if (!userInfo.value.nickname || !userToken) {
         store.commit('login')
         return
       }
@@ -228,13 +233,20 @@ export default {
           }
           publishContract(data).then(res => {
             loading.value = false
+            console.log(res)
             if (res.code == 0) {
-              token.value = `${res.token}`
-              contract.token = res.token
-              contract.authorAddress = userInfo.value.address
-              contract.userList = userList
-              contract.password = password.value
-              setData(contract)
+              try {
+                token.value = `${res.token}`
+                contract.token = res.token
+                contract.authorAddress = userInfo.value.address
+                contract.userList = userList
+                contract.password = password.value
+                setData(contract)
+                console.log(token.value, contract)
+              } catch (error) {
+                console.log(error)
+              }
+              
             } else {
               message.error(res.msg)
             }
@@ -292,7 +304,8 @@ export default {
       del,
       copy,
       add,
-      changeTab
+      changeTab,
+      afterLeave
     }
   }
 }
