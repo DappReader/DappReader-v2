@@ -52,21 +52,22 @@ export const useUtils = () => {
     }
   }
 
-  const hasContrace = (address, menuList, contractList) => {
+  const hasContrace = (data, menuList, contractList) => {
+    let {address, chain} = data
     address = address.toString()
     let contrace = null
     for (let i = 0; i < menuList.length; i++) {
       let son = menuList[i].son
       son.forEach((e) => {
         console.log(e.address)
-        if (e.address == address) {
+        if (e.address == address && e.chain.chainId == chain.chainId) {
           contrace = e
         }
       })
     }
     console.log(address)
     contractList.forEach((e) => {
-      if (e.address == address) {
+      if (e.address == address && e.chain.chainId == chain.chainId) {
         contrace = e
       }
     })
@@ -108,7 +109,7 @@ export const useUtils = () => {
       })
     } else {
       let data = info
-      let has = await hasContrace(data.address, menuList, contractList)
+      let has = await hasContrace(data, menuList, contractList)
       if (has) {
         // message.info('Contract already exists')
         await open(has)
