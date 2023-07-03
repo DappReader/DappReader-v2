@@ -184,6 +184,11 @@ export const getSourceCode = async (contract) => {
         contract.isGetSources = true
         contract.abi = JSON.parse(result.ABI)
         contract.isUpdate = false
+        if (contract.proxyAddress && contract.sources) {
+          contract.verified = true
+        } else {
+          contract.verified = false
+        }
       } else {
         contract.sources = null
         contract.isGetSources = true

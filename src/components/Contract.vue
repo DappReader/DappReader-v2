@@ -762,15 +762,13 @@ export default {
       }
       contractData.value.content = await getContractInfo(contractData.value.content)
       setData(contractData.value.content)
-      if (contractData.value.content.isUpdate || contractData.value.content.verified != 1) {
+      if (contractData.value.content.isUpdate || !contractData.value.content.verified) {
         let res = await getSourceCode(JSON.parse(JSON.stringify(contractData.value.content)))
         if (!res.sources) {
           message.error('Contract source code not verified')
-          contractData.value.content.verified = 2
           setData(contractData.value.content)
         } else {
           contractData.value.content = res
-          contractData.value.content.verified = 1
           setData(contractData.value.content)
           let abi = contractData.value.content.abi || []
           let list = abi.filter((e) => e.type == "function")
@@ -778,6 +776,7 @@ export default {
           let writeAbi = list.filter((e) => (e.stateMutability == "nonpayable" || e.stateMutability == "payable"))
           readFun.value = readAbi
           writeFun.value = writeAbi
+          message.success('Successfully pulling new ABI')
         }
         if (contractHd.value) {
           contractHd.value.isRefreshContract = false
@@ -786,7 +785,6 @@ export default {
           contractMsg.value.isRefreshContract = false
         }
       } else {
-        contractData.value.content.verified = 0
         setData(contractData.value.content)
         if (contractHd.value) {
           contractHd.value.isRefreshContract = false
