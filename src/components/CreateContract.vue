@@ -314,6 +314,7 @@ export default {
           formData.value.abi = r.abi ? JSON.stringify(r.abi) : null
           formData.value.sources = r.sources || null
           formData.value.isGetSources = r.isGetSources
+          formData.value.verified = r.verified
           showSpin.value = false
           if (!formData.value.abi) isDisabled.value = true
         } catch (error) {

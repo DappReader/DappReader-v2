@@ -17,6 +17,8 @@ import Menu from '../components/Menu.vue'
 import Main from '../components/Main.vue'
 import GetContractModal from '../components/GetContractModal.vue'
 import { checkContractInfo, getContract } from '../http/abi'
+import { getSourceCode, getContractInfo } from '../libs/utils'
+
 import { chains } from '../libs/chains'
 import { useNotification } from "naive-ui"
 export default {
@@ -70,14 +72,30 @@ export default {
             password,
             userList: res.contract.user_list || []
           }
-          setData(sol)
-          getContractModal.value.showModal = false
-          router.replace('/')
+
+          // setData(sol)
+          refreshContract(sol)
         }
       }).catch(err => {
         console.log(err)
         message.error(err)
       })
+    }
+
+    const refreshContract = async (contract) => {
+      contract = await getContractInfo(contract)
+      if (contract.isProxy) {
+        let res = await getSourceCode(JSON.parse(JSON.stringify(contract)))
+        if (!res.sources) {
+          message.error('Contract source code not verified')
+        } else {
+          contract = res
+        }
+      }
+      setData(contract)
+      getContractModal.value.showModal = false
+      router.replace('/')
+      
     }
 
     const checkContractInfoFun = (token) => {

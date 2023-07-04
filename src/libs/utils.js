@@ -59,7 +59,7 @@ export const formatDate = (fmt, date) => {
 
 export const formatAddress = (address, num) => {
   if (num) {
-    return address ? `${address.slice(0, num)}...${address.slice(-num)}` : ''
+    return address ? `${address.slice(0, num - 2)}...${address.slice(-num)}` : ''
   } else {
     return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
   }
@@ -182,8 +182,9 @@ export const getSourceCode = async (contract) => {
         console.log(sourcesArr)
         contract.sources = sourcesArr
         contract.isGetSources = true
-        contract.abi = JSON.parse(result.ABI)
+        contract.abi = result.ABI ? JSON.parse(result.ABI) : ''
         contract.isUpdate = false
+        console.log(contract.proxyAddress && contract.sources)
         if (contract.proxyAddress && contract.sources) {
           contract.verified = true
         } else {
@@ -192,12 +193,19 @@ export const getSourceCode = async (contract) => {
       } else {
         contract.sources = null
         contract.isGetSources = true
+        if (contract.proxyAddress) {
+          contract.verified = false
+        }
       }
     } else {
       contract.sources = null
       contract.isGetSources = true
+      if (contract.proxyAddress) {
+        contract.verified = false
+      }
     }
   }
   contract.isGetSources = true
+  console.log('contract', contract)
   return contract
 }

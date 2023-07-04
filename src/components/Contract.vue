@@ -626,7 +626,6 @@ export default {
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
-            console.error(error)
             resultState = 'error'
             tx = error
           }
@@ -636,8 +635,10 @@ export default {
             console.log('outputs', outputs)
             if (outputs.length == 1) {
               if (outputs[0].type == 'uint256') {
-                console.log(typeof tx, tx)
-                tx = ethers.utils.formatUnits(tx, 0)
+                console.log('typeof', typeof tx, tx)
+                if (resultState != 'error') {
+                  tx = ethers.utils.formatUnits(tx, 0)
+                }
               } else if (outputs[0].type == 'bool') {
                 console.log(tx)
                 tx = tx ? 'true' : 'false'
@@ -686,7 +687,6 @@ export default {
             
           }
         } catch (error) {
-          console.log(error)
           message.error(error)
           showSpin.value = false
         }
