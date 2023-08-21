@@ -1211,7 +1211,7 @@ export default {
         }
         .edit {
           .popover {
-            z-index: 9;
+            z-index: 999;
             position: absolute;
             top: 28px;
             left: 0;
@@ -1333,7 +1333,7 @@ export default {
               height: 16px;
               cursor: pointer;
               position: relative;
-              z-index: 999;
+              z-index: 900;
               &:hover {
                 path {
                   fill: #FFFFFF;
