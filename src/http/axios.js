@@ -1,7 +1,8 @@
 import axios from 'axios';
-// import store from '../store'
+import store from '../store'
 let baseURL = 'https://api.dappreader.com'
 axios.defaults.timeout = 100000;
+
 
 //http request 拦截器
 axios.interceptors.request.use(
@@ -31,7 +32,13 @@ axios.interceptors.response.use(response => {
             console.log('错误请求')
           break;
         case 401:
-            console.log('未授权，请重新登录')
+            var userInfo = localStorage.getItem('userInfo') || null
+            if (userInfo) {
+              window.$message.error('Please login again')
+            } else {
+              window.$message.error('Please login')
+            }
+            store.commit('login')
           break;
         case 403:
           console.log('拒绝访问')
@@ -72,6 +79,7 @@ axios.interceptors.response.use(response => {
     } else {
       console.log('连接到服务器失败')
     }
+    console.log(err.response.status)
     // store.commit('login')
     return Promise.reject(err.response)
 })

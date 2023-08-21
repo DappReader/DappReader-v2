@@ -29,6 +29,7 @@ export default {
     GetContractModal
   },
   setup() {
+    window.$message = useMessage()
     let check = false
     const store = useStore()
     const route = useRoute()

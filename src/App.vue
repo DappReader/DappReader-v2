@@ -22,6 +22,7 @@ export default {
   setup() {
     const store = useStore()
     const { getProvider } = useIsActivating()
+
     const provider = computed(() => {
       return store.state.provider
     })
