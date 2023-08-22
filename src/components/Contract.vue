@@ -599,17 +599,26 @@ export default {
               item = [[...Object.values(item)]]
               console.log('tuple', item)
             } else if (type.indexOf("[]") > -1) {
-              item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
-              item = item.split(",")
-              item = item.filter((e) => e && e.trim())
-              item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
+              try {
+                item = JSON.parse(item)
+              } catch (error) {
+                item = item ? item.replace(/(\r\n)|(\n)/g, ",") : ''
+                console.log(item)
+                item = '[' + item + ']'
+                item = JSON.parse(item)
+                // item = item.split(",")
+                // item = item.filter((e) => e && e.trim())
+                // item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
+              }
               if (type.indexOf("address") > -1) {
                 item = item.map((e) => ethers.utils.getAddress(e))
               } else {
-                try {
-                  item = item.map((e) => ethers.utils.hexlify(e))
-                } catch (error) {
-                  console.log(error)
+                if (!type.indexOf("[][]")) {
+                  try {
+                    item = item.map((e) => ethers.utils.hexlify(e))
+                  } catch (error) {
+                    console.log(error)
+                  }
                 }
               }
               console.log(item)
@@ -687,6 +696,7 @@ export default {
             
           }
         } catch (error) {
+          console.log(error)
           message.error(error)
           showSpin.value = false
         }
