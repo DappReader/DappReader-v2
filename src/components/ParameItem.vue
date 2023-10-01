@@ -141,6 +141,7 @@ export default {
   border-radius: 10px 0 0 10px;
   padding: 0 12px;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .wei-btns {

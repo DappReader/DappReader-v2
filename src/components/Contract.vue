@@ -101,6 +101,7 @@
                 <div v-else-if="inputItem.type == 'tuple[]'">
                   <div v-for="(e,i) in tupleLength" :key="i" class="tuple-w">
                     <!-- <div class="del" v-if="tupleLength > 1"> <img src="@/assets/images/close.svg" alt=""  @click="delInput($event, inputItem.name, i)"></div> -->
+                    <n-divider dashed v-if="i > 0"></n-divider>
                     <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameDataArr($event, inputItem.name, i)" />
                   </div>
                   <div class="fun-run-btn flex-center-center" style="margin: auto" @click="addInput($event, inputItem.name)">Add</div>
@@ -509,6 +510,7 @@ export default {
     const updateAbi = (item, type) => {
       console.log(item)
       mainContent.value.scrollTop = 0
+      tupleLength.value = 1
       if (item.otherName) {
         item.tempName = JSON.parse(JSON.stringify(item.otherName))
       }
