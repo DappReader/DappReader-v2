@@ -95,8 +95,15 @@
                     <img src="@/assets/images/conversion.svg" alt="">
                   </div>
                 </div>
-                <div v-if="inputItem.type.indexOf('tuple') > -1">
+                <div v-if="inputItem.type == 'tuple'">
                   <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
+                </div>
+                <div v-else-if="inputItem.type == 'tuple[]'">
+                  <div v-for="(e,i) in tupleLength" :key="i" class="tuple-w">
+                    <!-- <div class="del" v-if="tupleLength > 1"> <img src="@/assets/images/close.svg" alt=""  @click="delInput($event, inputItem.name, i)"></div> -->
+                    <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameDataArr($event, inputItem.name, i)" />
+                  </div>
+                  <div class="fun-run-btn flex-center-center" style="margin: auto" @click="addInput($event, inputItem.name)">Add</div>
                 </div>
                 <div v-else>
                   <n-input
@@ -398,6 +405,7 @@ export default {
     const parameData = ref({})
     const showType = ref([1, 2])
     const abiType = ref('')
+    const tupleLength = ref(1)
     const networkErrorModal = ref(null)
     const conversionModal = ref(null)
     const sendInfo = ref({})
@@ -547,6 +555,36 @@ export default {
       parameData.value[v][key] = val[key]
     }
 
+    const inputParameDataArr = (val, v, i) => {
+      let key = Object.keys(val)[0]
+      console.log(val,v,key, i)
+      if (!parameData.value[v]) {
+        parameData.value[v] = []
+      }
+      if (!parameData.value[v][i]) {
+        parameData.value[v][i] = {}
+      }
+      parameData.value[v][i][key] = val[key]
+      console.log(parameData.value)
+    }
+
+    const delInput = (val, v, i) => {
+      console.log(i)
+      // parameData.value[v].splice(i, 1)
+      let parame = JSON.parse(JSON.stringify(parameData.value[v]))
+      parame.splice(i, 1)
+      parameData.value[v] = parame
+      tupleLength.value = parameData.value[v].length
+
+    }
+
+    const addInput = (val, v) => {
+      console.log(parameData.value[v])
+      if (!parameData.value[v]) parameData.value[v] = [{}]
+      parameData.value[v].push({})
+      tupleLength.value = parameData.value[v].length
+    }
+
     const setOutpuData = (e, item) => {
       let data = item
       if (e.type == 'tuple') {
@@ -596,8 +634,7 @@ export default {
             let type = inputs[i].type
             let item = parameData.value[name]
             if (type == 'tuple[]') {
-              item = [[...Object.values(item)]]
-              console.log('tuple', item)
+              console.log('tuple', item, parameData.value)
             } else if (type.indexOf("[]") > -1) {
               try {
                 item = JSON.parse(item)
@@ -701,6 +738,7 @@ export default {
           showSpin.value = false
         }
       }
+      tupleLength.value = 1
     }
 
     const convertBigNumber = (obj) => {
@@ -872,7 +910,7 @@ export default {
       if (item.parameData) {
         parameData.value = item.parameData  
       } else {
-        parameData.value = item.formData  
+        parameData.value = item.formData
       }
       sendInfo.value = item.sendInfo
     }
@@ -1010,6 +1048,7 @@ export default {
       readFun,
       writeFun,
       eventParam,
+      tupleLength,
       hiddenPopover,
       toEtherscanAddress,
       copy,
@@ -1027,8 +1066,11 @@ export default {
       showFun,
       getFunHeight,
       inputParameData,
+      inputParameDataArr,
       dateConfirm,
       refreshContract,
+      delInput,
+      addInput
     }
   }
 }
@@ -1661,6 +1703,22 @@ export default {
     width: 100%;
     max-width: 700px;
     height: auto;
+  }
+}
+.tuple-w {
+  position: relative;
+  .del {
+    position: absolute;
+    right: -16px;
+    top: -4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 9;
+    img {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 </style>
