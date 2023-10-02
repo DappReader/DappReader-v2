@@ -96,15 +96,21 @@
                   </div>
                 </div>
                 <div v-if="inputItem.type == 'tuple'">
-                  <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
+                  <ParameItem v-for="(item, index) in inputItem.components" :parame="parameData[inputItem.name]" :inputItem="item" :key="index" @inputParameData="inputParameData($event, inputItem.name)" />
                 </div>
                 <div v-else-if="inputItem.type == 'tuple[]'">
-                  <div v-for="(e,i) in tupleLength" :key="i" class="tuple-w">
-                    <!-- <div class="del" v-if="tupleLength > 1"> <img src="@/assets/images/close.svg" alt=""  @click="delInput($event, inputItem.name, i)"></div> -->
-                    <n-divider dashed v-if="i > 0"></n-divider>
-                    <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index" @inputParameData="inputParameDataArr($event, inputItem.name, i)" />
+                  <div v-for="(e,i) in parameData[inputItem.name]" :key="i" class="tuple-w">
+                    <div class="del" v-if="parameData[inputItem.name].length > 1" @click="delInput($event, inputItem.name, i)"> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" data-v-4b749e44=""><path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path><path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path><path d="M9.80001 2.59998H6.20001C5.86864 2.59998 5.60001 2.8686 5.60001 3.19998V4.39998H10.4V3.19998C10.4 2.8686 10.1314 2.59998 9.80001 2.59998Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path></svg></div>
+                    <n-divider dashed></n-divider>
+                    <ParameItem v-for="(item, index) in inputItem.components" :parame="e" :inputItem="item" :key="index" @inputParameData="inputParameDataArr($event, inputItem.name, i)" />
                   </div>
-                  <div class="fun-run-btn flex-center-center" style="margin: auto" @click="addInput($event, inputItem.name)">Add</div>
+                  <div class="add-btn flex-center-center" @click="addInput($event, inputItem.name)">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 8H12" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M8 12L8 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Add New Tuple</span>
+                  </div>
                 </div>
                 <div v-else>
                   <n-input
@@ -406,7 +412,6 @@ export default {
     const parameData = ref({})
     const showType = ref([1, 2])
     const abiType = ref('')
-    const tupleLength = ref(1)
     const networkErrorModal = ref(null)
     const conversionModal = ref(null)
     const sendInfo = ref({})
@@ -501,6 +506,8 @@ export default {
         arr.forEach(el => {
           data[el.name] = setParameData(el)
         })
+      } else if (e.type == 'tuple[]') {
+        data = [{}]
       } else {
         data = ''
       }
@@ -508,9 +515,8 @@ export default {
     }
 
     const updateAbi = (item, type) => {
-      console.log(item)
+      console.log('item', item)
       mainContent.value.scrollTop = 0
-      tupleLength.value = 1
       if (item.otherName) {
         item.tempName = JSON.parse(JSON.stringify(item.otherName))
       }
@@ -528,7 +534,7 @@ export default {
       abiItem.value.inputs.forEach(e => {
         data[e.name] = setParameData(e)
       })
-      console.log(data)
+      console.log('data', data)
       parameData.value = data
       sendInfo.value = {}
       if (type == 'read' && !abiItem.value.inputs.length) {
@@ -572,11 +578,9 @@ export default {
 
     const delInput = (val, v, i) => {
       console.log(i)
-      // parameData.value[v].splice(i, 1)
       let parame = JSON.parse(JSON.stringify(parameData.value[v]))
       parame.splice(i, 1)
       parameData.value[v] = parame
-      tupleLength.value = parameData.value[v].length
 
     }
 
@@ -584,7 +588,6 @@ export default {
       console.log(parameData.value[v])
       if (!parameData.value[v]) parameData.value[v] = [{}]
       parameData.value[v].push({})
-      tupleLength.value = parameData.value[v].length
     }
 
     const setOutpuData = (e, item) => {
@@ -740,7 +743,6 @@ export default {
           showSpin.value = false
         }
       }
-      tupleLength.value = 1
     }
 
     const convertBigNumber = (obj) => {
@@ -910,9 +912,9 @@ export default {
       console.log(item)
       updateAbi(item.funData)
       if (item.parameData) {
-        parameData.value = item.parameData  
+        parameData.value = JSON.parse(JSON.stringify(item.parameData)) 
       } else {
-        parameData.value = item.formData
+        parameData.value = JSON.parse(JSON.stringify(item.formData))
       }
       sendInfo.value = item.sendInfo
     }
@@ -1050,7 +1052,6 @@ export default {
       readFun,
       writeFun,
       eventParam,
-      tupleLength,
       hiddenPopover,
       toEtherscanAddress,
       copy,
@@ -1432,6 +1433,24 @@ export default {
           }
         }
       }
+      .add-btn {
+        background: rgba(133, 141, 153, 0.3);
+        border-radius: 6px;
+        height: 34px;
+        cursor: pointer;
+        margin: 16px auto 0;
+        width: 200px;
+        &:hover {
+          background: #375CFF;
+        }
+        span {
+          font-weight: 400;
+          font-size: 15px;
+          line-height: 18px;
+          text-transform: capitalize;
+          color: #FFFFFF;
+        }
+      }
       .fun-run-btn {
         width: 130px;
         height: 36px;
@@ -1643,6 +1662,8 @@ export default {
                   white-space: normal;
                   word-wrap: break-word;
                   overflow: hidden;
+                  max-height: 276px;
+                  overflow-y: auto;
                 }
                 img {
                   width: 18px;
@@ -1711,15 +1732,20 @@ export default {
   position: relative;
   .del {
     position: absolute;
-    right: -16px;
-    top: -4px;
+    right: -8px;
+    top: 4px;
     width: 18px;
     height: 18px;
     cursor: pointer;
     z-index: 9;
-    img {
+    svg {
       width: 18px;
       height: 18px;
+      &:hover {
+        path {
+          stroke: #fff;
+        }
+      }
     }
   }
 }

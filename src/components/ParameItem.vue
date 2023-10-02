@@ -2,12 +2,14 @@
   <div class="tuple-input">
     <div v-if="inputItem.type == 'tuple'" class="wrap">
       <p class="item-name">{{ inputItem.name }}</p>
-      <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index"
+      <ParameItem v-for="(item, index) in inputItem.components" :parame="parameData[inputItem.name]" :inputItem="item" :key="index"
         @inputParameData="inputParameData($event, inputItem.name)" />
     </div>
     <div v-else-if="inputItem.type == 'tuple[]'">
-      <div v-for="(e, i) in tupleLength" :key="i">
-        <ParameItem v-for="(item, index) in inputItem.components" :inputItem="item" :key="index"
+      <div v-for="(e, i) in parameData[inputItem.name]" :key="i" class="tuple-w">
+        <div class="del" v-if="parameData[inputItem.name].length > 1" @click="delInput($event, inputItem.name, i)"> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" data-v-4b749e44=""><path d="M11.6 4.40002H4.39999V12.8C4.39999 13.1314 4.66862 13.4 4.99999 13.4H11C11.3314 13.4 11.6 13.1314 11.6 12.8V4.40002Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path><path d="M3.20001 4.40002H12.8" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path><path d="M9.80001 2.59998H6.20001C5.86864 2.59998 5.60001 2.8686 5.60001 3.19998V4.39998H10.4V3.19998C10.4 2.8686 10.1314 2.59998 9.80001 2.59998Z" stroke="#858D99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" data-v-4b749e44=""></path></svg></div>
+        <n-divider dashed></n-divider>
+        <ParameItem v-for="(item, index) in inputItem.components" :parame="e" :inputItem="item" :key="index"
           @inputParameData="inputParameDataArr($event, inputItem.name, i)" />
       </div>
       <div class="fun-run-btn flex-center-center" style="margin: auto" @click="() => tupleLength += 1">Add</div>
@@ -44,11 +46,13 @@ export default {
   props: {
     inputItem: {
       type: Object
+    },
+    parame: {
+      type: Object
     }
   },
   setup(props, { emit }) {
     const parameData = ref({})
-    const tupleLength = ref(1)
     const toWei = (type, decimals) => {
       try {
         parameData.value[type] = ethers.utils.parseUnits(parameData.value[type].toString(), decimals).toString()
@@ -85,25 +89,36 @@ export default {
         parameData.value[val.name] = ''
       }
     }, { immediate: true })
+    watch(() => props.parame, (val) => {
+      console.log(val)
+      if (val) {
+        parameData.value = JSON.parse(JSON.stringify(val))
+      }
+    }, { immediate: true })
     watch(() => parameData.value, (val) => {
+      console.log(val, props.inputItem)
       let type = props.inputItem.type
       let item = JSON.parse(JSON.stringify(val[props.inputItem.name]))
       if (type == 'tuple[]') {
         item = [...Object.values(item)]
         console.log('tuple', item)
       } else if (type.indexOf("[]") > -1) {
-        item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
-        item = item.split(",")
-        item = item.filter((e) => e && e.trim())
-        item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
-        if (type.indexOf("address") > -1) {
-          item = item.map((e) => ethers.utils.getAddress(e))
-        } else {
-          try {
-            item = item.map((e) => ethers.utils.hexlify(e))
-          } catch (error) {
-            console.log(error)
+        try {
+          item = item ? item.replace(/\s+/g, ",").replace(/\[|]/g, "").replace(/(\r\n)|(\n)/g, ",") : ''
+          item = item.split(",")
+          item = item.filter((e) => e && e.trim())
+          item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
+          if (type.indexOf("address") > -1) {
+            item = item.map((e) => ethers.utils.getAddress(e))
+          } else {
+            try {
+              item = item.map((e) => ethers.utils.hexlify(e))
+            } catch (error) {
+              console.log(error)
+            }
           }
+        } catch (error) {
+          console.log(error)
         }
       } else if (type == 'bool') {
         item = item == 'true' ? true : false
@@ -114,7 +129,6 @@ export default {
     }, { deep: true })
     return {
       parameData,
-      tupleLength,
       toWei,
       inputParameData,
       inputParameDataArr
@@ -174,6 +188,27 @@ export default {
 
 .tuple-item {
   margin-bottom: 8px;
+}
+.tuple-w {
+  position: relative;
+  .del {
+    position: absolute;
+    right: -8px;
+    top: 4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 9;
+    svg {
+      width: 18px;
+      height: 18px;
+      &:hover {
+        path {
+          stroke: #fff;
+        }
+      }
+    }
+  }
 }
 </style>
 <style lang="scss">
