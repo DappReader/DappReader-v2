@@ -641,13 +641,15 @@ export default {
             if (type == 'tuple[]') {
               console.log('tuple', item, parameData.value)
             } else if (type.indexOf("[]") > -1) {
+              // item的单引号替换成双引号
+              item = item.replace(/'/g, '"')
+              console.log(item)
               try {
                 item = JSON.parse(item)
               } catch (error) {
                 item = item ? item.replace(/(\r\n)|(\n)/g, ",") : ''
-                console.log(item)
-                item = '[' + item + ']'
-                item = JSON.parse(item)
+                item = item ? item.replace(/"/g, "").replace(/'/g, "") : ''
+                item = item.split(',')
                 // item = item.split(",")
                 // item = item.filter((e) => e && e.trim())
                 // item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
