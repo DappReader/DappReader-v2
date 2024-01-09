@@ -643,13 +643,17 @@ export default {
             } else if (type.indexOf("[]") > -1) {
               // item的单引号替换成双引号
               item = item.replace(/'/g, '"')
-              console.log(item)
               try {
                 item = JSON.parse(item)
+              console.log(item, 1)
+
               } catch (error) {
                 item = item ? item.replace(/(\r\n)|(\n)/g, ",") : ''
                 item = item ? item.replace(/"/g, "").replace(/'/g, "") : ''
                 item = item.split(',')
+                item = item.filter(e => e)
+                console.log(  1, item)
+
                 // item = item.split(",")
                 // item = item.filter((e) => e && e.trim())
                 // item = item.map((e) => e.trim().replace(/\"/g, "").replace(/'/g, "")) // eslint-disable-line
