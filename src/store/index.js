@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { setLs } from '@/service/service'
+import { setLs } from '../service/service'
 export default createStore({
   state: {
     provider: null,

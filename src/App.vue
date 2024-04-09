@@ -14,7 +14,7 @@ import { useStore } from 'vuex'
 import { onMounted, computed } from 'vue'
 import { useIsActivating } from './hooks/useIsActivating'
 import { darkTheme } from 'naive-ui'
-import { getLs, setLs } from '@/service/service'
+import { getLs, setLs } from './service/service'
 import { demo } from './libs/demo'
 import { chains, defaultChain } from './libs/chains'
 

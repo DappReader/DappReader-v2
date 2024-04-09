@@ -33,7 +33,7 @@
 <script>
 import { ref, onBeforeMount, computed } from "vue";
 import { chains } from '../libs/chains'
-import { getLs, setLs } from "@/service/service";
+import { getLs, setLs } from "../service/service";
 import { useStore } from 'vuex'
 // import { useMessage } from 'naive-ui'
 export default {

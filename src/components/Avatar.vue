@@ -31,7 +31,7 @@ export default {
     }
     const designImg = (avatar) => {
       let index = avatar.split('-')[1]
-      return require(`@/assets/images/avatar/${index}.png`)
+      return new URL(`../assets/images/avatar/${index}.png`, import.meta.url).href
     }
     return {
       designImg,

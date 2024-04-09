@@ -133,10 +133,10 @@
 import { ref, onBeforeMount, watch } from "vue";
 import { useStore } from 'vuex'
 import { chains, defaultChain } from '../libs/chains'
-import { getLs, setLs } from "@/service/service";
+import { getLs, setLs } from "../service/service";
 import { useMessage } from 'naive-ui'
-import AddChainModal from '@/components/AddChainModal'
-import { erc20Abi, erc721Abi, erc721aAbi } from '@/libs/abi'
+import AddChainModal from '../components/AddChainModal.vue'
+import { erc20Abi, erc721Abi, erc721aAbi } from '../libs/abi'
 import { getContractInfo, getSourceCode } from '../libs/utils'
 export default {
   name: 'CreateContract',

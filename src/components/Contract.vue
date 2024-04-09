@@ -20,8 +20,8 @@
       <div class="collapse">
         <div class="collapse-item" @click="showFun(1)" :style="{'height': getFunHeight(1)}">
           <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType.indexOf(1) > -1 ? '10px' : '0'}">
-            <div class="title flex-center"><img src="@/assets/images/read.svg" alt=""><span>Read function</span></div>
-            <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
+            <div class="title flex-center"><img src="../assets/images/read.svg" alt=""><span>Read function</span></div>
+            <img src="../assets/images/arrow.svg" alt="" class="arrow" >
           </div>
           <div v-if="readFun" class="collapse-item-list" @click.stop>
             <div v-for="(item, index) in readFun" :key="index" :class="['collapse-item-fun', 'flex-start', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'read')">
@@ -40,8 +40,8 @@
         </div>
         <div class="collapse-item" @click="showFun(2)" :style="{'height': getFunHeight(2)}">
           <div class="collapse-item-hd flex-center-sb" :style="{'padding-bottom': showType.indexOf(2) > -1 ? '10px' : '0'}">
-            <div class="title flex-center"><img src="@/assets/images/write.svg" alt=""><span>Write function</span></div>
-            <img src="@/assets/images/arrow.svg" alt="" class="arrow" >
+            <div class="title flex-center"><img src="../assets/images/write.svg" alt=""><span>Write function</span></div>
+            <img src="../assets/images/arrow.svg" alt="" class="arrow" >
           </div>
           <div v-if="writeFun" class="collapse-item-list" @click.stop>
             <div v-for="(item, index) in writeFun" :key="index" :class="['collapse-item-fun', 'flex-center', (abiItem && item.name == abiItem.name) ? 'collapse-item-fun-activated' : '']" @click="updateAbi(item, 'write')">
@@ -65,11 +65,11 @@
             <div class="contract-main-content-hd flex-center-sb">
               <div class="fun-name flex-center">{{abiItem.otherName || abiItem.name}} <span v-if="abiItem.otherName">{{abiItem.name}}</span>
                 <div class="edit flex-center">
-                  <img src="@/assets/images/note_edit.svg" alt="" @click="() => showPopover = !showPopover">
+                  <img src="../assets/images/note_edit.svg" alt="" @click="() => showPopover = !showPopover">
                   <div class="popover" v-if="showPopover">
                     <div class="popover-hd flex-center-sb">
                       <div class="popover-title">function name</div>
-                      <img src="@/assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
+                      <img src="../assets/images/close.svg" alt="" class="close" @click="hiddenPopover">
                     </div>
                     <div class="popover-input">
                       <n-input class="form-input popover-input-item" v-model:value="abiItem.tempName" />
@@ -78,7 +78,7 @@
                   </div>
                 </div>
               </div>
-              <img src="@/assets/images/close.svg" alt="" class="close" @click="init">
+              <img src="../assets/images/close.svg" alt="" class="close" @click="init">
             </div>
             <div v-if="abiItem.inputs && abiItem.inputs.length" class="fun-parames">
               <div class="fun-parames-title">Parameters</div>
@@ -92,7 +92,7 @@
                   </div>
                   <div v-if="inputItem.type == 'uint256'" class="conversion flex-center" @click="showConvert('parameData', inputItem.name)">
                     <span>Digital Conversion</span>
-                    <img src="@/assets/images/conversion.svg" alt="">
+                    <img src="../assets/images/conversion.svg" alt="">
                   </div>
                 </div>
                 <div v-if="inputItem.type == 'tuple'">
@@ -134,14 +134,14 @@
               </div>
             </div>
             <div v-if="abiType == 'write'" class="fun-parames">
-              <div class="fun-parames-title flex-center" @click="() => showSendInfo = !showSendInfo"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt="" :style="{transform:  (showSendInfo || abiItem.stateMutability == 'payable') ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
+              <div class="fun-parames-title flex-center" @click="() => showSendInfo = !showSendInfo"><span>Incidental parameter</span><img src="../assets/images/arrow.svg" alt="" :style="{transform:  (showSendInfo || abiItem.stateMutability == 'payable') ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
               <div class="parame-w" :style="{'max-height': (showSendInfo || abiItem.stateMutability == 'payable') ? '300px' : '0'}">
                 <div class="parame-item">
                   <div class="parame-item-hd flex-center-sb">
                     <div class="parame-name flex-center">Value <span>The contract is executed with the quantity of ETH</span></div>
                     <div class="conversion flex-center" @click="showConvert('sendInfo', 'value')">
                       <span>Digital Conversion</span>
-                      <img src="@/assets/images/conversion.svg" alt="">
+                      <img src="../assets/images/conversion.svg" alt="">
                     </div>
                   </div>
                   <n-input class="form-input" v-model:value="sendInfo.value" />
@@ -156,7 +156,7 @@
                     <div class="parame-name flex-center">GasPrice</div>
                     <div class="conversion flex-center" @click="showConvert('sendInfo', 'gasPrice')">
                       <span>Digital Conversion</span>
-                      <img src="@/assets/images/conversion.svg" alt="">
+                      <img src="../assets/images/conversion.svg" alt="">
                     </div>
                   </div>
                   <n-input class="form-input" v-model:value="sendInfo.gasPrice" />
@@ -169,7 +169,7 @@
               </div>
             </div>
             <!-- <div class="fun-parames">
-              <div class="fun-parames-title flex-center-sb"><span>Incidental parameter</span><img src="@/assets/images/arrow.svg" alt=""></div>
+              <div class="fun-parames-title flex-center-sb"><span>Incidental parameter</span><img src="../assets/images/arrow.svg" alt=""></div>
               <div class="parame-w" style="max-height: 0"></div>
             </div> -->
             <div class="fun-run-btn flex-center-center" @click="runFunction(abiItem)">Run</div>
@@ -183,11 +183,11 @@
                   <div class="result-name">{{item.state == 'success' ? (item.content.hash && !item.content.blockNumber) ? '⌛️' : '✅' : '❌'}} <span v-if="!isIframe">Run function :</span> {{item.name}}</div>
                 </div>
                 <div class="result-item-hd-r flex-center">
-                  <div class="result-time flex-center" v-if="!isIframe"><img src="@/assets/images/time.svg" alt="">
+                  <div class="result-time flex-center" v-if="!isIframe"><img src="../assets/images/time.svg" alt="">
                     {{createAt(item.createAt)}}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed within {{item.confirmed}} sec</span> 
                   </div>
-                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contractData.content.chain, 'tx')"><img src="@/assets/images/show.svg" alt=""><span>View Etherscan</span></div>
-                  <div class="result-btn flex-center-center" @click="resend(item)"><img src="@/assets/images/arrow_reload.svg" alt=""><span>Resend</span></div>
+                  <div v-if="item.content.hash" class="result-btn flex-center-center" @click="toEtherscanAddress(item.content.hash, contractData.content.chain, 'tx')"><img src="../assets/images/show.svg" alt=""><span>View Etherscan</span></div>
+                  <div class="result-btn flex-center-center" @click="resend(item)"><img src="../assets/images/arrow_reload.svg" alt=""><span>Resend</span></div>
                 </div>
               </div>
               <div v-if="item.content.hash" class="result-info flex-center">
@@ -212,10 +212,10 @@
                       <div v-for="(param, index) in item.params" :key="index" class="result-param flex-center">
                         <div class="result-param-name">{{param.key}}</div>
                         <div class="result-param-value">{{param.value}}</div>
-                        <img src="@/assets/images/copy.svg" alt="" @click="copy(param.value)">
+                        <img src="../assets/images/copy.svg" alt="" @click="copy(param.value)">
                       </div>
                     </div>
-                    <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                    <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="../assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
                   </div>
                 </div>
               </div>
@@ -223,84 +223,84 @@
                 <div v-if="item && item.content && (item.content.hash)" class="result-section">
                   <div class="result-section-content">
                     <div class="result-section-content-hd flex-center">Transaction Info 
-                      <img v-if="!item.isShowJson" src="@/assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
-                      <img v-else src="@/assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
+                      <img v-if="!item.isShowJson" src="../assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
+                      <img v-else src="../assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
                     </div>
                     <div v-if="!item.isShowJson" class="result-section-content-main">
                       <div class="result-param flex-center" v-if="item.content && item.content.transactionHash">
                         <div class="result-param-name">TransactionHash</div>
                         <div class="result-param-value">{{item.content.transactionHash}}</div>
-                        <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.transactionHash)">
+                        <img src="../assets/images/copy.svg" alt="" @click="copy(item.content.transactionHash)">
                       </div>
                       <div class="result-param flex-center" v-if="item.content && item.content.hash">
                         <div class="result-param-name">Hash</div>
                         <div class="result-param-value">{{item.content.hash}}</div>
-                        <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.hash)">
+                        <img src="../assets/images/copy.svg" alt="" @click="copy(item.content.hash)">
                       </div>
                       <div class="result-params">
                         <div class="result-param flex-center" v-if="item.content && item.content.transactionIndex">
                           <div class="result-param-name">TransactionIndex</div>
                           <div class="result-param-value">{{item.content.transactionIndex}}</div>
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.transactionIndex)">
+                          <img src="../assets/images/copy.svg" alt="" @click="copy(item.content.transactionIndex)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.data">
                           <div class="result-param-name">Data</div>
                           <div class="result-param-value">{{item.content.data}}</div>
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(item.content.data)">
+                          <img src="../assets/images/copy.svg" alt="" @click="copy(item.content.data)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasPrice">
                           <div class="result-param-name">GasPrice</div>
                           <div v-if="!item.isFormatGasPrice" class="result-param-value">{{(formatUnits(item.content.gasPrice, 9) * 1).toFixed(4)}} Gwei</div>
                           <div v-else class="result-param-value">{{item.content.gasPrice}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasPrice', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasPrice', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasLimit">
                           <div class="result-param-name">GasLimit</div>
                           <div v-if="!item.isFormatGasLimit" class="result-param-value">{{formatUnits(item.content.gasLimit, 0)}}</div>
                           <div v-else class="result-param-value">{{item.content.gasLimit}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasLimit', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasLimit', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasUsed">
                           <div class="result-param-name">GasUsed</div>
                           <div v-if="!item.isFormatGasUsed" class="result-param-value">{{formatUnits(item.content.gasUsed, 0)}}</div>
                           <div v-else class="result-param-value">{{item.content.gasUsed}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.gasUsed">
                           <div class="result-param-name">GasUsedPercent</div>
                           <div v-if="!item.isFormatGasUsed" class="result-param-value">{{((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1)}}%</div>
                           <div v-else class="result-param-value">{{item.content.gasUsed}}</div>
-                          <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1) + '%')">
+                          <!-- <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
+                          <img src="../assets/images/copy.svg" alt="" @click="copy(((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) * 100).toFixed(1) + '%')">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.effectiveGasPrice">
                           <div class="result-param-name">GasCost</div>
                           <div v-if="formatUnits(item.content.value, 18) == 0" class="result-param-value">{{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH</div>
                           <div v-else class="result-param-value">{{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH + {{(formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH = {{(formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9)}} ETH</div>
-                          <!-- <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
-                          <img v-if="formatUnits(item.content.value, 18) == 0" src="@/assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9))">
-                          <img v-else src="@/assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9))">
+                          <!-- <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
+                          <img v-if="formatUnits(item.content.value, 18) == 0" src="../assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9))">
+                          <img v-else src="../assets/images/copy.svg" alt="" @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value, 18) * 1).toFixed(9))">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.maxFeePerGas">
                           <div class="result-param-name">MaxFeePerGas</div>
                           <div v-if="!item.isFormatMaxFee" class="result-param-value">{{(formatUnits(item.content.maxFeePerGas, 9) * 1).toFixed(4)}} Gwei</div>
                           <div v-else class="result-param-value">{{item.content.maxFeePerGas}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxFee', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxFee', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.maxPriorityFeePerGas">
                           <div class="result-param-name">MaxPriorityFeePerGas</div>
                           <div v-if="!item.isFormatMaxPriority" class="result-param-value">{{formatUnits(item.content.maxPriorityFeePerGas, 9)}} Gwei</div>
                           <div v-else class="result-param-value">{{item.content.maxPriorityFeePerGas}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxPriority', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatMaxPriority', index)">
                         </div>
                         <div class="result-param flex-center" v-if="item.content && item.content.value">
                           <div class="result-param-name">Value</div>
                           <div v-if="!item.isFormatValue" class="result-param-value">{{formatUnits(item.content.value, 18)}} ETH</div>
                           <div v-else class="result-param-value">{{item.content.value}}</div>
-                          <img src="@/assets/images/conversion.svg" alt="" @click="clickConversion('isFormatValue', index)">
+                          <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatValue', index)">
                         </div>
                       </div>
-                      <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="@/assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
+                      <div v-if="item.params.length > 10" class="result-param-show flex-center-center"  @click="item.showParams = !item.showParams">show<img src="../assets/images/arrow.svg" :style="{transform: !item.showParams ? 'rotate(180deg)' : 'rotate(0deg)'}" alt=""></div>
                     </div>
                     <JsonViewer v-else :value="(item && item.content) || ''" preview-mode copyable boxed sort theme="dark" expanded />
                   </div>
@@ -309,8 +309,8 @@
                   <div class="result-section-content">
                     <div class="result-section-content-hd flex-center">Result
                       <div v-if="item.content.constructor === Object">
-                        <img v-if="!item.isShowJson" src="@/assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
-                        <img v-else src="@/assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
+                        <img v-if="!item.isShowJson" src="../assets/images/json.svg" alt="" @click="clickConversion('isShowJson', index)">
+                        <img v-else src="../assets/images/table.svg" alt="" @click="clickConversion('isShowJson', index)">
                       </div>
                       
                     </div>
@@ -319,7 +319,7 @@
                         <div class="result-param flex-center" v-for="(val, key, index) in item.content" :key="index">
                           <div class="result-param-name">{{key}}</div>
                           <div class="result-param-value">{{val}}</div>
-                          <img src="@/assets/images/copy.svg" alt="" @click="copy(val)">
+                          <img src="../assets/images/copy.svg" alt="" @click="copy(val)">
                         </div>
                       </div>
                     </div>
@@ -339,14 +339,14 @@
                           <div class="result-param-name">{{param}}</div>
                           <div v-if="event.isFormatUnits && param == 'uint256'" class="result-param-value">{{formatUnits(event.args[i])}}</div>
                           <div v-else class="result-param-value">{{event.args[i]}}</div>
-                          <img v-if="param != 'uint256'" src="@/assets/images/copy.svg" alt="" @click="copy(event.args[i])">
-                          <img v-else src="@/assets/images/conversion.svg" alt="" @click="() => event.isFormatUnits = !event.isFormatUnits">
+                          <img v-if="param != 'uint256'" src="../assets/images/copy.svg" alt="" @click="copy(event.args[i])">
+                          <img v-else src="../assets/images/conversion.svg" alt="" @click="() => event.isFormatUnits = !event.isFormatUnits">
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="result-param-show flex-center-center" @click="item.showEvents = !item.showEvents">show <img src="@/assets/images/arrow.svg" alt="" :style="{transform: item.showEvents ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
+                <div class="result-param-show flex-center-center" @click="item.showEvents = !item.showEvents">show <img src="../assets/images/arrow.svg" alt="" :style="{transform: item.showEvents ? 'rotate(180deg)' : 'rotate(0deg)'}"></div>
                 
               </div>
             </div>
@@ -355,12 +355,12 @@
         <div v-if="!abiItem && !(contractData.result && contractData.result.length)" >
           <div class="demo-hint">
             <div class="demo-hint-title">Welcome to DappReader, this is a sample card</div>
-            <div class="demo-hint-desc flex-center"><img src="@/assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.</div>
-            <img src="@/assets/images/hint.png" alt="" class="hint-img">
+            <div class="demo-hint-desc flex-center"><img src="../assets/images/left.png" alt="">The first step is to select the function on the left, which will generate an execution card.</div>
+            <img src="../assets/images/hint.png" alt="" class="hint-img">
             <div class="demo-hint-desc flex-center"><p>After entering the parameters according to the functional requirements, click the "run" button, and you can see the running results in the results bar below.</p></div>
             <div class="demo-hint-desc flex-center" style="margin-top: 14px">You can even customize GasPrice and accompany ETH.</div>
           </div>
-          <!-- <div v-else class="not-result flex-center-center"><img src="@/assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
+          <!-- <div v-else class="not-result flex-center-center"><img src="../assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
         </div>
       </div>
       <ContractMsg v-if="!isShowHd && contractData && !isIframe" ref="contractMsg" :contract="contractData.content" @refreshContract="refreshContract" />
@@ -371,14 +371,14 @@
   </div>
 </template>
 <script>
-import ContractHd from '@/components/ContractHd.vue'
-import ContractMsg from '@/components/ContractMsg.vue'
-import NetworkErrorModal from '@/components/NetworkErrorModal.vue'
-import ConversionModal from '@/components/ConversionModal.vue'
+import ContractHd from '../components/ContractHd.vue'
+import ContractMsg from '../components/ContractMsg.vue'
+import NetworkErrorModal from '../components/NetworkErrorModal.vue'
+import ConversionModal from '../components/ConversionModal.vue'
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
-import { setLs } from '@/service/service'
+import { setLs } from '../service/service'
 import { formatDate, formatAddress, getCreatorAddress, getSourceCode, getContractInfo } from '../libs/utils'
 import {JsonViewer} from "vue3-json-viewer"
 import "vue3-json-viewer/dist/index.css"
@@ -387,7 +387,7 @@ import { useIsActivating } from '../hooks/useIsActivating'
 import { useNetwork } from '../hooks/useNetwork'
 import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
-import ParameItem from '@/components/ParameItem.vue'
+import ParameItem from '../components/ParameItem.vue'
 export default {
   components: { ParameItem, ContractHd, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
   setup() {

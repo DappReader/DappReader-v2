@@ -21,7 +21,7 @@
   </div>
 </template>
 <script>
-import Avatar from "@/components/Avatar.vue"
+import Avatar from "../components/Avatar.vue"
 export default {
   props: ['item'],
   components: {Avatar},

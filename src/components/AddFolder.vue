@@ -22,7 +22,7 @@
 <script>
 import { ref } from "vue";
 import { useStore } from 'vuex'
-import { getLs, setLs } from "@/service/service";
+import { getLs, setLs } from "../service/service";
 import { useMessage } from "naive-ui";
 export default {
   name: 'AddFolder',

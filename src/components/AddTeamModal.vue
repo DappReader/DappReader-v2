@@ -44,8 +44,8 @@
 </template>
 <script>
 import { ref, onBeforeMount } from 'vue'
-import { getTeamFriendList, getUserInfo } from '@/http/abi'
-import Avatar from "@/components/Avatar.vue"
+import { getTeamFriendList, getUserInfo } from '../http/abi'
+import Avatar from "../components/Avatar.vue"
 export default {
   name: 'AddTeamModal',
   components: {Avatar},

@@ -12,7 +12,7 @@
     <div class="info-line"></div>
     <div class="info-item info-copy" @click="copy(contract.address)">
       <div class="info-item-key">contract address</div>
-      <div class="info-item-value flex-center"><span>{{address(contract.address)}}</span> <img src="@/assets/images/copy.svg" alt=""></div>
+      <div class="info-item-value flex-center"><span>{{address(contract.address)}}</span> <img src="../assets/images/copy.svg" alt=""></div>
     </div>
     <div class="info-line"></div>
     <div class="info-item">

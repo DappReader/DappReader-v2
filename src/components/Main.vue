@@ -2,13 +2,13 @@
   <div class="content">
     <Nav />
     <Contract v-if="activeId" />
-    <div v-else class="not-sol flex-center-center"><img src="@/assets/images/left.png" alt=""> Please select the contract on the left and execute</div>
+    <div v-else class="not-sol flex-center-center"><img src="../assets/images/left.png" alt=""> Please select the contract on the left and execute</div>
   </div>
 </template>
 
 <script>
-import Nav from '@/components/Nav.vue'
-import Contract from '@/components/Contract.vue'
+import Nav from '../components/Nav.vue'
+import Contract from '../components/Contract.vue'
 import { computed } from "vue"
 import { useStore } from 'vuex'
 // import { useMessage } from "naive-ui"

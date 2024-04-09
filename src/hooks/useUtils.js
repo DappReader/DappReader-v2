@@ -1,5 +1,5 @@
 import { useMessage } from 'naive-ui'
-import { getLs, setLs } from "@/service/service"
+import { getLs, setLs } from "../service/service"
 import { useStore } from 'vuex'
 import { chains } from '../libs/chains'
 

@@ -8,7 +8,7 @@
         </svg>
         <input class="form-input" v-model="contractAddress" placeholder="search contract address" @input="inputFun" @keyup.enter="handleClickSearch"  />
       </div>
-      <img v-if="isIframe" src="@/assets/images/logo.svg" alt="" style="margin-left: 24px">
+      <img v-if="isIframe" src="../assets/images/logo.svg" alt="" style="margin-left: 24px">
     </div>
     <div class="nav-r flex-center">
       <div v-if="address" class="wallet flex-center-sb chain-w">
@@ -18,7 +18,7 @@
         </div>
         
         <div class="flex-center-center gas-price">
-          <img src="@/assets/images/gas.gif" alt="">
+          <img src="../assets/images/gas.gif" alt="">
           <p>{{gasPrice}}</p>
         </div>
         <div class="block"></div>
@@ -54,7 +54,7 @@
         </div>
         <div v-else class="user-info" @click="checkUserRegistFun">
           <div class="user-avatar">
-            <img src="@/assets/images/user.svg" alt="">
+            <img src="../assets/images/user.svg" alt="">
           </div>
         </div>
       </div>
@@ -79,13 +79,13 @@ import { useNetwork } from '../hooks/useNetwork'
 import { useMessage } from 'naive-ui'
 import { ethers } from 'ethers'
 import { chainsOptions } from '../libs/chainsOptions'
-import Avatar from "@/components/Avatar.vue"
-import AddFolder from '@/components/AddFolder.vue'
-import CreateContract from '@/components/CreateContract.vue'
-import RegistModal from '@/components/RegistModal.vue'
-import LoginModal from '@/components/LoginModal.vue'
-import AddChainModal from '@/components/AddChainModal'
-import EditModal from '@/components/EditModal'
+import Avatar from "../components/Avatar.vue"
+import AddFolder from '../components/AddFolder.vue'
+import CreateContract from '../components/CreateContract.vue'
+import RegistModal from '../components/RegistModal.vue'
+import LoginModal from '../components/LoginModal.vue'
+import AddChainModal from '../components/AddChainModal.vue'
+import EditModal from '../components/EditModal.vue'
 import { checkUserRegist, login, regist, getNftList, getUserInfo, updateUserInfo } from '../http/abi'
 export default {
   components: {

@@ -2,7 +2,7 @@
   <div v-if="showModal" class="regist flex-center-center">
     <n-spin :show="syncing" style="color: #FFF">
       <div class="regist-content">
-        <img src="@/assets/images/regist_bg.png" alt="" class="bg">
+        <img src="../assets/images/regist_bg.png" alt="" class="bg">
         <div class="main">
           <div class="hd flex-start">
             <div class="title">Edit</div>
@@ -70,7 +70,7 @@
 import { ref } from 'vue'
 import makeBlockie from 'ethereum-blockies-base64'
 import Jazzicon from 'vue3-jazzicon/src/components'
-import SelectNftModal from '@/components/SelectNftModal.vue'
+import SelectNftModal from '../components/SelectNftModal.vue'
 export default {
   name: 'RegistModal',
   components: {
@@ -84,7 +84,7 @@ export default {
     const nftAvatar = ref(null)
     const syncing = ref(false)
     const nftList = ref([])
-    const designImg = ref(require(`@/assets/images/avatar/${designIndex.value}.png`))
+    const designImg = ref(new URL(`../assets/images/avatar/${designIndex.value}.png`, import.meta.url).href)
     const user = ref({
       nickname: '',
       address: '',
@@ -97,7 +97,7 @@ export default {
       console.log(userInfo)
       if (userInfo.avatar.indexOf('design') > -1) {
         designIndex.value = userInfo.avatar.split('-')[1]
-        designImg.value = require(`@/assets/images/avatar/${designIndex.value}.png`)
+        designImg.value = new URL(`../assets/images/avatar/${designIndex.value}.png`, import.meta.url).href
       } else if (userInfo.avatar.indexOf('https://') > -1) {
         if (!nftAvatar.value) nftAvatar.value = {}
         nftAvatar.value.image = userInfo.avatar

@@ -30,7 +30,7 @@
               <div v-for="(param, index) in decodedArgs" :key="index" class="result-param flex-center">
                 <div class="result-param-name">{{param.key}}</div>
                 <div class="result-param-value">{{param.value}}</div>
-                <img src="@/assets/images/copy.svg" alt="" @click="copy(param.value)">
+                <img src="../assets/images/copy.svg" alt="" @click="copy(param.value)">
               </div>
             </div>
           </div>

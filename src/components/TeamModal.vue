@@ -26,9 +26,9 @@
 </template>
 <script>
 import { ref } from 'vue'
-import SelectSearch from '@/components/SelectSearch.vue'
-import { getUserInfo, updateTeamInfo } from '@/http/abi'
-import Item from '@/components/Item.vue'
+import SelectSearch from '../components/SelectSearch.vue'
+import { getUserInfo, updateTeamInfo } from '../http/abi'
+import Item from '../components/Item.vue'
 import { useUtils } from '../hooks/useUtils'
 export default {
   components: {SelectSearch, Item},

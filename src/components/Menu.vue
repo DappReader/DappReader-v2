@@ -1,15 +1,15 @@
 <template>
   <div class="content flex-start menu" :style="{width: `${menuWidth}px`}">
     <div class="logo">
-      <img src="@/assets/images/logo.svg" alt="">
+      <img src="../assets/images/logo.svg" alt="">
     </div>
     <div class="add flex-center-sb">
       <div class="add-contract flex-center" @click="showCreateContract">
-        <img src="@/assets/images/add_file.svg" alt="">
+        <img src="../assets/images/add_file.svg" alt="">
         <span>add contract</span>
       </div>
       <div class="add-flie" @click="showAddFolder">
-        <img src="@/assets/images/add_folder.svg" alt="">
+        <img src="../assets/images/add_folder.svg" alt="">
       </div>
     </div>
     <div class="add" style="margin-top: 0">
@@ -84,11 +84,11 @@
 </template>
 
 <script lang="jsx">
-import AddFolder from '@/components/AddFolder.vue'
-import CreateContract from '@/components/CreateContract.vue'
+import AddFolder from '../components/AddFolder.vue'
+import CreateContract from '../components/CreateContract.vue'
 import { ref, computed, h } from 'vue'
 import { useStore } from 'vuex'
-import { getLs, setLs } from '@/service/service'
+import { getLs, setLs } from '../service/service'
 import group from '../assets/images/group.png'
 import groupQrCode from '../assets/images/groupQRCode.png'
 import { chains, chainNickNames, chainColors } from '../libs/chains'

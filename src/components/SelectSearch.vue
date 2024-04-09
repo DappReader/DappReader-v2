@@ -28,7 +28,7 @@
   
 </template>
 <script>
-import Avatar from "@/components/Avatar.vue"
+import Avatar from "../components/Avatar.vue"
 import {ref} from 'vue'
 export default {
   props: ['list', 'isSearching'],

@@ -95,8 +95,8 @@
         </div>
         <div v-else class="modal-success">
           <div class="status flex-end-center">
-            <img src="@/assets/images/flower.svg" alt="" class="flower">
-            <img src="@/assets/images/success.svg" alt="" class="success">
+            <img src="../assets/images/flower.svg" alt="" class="flower">
+            <img src="../assets/images/success.svg" alt="" class="success">
           </div>
           <div class="success-status">Share success</div>
           <div class="success-sub-status">Share your contract link</div>
@@ -122,9 +122,9 @@ import { ref, toRaw, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useMessage } from 'naive-ui'
 import { useUtils } from '../hooks/useUtils'
-import SelectSearch from '@/components/SelectSearch.vue'
-import Item from '@/components/Item.vue'
-import { getUserInfo, publishContract } from '@/http/abi'
+import SelectSearch from '../components/SelectSearch.vue'
+import Item from '../components/Item.vue'
+import { getUserInfo, publishContract } from '../http/abi'
 export default {
   props: ['contract'],
   components: {SelectSearch, Item},

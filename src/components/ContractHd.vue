@@ -8,11 +8,11 @@
       <div class="hd-btns flex-center">
         <div v-if="contract.token">
           <div v-if="!contract.isImport && contract.hasUpdate" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="updateShare">
-            <img src="@/assets/images/update.svg" alt="">
+            <img src="../assets/images/update.svg" alt="">
             <span>Uptede</span>
           </div>
           <div v-if="contract.isImport && contract.hasSync" class="hd-btn-item flex-center-center btn hd-btn-item-red" @click="() => showHint = true">
-            <img src="@/assets/images/arrow_reload.svg" alt="">
+            <img src="../assets/images/arrow_reload.svg" alt="">
             <span>Sync</span>
           </div>
         </div>
@@ -57,7 +57,7 @@
           <span>Refresh Proxy Contract</span>
         </div>
         <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-0670A6" @click="toEtherscanAddress(contract.address, contract.chain)">
-          <img src="@/assets/images/show.svg" alt="">
+          <img src="../assets/images/show.svg" alt="">
           <span>View Etherscan</span>
         </div>
         <div class="hd-btn-item flex-center-center btn hd-btn-item-h hover-57B36F" @click="decode">
@@ -216,16 +216,16 @@
 <script>
 import { ref, watch, computed, toRaw } from 'vue'
 import { useUtils } from '../hooks/useUtils'
-import CreateContract from '@/components/CreateContract.vue'
-import ShareModal from '@/components/ShareModal.vue'
-import GetContractModal from '@/components/GetContractModal.vue'
-import DecodeModal from '@/components/DecodeModal.vue'
-import TeamModal from '@/components/TeamModal.vue'
-import SourceCodeModal from '@/components/SourceCodeModal.vue'
-import Avatar from "@/components/Avatar.vue"
+import CreateContract from '../components/CreateContract.vue'
+import ShareModal from '../components/ShareModal.vue'
+import GetContractModal from '../components/GetContractModal.vue'
+import DecodeModal from '../components/DecodeModal.vue'
+import TeamModal from '../components/TeamModal.vue'
+import SourceCodeModal from '../components/SourceCodeModal.vue'
+import Avatar from "../components/Avatar.vue"
 import { useStore } from 'vuex'
 import { ethers } from 'ethers'
-import { getLs, setLs } from "@/service/service";
+import { getLs, setLs } from "../service/service";
 import { useDialog, useMessage } from "naive-ui"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
