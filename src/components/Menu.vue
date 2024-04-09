@@ -83,7 +83,7 @@
   </div>
 </template>
 
-<script>
+<script lang="jsx">
 import AddFolder from '@/components/AddFolder.vue'
 import CreateContract from '@/components/CreateContract.vue'
 import { ref, computed, h } from 'vue'

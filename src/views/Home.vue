@@ -6,9 +6,9 @@
   </div>
 </template>
 
-<script>
+<script lang="jsx">
 import { useStore } from 'vuex'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtils } from '../hooks/useUtils'
 import { useMessage } from 'naive-ui'
@@ -49,9 +49,9 @@ export default {
     const isIframe = computed(() => {
       return store.state.isIframe
     })
-    const getContractFun = (password='') => {
+    const getContractFun = (password = '') => {
       let token = route.params.token
-      getContract({token, password}).then(res => {
+      getContract({ token, password }).then(res => {
         if (res.code == 1) {
           router.replace('/')
           message.error(res.msg)
@@ -96,11 +96,11 @@ export default {
       setData(contract)
       getContractModal.value.showModal = false
       router.replace('/')
-      
+
     }
 
     const checkContractInfoFun = (token) => {
-      checkContractInfo({token}).then(res => {
+      checkContractInfo({ token }).then(res => {
         console.log(res)
         if (res.code == 0) {
           if (res.openSourceType == 'Limited') {
@@ -128,17 +128,19 @@ export default {
       getContractFun(e)
     }
     onMounted(() => {
-      let isNotify = localStorage.getItem('isNotify') || ''
-      if (!isNotify) {
-        notification.info({
-          content: "Let's play together",
-          meta: () => <p style={{lineHeight: 1.4}}>Our Discord channel is now open! Welcome everyone to join and build together! <a style={{color: '#0784C3'}} href='https://discord.gg/sJNpCehep' target="_blank">https://discord.gg/sJNpCehep</a></p>,
-          keepAliveOnHover: true,
-          onClose: () => {
-            localStorage.setItem('isNotify', true)
-          }
-        })
-      }
+      nextTick(() => {
+        let isNotify = localStorage.getItem('isNotify') || ''
+        if (!isNotify) {
+          notification.info({
+            content: "Let's play together",
+            meta: () => <p style={{ lineHeight: 1.4 }}>Our Discord channel is now open! Welcome everyone to join and build together! <a style={{ color: '#0784C3' }} href='https://discord.gg/sJNpCehep' target="_blank">https://discord.gg/sJNpCehep</a></p>,
+            keepAliveOnHover: true,
+            onClose: () => {
+              localStorage.setItem('isNotify', true)
+            }
+          })
+        }
+      })
     })
     watch(userInfo, () => {
       let token = route.params.token
