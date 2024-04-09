@@ -104,7 +104,7 @@ yarn install
 
 ### 在本地运行
 ```
-yarn run serve
+yarn run dev
 ```
 
 ### 编译本项目
