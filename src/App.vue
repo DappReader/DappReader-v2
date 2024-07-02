@@ -11,40 +11,49 @@
 </template>
 <script>
 import { useStore } from 'vuex'
-import { onMounted, computed } from 'vue'
-import { useIsActivating } from './hooks/useIsActivating'
+import { onMounted } from 'vue'
 import { darkTheme } from 'naive-ui'
 import { getLs, setLs } from './service/service'
 import { demo } from './libs/demo'
 import { chains, defaultChain } from './libs/chains'
+import { createWeb3Modal, defaultConfig, useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/vue'
 
 export default {
   setup() {
     const store = useStore()
-    const { getProvider } = useIsActivating()
-
-    const provider = computed(() => {
-      return store.state.provider
-    })
-    const network = computed(() => {
-      return store.state.network
-    })
-    const fn = () => {
-      let ethereum = window.ethereum
-      if (!ethereum) return
-      ethereum.on("accountsChanged", (accounts) => {
-        console.log("账号切换", accounts[0])
-        if (!accounts[0]) {
-          store.commit('init')
-        } else {
-          getProvider()
-        }
-      })
-      ethereum.on("chainChanged", (chainId) => {
-        console.log("用户切换了链", chainId)
-        getProvider()
-      })
+    // 1. Get projectId at https://cloud.walletconnect.com
+    const projectId = '...'
+    // 2. Set chains
+    const networks = chains.map(c => ({
+      chainId: c.chainId,
+      name: c.name,
+      currency: c.nativeCurrency.symbol,
+      rpcUrl: c.rpc[0],
+      explorerUrl: c.explorers?.[0]?.url
+    }))
+    // 3. Create your application's metadata object
+    const metadata = {
+      name: 'Dappreader',
+      description: 'Dapp reader',
+      url: 'https://mywebsite.com', // url must match your domain & subdomain
+      icons: ['https://avatars.mywebsite.com/']
     }
+    // 4. Create Ethers config
+    const ethersConfig = defaultConfig({
+      /*Required*/
+      metadata,
+      /*Optional*/
+      enableInjected: true, // true by default
+    })
+
+    // 5. Create a Web3Modal instance
+    createWeb3Modal({
+      ethersConfig,
+      chains: networks,
+      projectId,
+      enableAnalytics: true, // Optional - defaults to your Cloud configuration
+      enableOnramp: true // Optional - false as default
+    })
     const getData = async () => {
       let inited = localStorage.inited || false
       let menuList = await getLs('menuList') || []
@@ -55,7 +64,7 @@ export default {
       let userInfo = localStorage.getItem('userInfo') || null
       if (userInfo) userInfo = JSON.parse(userInfo)
       if (!inited) {
-        let { abi, address, chainId, name, remark} = demo
+        let { abi, address, chainId, name, remark } = demo
         let chain = chains.filter(e => e.chainId == chainId)[0]
         let demoData = {
           abi,
@@ -81,21 +90,17 @@ export default {
       store.commit("setUserInfo", userInfo || {})
       store.commit("setActiveId", activeId)
     }
-    
+
     onMounted(() => {
       if (window.top === window.self) {
         store.commit("setIsIframe", false)
       } else {
         store.commit("setIsIframe", true)
       }
-      getProvider()
-      fn()
       getData()
     })
 
     return {
-      provider,
-      network,
       darkTheme,
       darkThemeOverrides: {
         common: {

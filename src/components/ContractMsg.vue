@@ -217,6 +217,7 @@ import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
 import { formatDate, formatAddress } from '../libs/utils'
 import SourceCodeModal from '../components/SourceCodeModal.vue'
+import { useNetwork } from '../hooks/useNetwork'
 
 export default {
   props: ['contract'],
@@ -248,15 +249,9 @@ export default {
     const activeName = ref('')
     const activeIndex = ref(-1)
     const contractData = ref({})
+    const { address, provider } = useNetwork()
     
     const { toEtherscanAddress, copy, setData } = useUtils()
-    
-    const provider = computed(() => {
-      return store.state.provider
-    })
-    const address = computed(() => {
-      return store.state.address
-    })
 
     const createAt = computed(() => {
       return (date) => {
