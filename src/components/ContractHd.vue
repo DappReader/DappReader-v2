@@ -230,6 +230,7 @@ import { useDialog, useMessage } from "naive-ui"
 import { updateContract, checkContractInfo, getContract } from '../http/abi'
 import { chains } from '../libs/chains'
 import { formatAddress } from '../libs/utils'
+import { useNetwork } from '../hooks/useNetwork'
 export default {
   props: ['contract'],
   components: {
@@ -242,6 +243,7 @@ export default {
     SourceCodeModal
   },
   setup(props, { emit }) {
+    const { address, provider } = useNetwork()
     const store = useStore()
     const dialog = useDialog()
     const message = useMessage()
@@ -263,12 +265,6 @@ export default {
 
     const { toEtherscanAddress, copy, setData } = useUtils()
     
-    const provider = computed(() => {
-      return store.state.provider
-    })
-    const address = computed(() => {
-      return store.state.address
-    })
     const getAddress = computed(() => {
       return (value) => {
         return formatAddress(value)

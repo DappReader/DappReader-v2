@@ -41,11 +41,11 @@
           </div>
         </div>
       </div>
-      <div class="wallet flex-center" v-if="address" @click="copy">
+       <w3m-button />
+      <!-- <div class="wallet flex-center" v-if="address" @click="copy">
         <div class="address">{{formatAddress(address)}}</div>
         <div class="nickname">{{fixed(balance)}}</div>
-      </div>
-      <div v-else class="wallet wallet-btn flex-center" @click="connectWallet">Connect Wallet</div>
+      </div> -->
       <div v-if="!isIframe">
         <div v-if="userInfo.address" class="user-info" @click="editUser">
           <div class="user-avatar">
@@ -74,8 +74,6 @@
 import { useStore } from 'vuex'
 import { computed, watch, ref, toRaw } from 'vue'
 import { chains, icons } from '../libs/chains'
-import { useIsActivating } from '../hooks/useIsActivating'
-import { useNetwork } from '../hooks/useNetwork'
 import { useMessage } from 'naive-ui'
 import { ethers } from 'ethers'
 import { chainsOptions } from '../libs/chainsOptions'
@@ -87,6 +85,8 @@ import LoginModal from '../components/LoginModal.vue'
 import AddChainModal from '../components/AddChainModal.vue'
 import EditModal from '../components/EditModal.vue'
 import { checkUserRegist, login, regist, getNftList, getUserInfo, updateUserInfo } from '../http/abi'
+import { useNetwork } from '../hooks/useNetwork'
+
 export default {
   components: {
     Avatar,
@@ -102,8 +102,7 @@ export default {
     let interval = null
     const store = useStore()
     const message = useMessage()
-    const { getProvider } = useIsActivating()
-    const { switchChain } = useNetwork()
+    const { switchChain, address, provider, network } = useNetwork()
     const chainId = ref(null)
     const addChainModal = ref(null)
     const editModal = ref(null)
@@ -129,15 +128,6 @@ export default {
     })
     const defaultChains = computed(() => {
       return store.state.defaultChains
-    })
-    const provider = computed(() => {
-      return store.state.provider
-    })
-    const network = computed(() => {
-      return store.state.network
-    })
-    const address = computed(() => {
-      return store.state.address
     })
     const balance = computed(() => {
       return store.state.balance

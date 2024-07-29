@@ -27,15 +27,14 @@ import { useStore } from 'vuex'
 import { ethers } from 'ethers'
 import { useUtils } from '../hooks/useUtils'
 import { formatDate, formatAddress } from '../libs/utils'
+import { useNetwork } from '../hooks/useNetwork'
 export default {
   props: ['contract'],
   setup(props) {
     const store = useStore()
     const balance = ref(0)
     const { copy } = useUtils()
-    const provider = computed(() => {
-      return store.state.provider
-    })
+    const { provider } = useNetwork()
     const createAt = computed(() => {
       return (date) => {
         return formatDate('YYYY-mm-dd', date)
