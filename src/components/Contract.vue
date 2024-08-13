@@ -786,10 +786,12 @@ export default {
             tx = await C[abiItem.name](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
+            console.log(error)
             resultState = 'error'
             tx = error
+            message.error(error.reason || error.message || error)
           }
-          if (abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') {
+          if ((abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') &&  resultState != 'error') {
             let res
             let outputs = abiItem.outputs
             console.log('outputs', outputs)
@@ -814,10 +816,13 @@ export default {
             } else {
               res = {}
               outputs.forEach((e, i) => {
-                console.log(e, i)
                 let name = e.name || i
                 let item = tx[i]
-                item = setOutpuData(e, item)
+                try {
+                  item = setOutpuData(e, item)
+                } catch (error) {
+                  console.log(error)
+                }
                 res[name] = item
               })
             }
