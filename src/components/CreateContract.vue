@@ -289,6 +289,7 @@ export default {
       }
       try {
         let res = await getContractInfo(data)
+        if (showAbi.value) return
         if (res.isProxy) {
           formData.value.isProxy = true
           formData.value.proxyAddress = res.proxyAddress || ''
