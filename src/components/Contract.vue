@@ -120,8 +120,7 @@
                     <span>Digital Conversion</span>
                     <img src="../assets/images/conversion.svg" alt="">
                   </div>
-                  <div v-if="inputItem.type == 'bytes'" class="conversion flex-center"
-                    @click="toBytes(inputItem.name)">
+                  <div v-if="inputItem.type == 'bytes'" class="conversion flex-center" @click="toBytes(inputItem.name)">
                     <span>Switch To Bytes</span>
                     <img src="../assets/images/conversion.svg" alt="">
                   </div>
@@ -231,11 +230,12 @@
               <div class="result-item-hd flex-center">
                 <div class="result-item-hd-l">
                   <div class="result-name">{{ item.state == 'success' ? (item.content.hash && !item.content.blockNumber)
-                    ? '⌛️' : '✅' : '❌'}} <span v-if="!isIframe">Run function :</span> {{ item.name }}</div>
+                    ? '⌛️' : '✅' : '❌' }} <span v-if="!isIframe">Run function :</span> {{ item.name }}</div>
                 </div>
                 <div class="result-item-hd-r flex-center">
                   <div class="result-time flex-center" v-if="!isIframe"><img src="../assets/images/time.svg" alt="">
-                    {{ createAt(item.createAt) }}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed within
+                    {{ createAt(item.createAt) }}<span v-if="item.confirmed" style="margin-left: .25em">| Confirmed
+                      within
                       {{ item.confirmed }} sec</span>
                   </div>
                   <div v-if="item.content.hash" class="result-btn flex-center-center"
@@ -249,7 +249,7 @@
                 <div class="result-info-item flex-center">
                   <div class="result-info-item-key flex-center-center">Tx Type</div>
                   <div class="result-info-item-value flex-center-center">{{ item.content.type == 2 ? "2(EIP-1599)" :
-                    "1"}}</div>
+                    "1" }}</div>
                 </div>
                 <div class="result-info-item flex-center">
                   <div class="result-info-item-key flex-center-center">Nonce</div>
@@ -335,7 +335,7 @@
                           <div class="result-param-name">GasUsedPercent</div>
                           <div v-if="!item.isFormatGasUsed" class="result-param-value">
                             {{ ((formatUnits(item.content.gasUsed, 0)) / (formatUnits(item.content.gasLimit)) *
-                            100).toFixed(1)}}%</div>
+                              100).toFixed(1) }}%</div>
                           <div v-else class="result-param-value">{{ item.content.gasUsed }}</div>
                           <!-- <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
                           <img src="../assets/images/copy.svg" alt=""
@@ -345,13 +345,13 @@
                           <div class="result-param-name">GasCost</div>
                           <div v-if="formatUnits(item.content.value, 18) == 0" class="result-param-value">
                             {{ (formatUnits(formatUnits(item.content.gasUsed, 0) *
-                              (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH</div>
+                              (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9) }} ETH</div>
                           <div v-else class="result-param-value">{{ (formatUnits(formatUnits(item.content.gasUsed, 0) *
-                            (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9)}} ETH +
+                            (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9) }} ETH +
                             {{ (formatUnits(item.content.value, 18) * 1).toFixed(9) }} ETH =
                             {{ (formatUnits(formatUnits(item.content.gasUsed, 0) *
                               (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1 + formatUnits(item.content.value,
-                            18) * 1).toFixed(9)}} ETH</div>
+                                18) * 1).toFixed(9) }} ETH</div>
                           <!-- <img src="../assets/images/conversion.svg" alt="" @click="clickConversion('isFormatGasUsed', index)"> -->
                           <img v-if="formatUnits(item.content.value, 18) == 0" src="../assets/images/copy.svg" alt=""
                             @click="copy((formatUnits(formatUnits(item.content.gasUsed, 0) * (formatUnits(item.content.effectiveGasPrice, 0)), 18) * 1).toFixed(9))">
@@ -377,7 +377,7 @@
                         <div class="result-param flex-center" v-if="item.content && item.content.value">
                           <div class="result-param-name">Value</div>
                           <div v-if="!item.isFormatValue" class="result-param-value">{{ formatUnits(item.content.value,
-                            18)}} ETH</div>
+                            18) }} ETH</div>
                           <div v-else class="result-param-value">{{ item.content.value }}</div>
                           <img src="../assets/images/conversion.svg" alt=""
                             @click="clickConversion('isFormatValue', index)">
@@ -782,8 +782,8 @@ export default {
           let tx = null
           let resultState = ''
           try {
-            console.log(...param)
-            tx = await C[abiItem.name](...param, sendInfo.value)
+            const abiKey = abiItem.name + '(' + abiItem.inputs.map(e => e.type).join(',') + ')'
+            tx = await C[abiKey](...param, sendInfo.value)
             resultState = 'success'
           } catch (error) {
             console.log(error)
@@ -791,7 +791,7 @@ export default {
             tx = error
             message.error(error.reason || error.message || error)
           }
-          if ((abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') &&  resultState != 'error') {
+          if ((abiItem.stateMutability == 'view' || abiItem.stateMutability == 'pure') && resultState != 'error') {
             let res
             let outputs = abiItem.outputs
             console.log('outputs', outputs)
@@ -906,13 +906,11 @@ export default {
       })
       results.value[contractData.value.content.id] = JSON.parse(JSON.stringify(resultData))
       contractData.value.result = JSON.parse(JSON.stringify(resultData))
-      console.log(results.value, JSON.parse(JSON.stringify(toRaw(results.value))))
       let R = {}
       for (let key in results.value) {
         R[key] = JSON.parse(JSON.stringify(toRaw(results.value[key])))
       }
       setLs('results', R).then(res => {
-        console.log(res)
         store.commit("setResults", res)
       }).catch(err => {
         console.log(err)
