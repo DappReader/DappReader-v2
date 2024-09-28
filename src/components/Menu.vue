@@ -402,6 +402,12 @@ export default {
       let name = 'unknow'
       try {
         name = chains.filter(e => e.chainId == id)[0]?.name
+        if (id == 56) {
+          name = 'BSC'
+        }
+        if (id == 97) {
+          name = 'BSC Testnet'
+        }
       } catch (error) {
         console.error(error)
       }
