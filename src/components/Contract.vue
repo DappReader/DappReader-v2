@@ -499,8 +499,7 @@ export default {
     let running = false
     const message = useMessage()
     const { toEtherscanAddress, copy, setData } = useUtils()
-    const { getProvider } = useIsActivating()
-    const { switchChain } = useNetwork()
+    const { switchChain, provider, address, network } = useNetwork()
     const store = useStore()
     const showPopover = ref(false)
     const readFun = ref(null)
@@ -521,23 +520,14 @@ export default {
     const showSendInfo = ref(false)
     const isShowHd = ref(true)
     const funOtherName = ref('')
-    const provider = computed(() => {
-      return store.state.provider
-    })
     const results = computed(() => {
       return store.state.results
     })
     const menuList = computed(() => {
       return store.state.menuList
     })
-    const network = computed(() => {
-      return store.state.network
-    })
     const activeId = computed(() => {
       return store.state.activeId
-    })
-    const address = computed(() => {
-      return store.state.address
     })
     const contractList = computed(() => {
       return store.state.contractList
