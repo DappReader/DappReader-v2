@@ -453,7 +453,7 @@
             <div class="demo-hint-title">Welcome to DappReader, this is a sample card</div>
             <div class="demo-hint-desc flex-center"><img src="../assets/images/left.png" alt="">The first step is to
               select the function on the left, which will generate an execution card.</div>
-            <img src="../assets/images/hint.png" alt="" class="hint-img">
+            <!-- <img src="../assets/images/hint.png" alt="" class="hint-img"> -->
             <div class="demo-hint-desc flex-center">
               <p>After entering the parameters according to the functional requirements, click the "run" button, and you
                 can see the running results in the results bar below.</p>
@@ -461,7 +461,9 @@
             <div class="demo-hint-desc flex-center" style="margin-top: 14px">You can even customize GasPrice and
               accompany ETH.</div>
           </div>
-          <!-- <div v-else class="not-result flex-center-center"><img src="../assets/images/left.png" alt="">Please select the function on the left and execute</div> -->
+          <div class="demo-hint" style="margin-top: 16px; ">
+            <div class="md" v-html="renderedContent"></div>
+          </div>
         </div>
       </div>
       <ContractMsg v-if="!isShowHd && contractData && !isIframe" ref="contractMsg" :contract="contractData.content"
@@ -491,6 +493,8 @@ import { useNetwork } from '../hooks/useNetwork'
 import { connectContract } from "../libs/connectWallet"
 import { useMessage } from "naive-ui"
 import ParameItem from '../components/ParameItem.vue'
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt()
 export default {
   components: { ParameItem, ContractHd, JsonViewer, NetworkErrorModal, ConversionModal, ContractMsg },
   setup() {
@@ -521,6 +525,7 @@ export default {
     const showSendInfo = ref(false)
     const isShowHd = ref(true)
     const funOtherName = ref('')
+    const renderedContent = ref('')
     const provider = computed(() => {
       return store.state.provider
     })
@@ -1136,7 +1141,13 @@ export default {
       }
     }, { immediate: true })
 
-    onMounted(() => {
+    const fetchMarkdownFile = async () => {
+      const response = await fetch('/intro/intro.md');
+      const text = await response.text();
+      renderedContent.value = md.render(text);
+    }
+
+    onMounted(async () => {
       let screenwidth = document.body.clientWidth
       if (screenwidth < 1680) {
         isShowHd.value = true
@@ -1145,9 +1156,11 @@ export default {
         isShowHd.value = false
         contractRef.value.style.height = 'calc(100% - 5px)'
       }
+      fetchMarkdownFile();
     })
 
     return {
+      renderedContent,
       contractHd,
       contractMsg,
       isIframe,
@@ -1986,6 +1999,29 @@ export default {
         }
       }
     }
+  }
+}
+</style>
+<style lang="scss">
+.md {
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  p {
+    margin-top: 16px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #FFFFFF;
+    width: 100%;
+  }
+  h3 {
+    font-size: 16px;
+    line-height: 18px;
+    font-family: Montserrat-Medium;
+    color: #FFFFFF;
+    margin-top: 24px;
   }
 }
 </style>
