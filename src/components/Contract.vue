@@ -2015,6 +2015,7 @@ export default {
     line-height: 24px;
     color: #FFFFFF;
     width: 100%;
+    max-width: 792px;
   }
   h3 {
     font-size: 16px;
