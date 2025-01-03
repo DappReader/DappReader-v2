@@ -124,6 +124,10 @@
                     <span>Switch To Bytes</span>
                     <img src="../assets/images/conversion.svg" alt="">
                   </div>
+                  <div v-if="inputItem.type == 'bytes32'" class="conversion flex-center" @click="toBytes32(inputItem.name)">
+                    <span>Switch To Bytes32</span>
+                    <img src="../assets/images/conversion.svg" alt="">
+                  </div>
                 </div>
                 <div v-if="inputItem.type == 'tuple'">
                   <ParameItem v-for="(item, index) in inputItem.components" :parame="parameData[inputItem.name]"
@@ -1062,6 +1066,14 @@ export default {
       }
     }
 
+    const toBytes32 = (type) => {
+      try {
+        parameData.value[type] = ethers.utils.formatBytes32String(parameData.value[type])
+      } catch (error) {
+        message.error(error)
+      }
+    }
+
     const toWei = (data, type, decimals) => {
       try {
         if (data == 'sendInfo') {
@@ -1207,7 +1219,8 @@ export default {
       dateConfirm,
       refreshContract,
       delInput,
-      addInput
+      addInput,
+      toBytes32
     }
   }
 }
